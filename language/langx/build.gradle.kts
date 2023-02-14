@@ -1,7 +1,9 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("maven-publish")
 }
+apply(from = "publish.gradle")
 
 kotlin {
     android {
@@ -10,6 +12,7 @@ kotlin {
                 jvmTarget = "1.8"
             }
         }
+        publishLibraryVariants("release", "debug")
     }
     
     listOf(

@@ -1,0 +1,183 @@
+apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/properties.gradle"
+
+ext {
+    artifactIdName = "tagd-langx"
+
+    projectName = "${project.getName()}"
+    projectUrl = "${gitBranchUrl}/language/${projectName}"
+}
+
+publishing {
+
+    publications {
+
+        if (!enableRemotePublish) {
+            core(MavenPublication) {
+                groupId artifactGroupId
+                artifactId artifactIdName
+                version = artifactVersionName
+
+                from components.java
+
+                artifact(sourceJar)
+            }
+        } else {
+            if (enableNexusPublish) {
+                mavenJava(MavenPublication) {
+                    groupId artifactGroupId
+                    artifactId artifactIdName
+                    version = artifactVersionName
+
+                    from components.java
+
+                    artifact(sourceJar)
+                    artifact("$buildDir/libs/${projectName}.jar")
+
+                    pom {
+                        name = artifactIdName
+                        description = 'The technology agnostic language\'s extensions'
+                        url = projectUrl
+
+                        licenses {
+                            license {
+                                name = 'The Apache License, Version 2.0'
+                                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            }
+                        }
+
+                        scm {
+                            connection = "scm:git:github.com/${gitProject}"
+                            developerConnection = "scm:git:ssh://github.com/${gitProject}"
+                            url = projectUrl
+                        }
+
+                        withXml {
+                            def dependencies = asNode().appendNode('dependencies')
+
+                            // include any transitive dependencies
+                            configurations.implementation.allDependencies.each {
+                                if (it.group == null
+                                        || it.version == 'unspecified') {
+                                    println("ignoring dependency ${it.group}:${it.name}:${it.version}")
+                                    return
+                                }
+
+                                def dependency = dependencies.appendNode('dependency')
+                                dependency.appendNode('groupId', it.group)
+                                println(it.group)
+                                println(it.version)
+                                println(it.name)
+                                dependency.appendNode('artifactId', it.name)
+                                dependency.appendNode('version', it.version)
+                            }
+                        }
+                    }
+
+                    task fixPom {
+                        doLast {
+                            File file = new File("$buildDir/publications/mavenJava/pom-default.xml")
+                            def text = file.text
+
+                            def firstIndexOfDependenciesEnd = text.indexOf("</dependencies>")
+                            def filtered = text.substring(0, firstIndexOfDependenciesEnd + "</dependencies>".length()) + "\n</project>"
+                            file.write(filtered)
+                        }
+                    }
+                    generatePomFileForMavenJavaPublication.finalizedBy fixPom
+                }
+            }
+            if (enableGithubPublish) {
+                gpr(MavenPublication) {
+                    groupId artifactGroupId
+                    artifactId artifactIdName
+                    version = artifactVersionName
+
+                    from components.java
+
+                    artifact(sourceJar)
+//                    artifact("$buildDir/libs/${projectName}.jar")
+
+                    pom {
+                        name = artifactIdName
+                        description = 'The technology agnostic language\'s extensions'
+                        url = projectUrl
+
+                        licenses {
+                            license {
+                                name = 'The Apache License, Version 2.0'
+                                url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            }
+                        }
+
+                        scm {
+                            connection = "scm:git:github.com/${gitProject}"
+                            developerConnection = "scm:git:ssh://github.com/${gitProject}"
+                            url = projectUrl
+                        }
+
+                        withXml {
+                            def dependencies = asNode().appendNode('dependencies')
+
+                            // include any transitive dependencies
+                            configurations.implementation.allDependencies.each {
+                                if (it.group == null
+                                        || it.version == 'unspecified') {
+                                    println("ignoring dependency ${it.group}:${it.name}:${it.version}")
+                                    return
+                                }
+
+                                def dependency = dependencies.appendNode('dependency')
+                                dependency.appendNode('groupId', it.group)
+                                println(it.group)
+                                println(it.version)
+                                println(it.name)
+                                dependency.appendNode('artifactId', it.name)
+                                dependency.appendNode('version', it.version)
+                            }
+                        }
+                    }
+
+                    task fixPom {
+                        doLast {
+                            File file = new File("$buildDir/publications/gpr/pom-default.xml")
+                            def text = file.text
+
+                            def firstIndexOfDependenciesEnd = text.indexOf("</dependencies>")
+                            def filtered = text.substring(0, firstIndexOfDependenciesEnd + "</dependencies>".length()) + "\n</project>"
+                            file.write(filtered)
+                        }
+                    }
+                    generatePomFileForGprPublication.finalizedBy fixPom
+                }
+            }
+        }
+    }
+
+    repositories {
+        if (enableGithubPublish) {
+            maven {
+                name = "githubPackages"
+                url = "https://maven.pkg.github.com/pavan2you/android-clean-architecture"
+                credentials {
+                    username = githubUser
+                    password = githubToken
+                }
+            }
+        }
+        if (enableNexusPublish) {
+            maven {
+                name = "sonaMaven"
+
+                def releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
+
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
+        }
+    }
+}
