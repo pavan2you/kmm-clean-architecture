@@ -24,7 +24,7 @@ open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationS
 
     var released: Boolean = false
 
-    override fun execute(context: Any?, work: () -> Unit) {
+    override fun execute(context: Any?, delay: Long, work: () -> Unit) {
         work.invoke()
     }
 

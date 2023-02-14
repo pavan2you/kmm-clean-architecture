@@ -25,6 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
+import io.tagd.langx.IllegalAccessException
 
 @RunWith(MockitoJUnitRunner::class)
 class CallableUseCaseTest {
