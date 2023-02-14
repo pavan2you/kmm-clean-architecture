@@ -102,7 +102,7 @@ actual class CopyOnWriteArrayList<E> : MutableList<E>, RandomAccess {
         TODO("Not yet implemented")
     }
 
-    actual fun toArray(array: Array<E>): Array<E> {
+    actual fun asArray(array: Array<E>): Array<E> {
         TODO("Not yet implemented")
     }
 
