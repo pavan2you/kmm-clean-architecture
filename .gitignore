@@ -49,3 +49,7 @@ captures/
 # IntelliJ
 *.iml
 .idea
+
+#signing
+.signing
+.signing/*
