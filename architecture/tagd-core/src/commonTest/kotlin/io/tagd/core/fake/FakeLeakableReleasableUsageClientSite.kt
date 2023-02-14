@@ -18,7 +18,7 @@
 package io.tagd.core.fake
 
 import io.tagd.core.Releasable
-import java.lang.ref.WeakReference
+import io.tagd.langx.ref.WeakReference
 
 class FakeLeakableReleasableUsageClientSite(leakableReleasable: Releasable) {
 
