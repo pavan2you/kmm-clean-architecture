@@ -2,6 +2,7 @@ plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
 }
+apply(from = "publish.gradle")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
