@@ -100,4 +100,28 @@ class DispatchersTest {
 
         assert(kotlinx.coroutines.Dispatchers.Unconfined == provider.Unconfined)
     }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun `given main dispatcher is not set verify uninitialized exception thrown`() {
+        val provider = Dispatchers.Builder().build()
+        provider.Main
+    }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun `given io dispatcher is not set verify uninitialized exception thrown`() {
+        val provider = Dispatchers.Builder().build()
+        provider.IO
+    }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun `given unconfined dispatcher is not set verify uninitialized exception thrown`() {
+        val provider = Dispatchers.Builder().build()
+        provider.Unconfined
+    }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun `given default dispatcher is not set verify uninitialized exception thrown`() {
+        val provider = Dispatchers.Builder().build()
+        provider.Default
+    }
 }
