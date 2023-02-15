@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
 }
+apply(from = "publish.gradle")
 
 kotlin {
     android {
@@ -10,6 +11,7 @@ kotlin {
                 jvmTarget = "1.8"
             }
         }
+        publishLibraryVariants("release", "debug")
     }
     
     listOf(
@@ -23,7 +25,11 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                api(project(":language:tagd-lang-langx"))
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))

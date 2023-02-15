@@ -1,3 +1,4 @@
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -20,30 +21,19 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "tagd-arch"
+            baseName = "tagd-lang-langx"
         }
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":architecture:tagd-di"))
-            }
-        }
+        val commonMain by getting
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
         val androidMain by getting
-        val androidUnitTest by getting {
-            dependencies {
-                implementation("junit:junit:4.13.2")
-                implementation("org.mockito:mockito-core:5.1.1")
-                implementation("org.mockito:mockito-inline:5.1.1")
-                implementation("com.nhaarman:mockito-kotlin:1.6.0")
-            }
-        }
+        val androidUnitTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -66,7 +56,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.tagd.arch"
+    namespace = "io.tagd.langx"
     compileSdk = 33
     defaultConfig {
         minSdk = 21

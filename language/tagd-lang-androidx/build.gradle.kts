@@ -5,7 +5,7 @@ plugins {
 apply(from = "publish.gradle")
 
 android {
-    namespace = "io.tagd.droid"
+    namespace = "io.tagd.androidx"
     compileSdk = 33
 
     defaultConfig {
@@ -35,17 +35,9 @@ android {
 }
 
 dependencies {
-    api(project(":architecture:tagd-arch"))
-    api(project(":language:tagd-lang-kotlinx"))
 
-    api("androidx.core:core-ktx:1.9.0")
-    api("androidx.appcompat:appcompat:1.6.1")
-    api("com.google.android.material:material:1.8.0")
-
-    api("com.google.guava:guava:31.0.1-android")
-
-    testApi("junit:junit:4.13.2")
-    androidTestApi("androidx.test.ext:junit:1.1.5")
-    androidTestApi("androidx.test.espresso:espresso-core:3.5.1")
-
+    implementation("androidx.core:core-ktx:1.9.0")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

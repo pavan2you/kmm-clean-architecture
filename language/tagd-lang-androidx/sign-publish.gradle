@@ -15,24 +15,12 @@
  *
  */
 
-package io.tagd.arch.fake
+apply from: 'publish.gradle'
 
-import io.tagd.arch.domain.crosscutting.async.*
+if (enableNexusPublish) {
+    apply plugin: 'signing'
 
-open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationStrategy,
-    NetworkIOStrategy, DiskIOStrategy, DaoStrategy {
-
-    var released: Boolean = false
-
-    override fun execute(context: Any?, delay: Long, work: () -> Unit) {
-        work.invoke()
-    }
-
-    override fun release() {
-        released = true
-    }
-
-    override fun cancel(context: Any?): Boolean {
-        return true
+    signing {
+        sign publishing.publications
     }
 }
