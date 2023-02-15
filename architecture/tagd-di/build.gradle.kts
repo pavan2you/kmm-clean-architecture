@@ -26,7 +26,6 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":architecture:tagd-core"))
-                api(project(":language:langx"))
             }
         }
         val commonTest by getting {
