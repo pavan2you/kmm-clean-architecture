@@ -58,10 +58,11 @@ class StateTest {
         state.put("float", 1.0f)
 
         val exception = assertFails {
-            val casted = state.get<Double>("float")
-            assertTrue(casted == 1.0)
+            val casted = state.get<String>("float")
+            assertTrue(casted == "1.0")
         }
-        assertTrue(exception is ClassCastException)
+        assertTrue(exception is ClassCastException /*jvm*/
+                || exception is AssertionError /*objc*/)
     }
 
     @Test

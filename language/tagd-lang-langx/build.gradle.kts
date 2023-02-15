@@ -1,7 +1,9 @@
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
 }
+apply(from = "publish.gradle")
 
 kotlin {
     android {
@@ -10,6 +12,7 @@ kotlin {
                 jvmTarget = "1.8"
             }
         }
+        publishLibraryVariants("release", "debug")
     }
     
     listOf(
@@ -18,7 +21,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "langx"
+            baseName = "tagd-lang-langx"
         }
     }
 
