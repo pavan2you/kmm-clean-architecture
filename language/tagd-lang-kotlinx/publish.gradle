@@ -1,11 +1,33 @@
+/*
+ * Copyright (C) 2021 The TagD Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 apply plugin: 'maven-publish'
 apply from: "$rootDir/gradle/properties.gradle"
 
 ext {
-    artifactIdName = "tagd-langx"
+    artifactIdName = "tagd-lang-kotlinx"
 
     projectName = "${project.getName()}"
     projectUrl = "${gitBranchUrl}/language/${projectName}"
+}
+
+tasks.register("sourceJar", Jar.class) {
+    from(sourceSets.main.java.srcDirs)
+    archiveClassifier.set("sources")
 }
 
 publishing {
@@ -36,7 +58,7 @@ publishing {
 
                     pom {
                         name = artifactIdName
-                        description = 'The technology agnostic language\'s extensions'
+                        description = 'The technology agnostic kotlin\'s extensions'
                         url = projectUrl
 
                         licenses {
@@ -100,7 +122,7 @@ publishing {
 
                     pom {
                         name = artifactIdName
-                        description = 'The technology agnostic language\'s extensions'
+                        description = 'The technology agnostic kotlin\'s extensions'
                         url = projectUrl
 
                         licenses {
@@ -158,7 +180,7 @@ publishing {
         if (enableGithubPublish) {
             maven {
                 name = "githubPackages"
-                url = "https://maven.pkg.github.com/pavan2you/android-clean-architecture"
+                url = "https://maven.pkg.github.com/pavan2you/kmm-clean-architecture"
                 credentials {
                     username = githubUser
                     password = githubToken

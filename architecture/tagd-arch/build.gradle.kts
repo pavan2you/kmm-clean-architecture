@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
 }
+apply(from = "publish.gradle")
 
 kotlin {
     android {

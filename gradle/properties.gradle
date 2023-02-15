@@ -44,7 +44,7 @@ ext {
     gitRepoUrl = "https://github.com/pavan2you/kmm-clean-architecture"
     gitBranchUrl = "https://github.com/pavan2you/kmm-clean-architecture/tree/master"
 
-    enableRemotePublish = true
-    enableGithubPublish = true
+    enableRemotePublish = false
+    enableGithubPublish = false
     enableNexusPublish = false
 }

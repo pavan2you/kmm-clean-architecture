@@ -39,7 +39,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":architecture:tagd-droid"))
+//    implementation(project(":architecture:tagd-droid"))
+    implementation("io.github.pavan2you:tagd-droid:0.0.0-alpha1-snapshot")
 
     implementation("androidx.compose.ui:ui:1.3.3")
     implementation("androidx.compose.ui:ui-tooling:1.3.3")

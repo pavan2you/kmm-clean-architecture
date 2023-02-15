@@ -1,7 +1,7 @@
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("maven-publish")
 }
 apply(from = "publish.gradle")
 
@@ -21,7 +21,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "langx"
+            baseName = "tagd-lang-langx"
         }
     }
 

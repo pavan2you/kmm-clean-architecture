@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
 }
+apply(from = "publish.gradle")
 
 android {
     namespace = "io.tagd.droid"
@@ -35,7 +36,7 @@ android {
 
 dependencies {
     api(project(":architecture:tagd-arch"))
-    api(project(":language:kotlinx"))
+    api(project(":language:tagd-lang-kotlinx"))
 
     api("androidx.core:core-ktx:1.9.0")
     api("androidx.appcompat:appcompat:1.6.1")
