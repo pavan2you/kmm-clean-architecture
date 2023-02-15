@@ -1,0 +1,210 @@
+/*
+ * Copyright (C) 2021 The TagD Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/properties.gradle"
+
+ext {
+    artifactIdName = "tagd-droid"
+
+    projectName = "${project.getName()}"
+    projectUrl = "${gitBranchUrl}/architecture/${projectName}"
+}
+
+tasks.register("sourceJar", Jar.class) {
+    from(android.sourceSets.main.java.srcDirs)
+    archiveClassifier.set("sources")
+}
+
+publishing {
+
+    publications {
+
+        if (enableGithubPublish) {
+            aar(MavenPublication) {
+                groupId artifactGroupId
+                artifactId artifactIdName
+                version = artifactVersionName
+
+                artifact(sourceJar)
+                artifact("$buildDir/outputs/aar/$projectName-release.aar")
+
+                pom {
+                    name = artifactIdName
+                    description = 'The technology agnostic clean architecture\'s depenency ' +
+                            'injection setup'
+                    url = projectUrl
+                    packaging = "aar"
+
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    scm {
+                        connection = "scm:git:github.com/${gitProject}"
+                        developerConnection = "scm:git:ssh://github.com/${gitProject}"
+                        url = projectUrl
+                    }
+
+                    withXml {
+                        def dependencies = asNode().appendNode('dependencies')
+
+                        // include any sibling dependencies
+                        def siblingDependencies = [
+                                'tagd-core',
+                                'tagd-arch',
+                                'tagd-di',
+                                'tagd-lang-langx',
+                                'tagd-lang-androidx'
+                        ]
+                        siblingDependencies.each {
+                            def dependency = dependencies.appendNode('dependency')
+                            dependency.appendNode('groupId', artifactGroupId)
+                            dependency.appendNode('artifactId', it)
+                            dependency.appendNode('version', artifactVersionName)
+                        }
+
+                        // include any transitive dependencies
+                        configurations.implementation.allDependencies.each {
+                            handleDependencies(it, dependencies)
+                        }
+                        configurations.api.allDependencies.each {
+                            handleDependencies(it, dependencies)
+                        }
+                    }
+                }
+            }
+        } else {
+            aar(MavenPublication) {
+                groupId artifactGroupId
+                artifactId artifactIdName
+                version = artifactVersionName
+
+                artifact(sourceJar)
+                if (file("$buildDir/outputs/aar/$projectName-release.aar").exists()) {
+                    artifact("$buildDir/outputs/aar/$projectName-release.aar")
+                } else {
+                    artifact("$buildDir/outputs/aar/$projectName-debug.aar")
+                }
+
+                pom {
+                    name = artifactIdName
+                    description = 'The technology agnostic clean architecture\'s depenency ' +
+                            'injection setup'
+                    url = projectUrl
+
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    scm {
+                        connection = "scm:git:github.com/${gitProject}"
+                        developerConnection = "scm:git:ssh://github.com/${gitProject}"
+                        url = projectUrl
+                    }
+
+                    withXml {
+                        def dependencies = asNode().appendNode('dependencies')
+
+                        // include any sibling dependencies
+                        def siblingDependencies = [
+                                'tagd-core',
+                                'tagd-arch',
+                                'tagd-di',
+                                'tagd-lang-langx',
+                                'tagd-lang-kotlinx',
+                                'tagd-lang-androidx'
+                        ]
+                        siblingDependencies.each {
+                            def dependency = dependencies.appendNode('dependency')
+                            dependency.appendNode('groupId', artifactGroupId)
+                            dependency.appendNode('artifactId', it)
+                            dependency.appendNode('version', artifactVersionName)
+                        }
+
+                        // include any transitive dependencies
+                        configurations.implementation.allDependencies.each {
+                            handleDependencies(it, dependencies)
+                        }
+                        configurations.api.allDependencies.each {
+                            handleDependencies(it, dependencies)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+
+        if (!enableRemotePublish) {
+            maven {
+                name = 'tagd-libraries'
+                url = "file://${buildDir}/repos"
+            }
+        } else {
+            if (enableGithubPublish) {
+                maven {
+                    name = "githubPackages"
+                    url = "https://maven.pkg.github.com/pavan2you/kmm-clean-architecture"
+                    credentials {
+                        username = githubUser
+                        password = githubToken
+                    }
+                }
+            }
+            if (enableNexusPublish) {
+                maven {
+                    name = "sonaMaven"
+
+                    def releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                    def snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                    url = version.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
+
+                    credentials {
+                        username ossrhUsername
+                        password ossrhPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+private void handleDependencies(Dependency dep, Node dependencies) {
+    if (dep.group == null
+            || dep.group == 'com.android.databinding'
+            || !dep.name.startsWith("tagd-")
+            || dep.version == 'unspecified') {
+        println("ignoring dependency ${dep.group}:${dep.name}:${dep.version}")
+        return
+    }
+
+    def dependency = dependencies.appendNode('dependency')
+    dependency.appendNode('groupId', dep.group)
+    println(dep.group)
+    println(dep.version)
+    println(dep.name)
+    dependency.appendNode('artifactId', dep.name)
+    dependency.appendNode('version', dep.version)
+}
