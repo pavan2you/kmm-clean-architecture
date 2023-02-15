@@ -17,7 +17,7 @@ class CopyOnWriteArrayListTest {
         collection.add("four")
         collection.add("five")
 
-        io.tagd.langx.collection.concurrent.removeAllByFilter {
+        collection.removeAllByFilter {
             it == "one" || it == "two"
         }
 
