@@ -16,13 +16,13 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 dependencies {
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.android)
 
-    testApi("junit:junit:4.13.2")
-    testApi("org.mockito:mockito-core:5.1.1")
-    testApi("org.mockito:mockito-inline:5.1.1")
-    testApi("com.nhaarman:mockito-kotlin:1.6.0")
+    testApi(libs.junit4)
+    testApi(libs.mockito.core)
+    testApi(libs.mockito.inline)
+    testApi(libs.mockito.kotlin)
 }
 
 publishing {
