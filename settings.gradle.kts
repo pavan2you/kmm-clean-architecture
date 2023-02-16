@@ -15,15 +15,19 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "kmm-clean-architecture"
-include(":android")
+include(":applications:the101:android")
+
 include(":architecture")
+include(":architecture:kmm-tagd-core")
+include(":architecture:kmm-tagd-di")
+include(":architecture:kmm-tagd-arch")
+include(":architecture:kmm-tagd-android")
+
 include(":language")
-include(":language:tagd-lang-langx")
-include(":language:tagd-lang-kotlinx")
-include(":language:tagd-lang-androidx")
-include(":architecture:tagd-core")
-include(":architecture:tagd-di")
-include(":architecture:tagd-arch")
-include(":architecture:tagd-droid")
+include(":language:kmm-lang-langx")
+include(":language:lang-kotlinx")
+include(":language:lang-androidx")
+
 include(":plugins")
+
 include(":components")
