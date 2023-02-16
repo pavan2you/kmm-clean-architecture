@@ -15,7 +15,9 @@
  *
  */
 
-apply from: "$rootDir/gradle/publish-base.gradle"
+plugins {
+    id("convention.publish.base")
+}
 
 tasks.register("sourceJar", Jar.class) {
     from(android.sourceSets.main.java.srcDirs)
@@ -23,6 +25,7 @@ tasks.register("sourceJar", Jar.class) {
 }
 
 publishing {
+
     publications {
 
         if (enableGithubPublish) {

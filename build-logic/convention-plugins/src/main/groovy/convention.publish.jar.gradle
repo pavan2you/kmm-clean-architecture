@@ -15,7 +15,9 @@
  *
  */
 
-apply from: "$rootDir/gradle/publish-base.gradle"
+plugins {
+    id("convention.publish.base")
+}
 
 tasks.register("sourceJar", Jar.class) {
     from(sourceSets.main.java.srcDirs)
@@ -23,7 +25,9 @@ tasks.register("sourceJar", Jar.class) {
 }
 
 publishing {
+
     publications {
+
         if (!enableRemotePublish) {
             core(MavenPublication) {
                 //create core publication
