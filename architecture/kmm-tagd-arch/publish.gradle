@@ -1,0 +1,12 @@
+apply from: "$rootDir/gradle/publish-kmm.gradle"
+
+publishing {
+    publications {
+        it.withType(MavenPublication) {
+            pom {
+                description = 'The technology agnostic architecture\'s definition'
+            }
+        }
+    }
+}
+
