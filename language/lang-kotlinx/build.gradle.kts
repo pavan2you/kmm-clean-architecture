@@ -1,8 +1,8 @@
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
+    id("convention.publish.jar")
 }
-apply(from = "publish.gradle")
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -16,7 +16,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 dependencies {
-
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
@@ -24,4 +23,10 @@ dependencies {
     testApi("org.mockito:mockito-core:5.1.1")
     testApi("org.mockito:mockito-inline:5.1.1")
     testApi("com.nhaarman:mockito-kotlin:1.6.0")
+}
+
+publishing {
+    publications.withType<MavenPublication> {
+        pom.description.set("The technology agnostic kotlin's extensions")
+    }
 }

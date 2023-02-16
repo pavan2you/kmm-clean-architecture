@@ -1,8 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("convention.publish.aar")
 }
-apply(from = "publish.gradle")
 
 android {
     namespace = "io.tagd.android"
@@ -48,4 +48,58 @@ dependencies {
     testApi("junit:junit:4.13.2")
     androidTestApi("androidx.test.ext:junit:1.1.5")
     androidTestApi("androidx.test.espresso:espresso-core:3.5.1")
+}
+
+publishing {
+    publications.withType<MavenPublication> {
+        pom {
+            description.set("The technology agnostic architecture android implementation")
+            withXml {
+                val dependencies = asNode().appendNode("dependencies")
+
+                val siblingDependencies = arrayListOf(
+                    "kmm-tagd-core",
+                    "kmm-tagd-arch",
+                    "kmm-tagd-di",
+                    "kmm-lang-langx",
+                    "lang-kotlinx",
+                    "lang-androidx"
+                )
+                siblingDependencies.forEach {
+                    val dependency = dependencies.appendNode("dependency")
+                    dependency.appendNode("groupId", extra["artifactGroupId"])
+                    dependency.appendNode("artifactId", it)
+                    dependency.appendNode("version", extra["artifactVersionName"])
+                }
+
+                // include any transitive dependencies
+                configurations.implementation.get().allDependencies.forEach {
+                    handleDependencies(it, dependencies)
+                }
+                configurations.api.get().allDependencies.forEach {
+                    handleDependencies(it, dependencies)
+                }
+            }
+        }
+    }
+}
+
+fun handleDependencies(dep: Dependency, dependencies: groovy.util.Node) {
+
+    if (dep.group == null
+        || dep.group == "com.android.databinding"
+        || !dep.name.startsWith("kmm-")
+        || !dep.name.startsWith("lang-")
+        || dep.version == "unspecified") {
+        println("ignoring dependency ${dep.group}:${dep.name}:${dep.version}")
+        return
+    }
+
+    val dependency = dependencies.appendNode("dependency")
+    dependency.appendNode("groupId", dep.group)
+    println(dep.group)
+    println(dep.version)
+    println(dep.name)
+    dependency.appendNode(extra["artifactId"], dep.name)
+    dependency.appendNode(version, dep.version)
 }

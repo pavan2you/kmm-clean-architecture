@@ -1,8 +1,8 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("convention.publish.kmm")
 }
-apply(from = "$rootDir/gradle/publish-kmm.gradle")
 
 kotlin {
     android {
@@ -60,5 +60,11 @@ android {
     defaultConfig {
         minSdk = 21
         targetSdk = 33
+    }
+}
+
+publishing {
+    publications.withType<MavenPublication> {
+        pom.description.set("The technology agnostic language\'s extensions")
     }
 }

@@ -1,6 +1,9 @@
-apply from: "$rootDir/gradle/publish-base.gradle"
+plugins {
+    id("convention.publish.base")
+}
 
 publishing {
+
     publications {
         it.withType(MavenPublication) {
 
