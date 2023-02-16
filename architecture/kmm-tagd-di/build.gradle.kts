@@ -38,10 +38,10 @@ kotlin {
         val androidMain by getting
         val androidUnitTest by getting {
             dependencies {
-                implementation("junit:junit:4.13.2")
-                implementation("org.mockito:mockito-core:5.1.1")
-                implementation("org.mockito:mockito-inline:5.1.1")
-                implementation("com.nhaarman:mockito-kotlin:1.6.0")
+                implementation(libs.junit4)
+                implementation(libs.mockito.core)
+                implementation(libs.mockito.inline)
+                implementation(libs.mockito.kotlin)
             }
         }
         val iosX64Main by getting

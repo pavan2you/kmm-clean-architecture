@@ -39,15 +39,14 @@ dependencies {
     api(project(":language:lang-kotlinx"))
     api(project(":language:lang-androidx"))
 
-    api("androidx.core:core-ktx:1.9.0")
-    api("androidx.appcompat:appcompat:1.6.1")
-    api("com.google.android.material:material:1.8.0")
+    api(libs.androidx.appcompat)
+    api(libs.androidx.core.ktx)
+    api(libs.android.material)
+    api(libs.guava)
 
-    api("com.google.guava:guava:31.0.1-android")
-
-    testApi("junit:junit:4.13.2")
-    androidTestApi("androidx.test.ext:junit:1.1.5")
-    androidTestApi("androidx.test.espresso:espresso-core:3.5.1")
+    testApi(libs.junit4)
+    androidTestApi(libs.androidx.test.ext)
+    androidTestApi(libs.androidx.test.espresso.core)
 }
 
 publishing {
