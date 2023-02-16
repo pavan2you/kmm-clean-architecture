@@ -1,5 +1,6 @@
 [versions]
-androidGradlePlugin = "8.1.0-alpha04"
+androidGradlePlugin = "8.0-rc-4"
+androidPlugin = "8.1.0-alpha04"
 androidMaterial = "1.8.0"
 androidxActivity = "1.6.1"
 androidxAppCompat = "1.6.1"
@@ -11,16 +12,18 @@ androidxTestCore = "1.5.0"
 androidxTestEspresso = "3.5.1"
 androidxTestExt = "1.1.5"
 guava = "31.0.1-android"
+jdk8LibsDesugar = "2.0.2"
 junit4 = "4.13.2"
 kotlin = "1.8.0"
 kotlinxCoroutines = "1.6.4"
+ksp = "1.8.0-1.0.9"
 mockito = "5.1.1"
 mockitoKotlin = "1.6.0"
 tagd = "0.0.0-alpha1-snapshot"
 
 [libraries]
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "androidxComposeFoundation" }
@@ -32,6 +35,7 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxTestEspresso" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxTestExt" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+jdk8plus-libs-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "jdk8LibsDesugar" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
@@ -41,13 +45,15 @@ mockito-kotlin = { group = "com.nhaarman", name = "mockito-kotlin", version.ref 
 tagd-android = { group = "io.github.pavan2you", name = "kmm-tagd-android", version.ref = "tagd" }
 
 # Dependencies of the included build-logic
-android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidPlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
-android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
+android-application = { id = "com.android.application", version.ref = "androidPlugin" }
+android-library = { id = "com.android.library", version.ref = "androidPlugin" }
+android-test = { id = "com.android.test", version.ref = "androidPlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
