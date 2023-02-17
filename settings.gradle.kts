@@ -29,7 +29,7 @@ include(":architecture:kmm-tagd-android")
 
 //Language Extentions
 include(":language")
-include(":language:kmm-lang-langx")
+include(":language:kmm-langx")
 include(":language:lang-kotlinx")
 include(":language:lang-androidx")
 
