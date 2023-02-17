@@ -40,8 +40,8 @@ if (secretPropsFile.exists()) {
 }
 
 ext {
-    enableRemotePublish = false
-    enableGithubPublish = false
+    enableRemotePublish = true
+    enableGithubPublish = true
     enableNexusPublish = false
 
     artifactGroupId = "io.github.pavan2you"
