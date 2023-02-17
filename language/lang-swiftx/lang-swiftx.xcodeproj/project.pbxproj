@@ -30,7 +30,7 @@
     		058557BA273AAA24004C7B11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
     		2152FB032600AC8F00CF470E /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
-    		7555FF7B242A565900829871 /* ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ios.app; sourceTree = BUILT_PRODUCTS_DIR; };
+    		7555FF7B242A565900829871 /* lang-swiftx.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lang-swiftx.app; sourceTree = BUILT_PRODUCTS_DIR; };
     		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
     		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
     /* End PBXFileReference section */
@@ -66,7 +66,7 @@
     		7555FF7C242A565900829871 /* Products */ = {
     			isa = PBXGroup;
     			children = (
-    				7555FF7B242A565900829871 /* ios.app */,
+    				7555FF7B242A565900829871 /* lang-swiftx.app */,
     			);
     			name = Products;
     			sourceTree = "<group>";
@@ -109,7 +109,7 @@
     			);
     			name = ios;
     			productName = ios;
-    			productReference = 7555FF7B242A565900829871 /* ios.app */;
+    			productReference = 7555FF7B242A565900829871 /* lang-swiftx.app */;
     			productType = "com.apple.product-type.application";
     		};
     /* End PBXNativeTarget section */
@@ -173,7 +173,7 @@
     			);
     			runOnlyForDeploymentPostprocessing = 0;
     			shellPath = /bin/sh;
-    			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :architecture:embedAndSignAppleFrameworkForXcode\n";
+    			shellScript = "cd \"$SRCROOT/../..\"\n";
     		};
     /* End PBXShellScriptBuildPhase section */
 
@@ -311,21 +311,18 @@
     			buildSettings = {
     				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
     				CODE_SIGN_STYLE = Automatic;
-		DEVELOPMENT_ASSET_PATHS = "\"ios/Preview Content\"";
+		DEVELOPMENT_ASSET_PATHS = "\"lang-swiftx/Preview Content\"";
     				ENABLE_PREVIEWS = YES;
     				FRAMEWORK_SEARCH_PATHS = (
     					"$(inherited)",
-					"$(SRCROOT)/../../architecture/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
 				);
-    				INFOPLIST_FILE = ios/Info.plist;
+    				INFOPLIST_FILE = lang-swiftx/Info.plist;
     				LD_RUNPATH_SEARCH_PATHS = (
     					"$(inherited)",
     					"@executable_path/Frameworks",
     				);
     				OTHER_LDFLAGS = (
     					"$(inherited)",
-    					"-framework",
-    					architecture,
     				);
     				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.ios;
     				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -339,21 +336,18 @@
     			buildSettings = {
     				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
     				CODE_SIGN_STYLE = Automatic;
-    				DEVELOPMENT_ASSET_PATHS = "\"ios/Preview Content\"";
+    				DEVELOPMENT_ASSET_PATHS = "\"lang-swiftx/Preview Content\"";
     				ENABLE_PREVIEWS = YES;
     				FRAMEWORK_SEARCH_PATHS = (
     					"$(inherited)",
-    					"$(SRCROOT)/../../architecture/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
     				);
-    				INFOPLIST_FILE = ios/Info.plist;
+    				INFOPLIST_FILE = lang-swiftx/Info.plist;
     				LD_RUNPATH_SEARCH_PATHS = (
     					"$(inherited)",
     					"@executable_path/Frameworks",
     				);
     				OTHER_LDFLAGS = (
     					"$(inherited)",
-    					"-framework",
-    					architecture,
     				);
     				PRODUCT_BUNDLE_IDENTIFIER = orgIdentifier.ios;
     				PRODUCT_NAME = "$(TARGET_NAME)";
