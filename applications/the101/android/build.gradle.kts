@@ -1,21 +1,21 @@
 plugins {
-    id("convention.secrets")
+//    id("convention.secrets")
     id("io.tagd.android.application")
 }
 
-repositories {
-    google()
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url = uri("https://maven.pkg.github.com/pavan2you/kmm-clean-architecture")
-
-        credentials {
-            username = extra["githubUser"] as? String
-            password = extra["githubToken"] as? String
-        }
-    }
-}
+//repositories {
+//    google()
+//    mavenCentral()
+//    mavenLocal()
+//    maven {
+//        url = uri("https://maven.pkg.github.com/pavan2you/kmm-clean-architecture")
+//
+//        credentials {
+//            username = extra["githubUser"] as? String
+//            password = extra["githubToken"] as? String
+//        }
+//    }
+//}
 
 android {
     namespace = "io.tagd.the101.android"
@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-//    implementation(project(":architecture:kmm-tagd-android"))
+    implementation(project(":architecture:kmm-tagd-android"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material)
