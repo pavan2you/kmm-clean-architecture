@@ -173,7 +173,7 @@
     			);
     			runOnlyForDeploymentPostprocessing = 0;
     			shellPath = /bin/sh;
-    			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :architecture:embedAndSignAppleFrameworkForXcode\n";
+    			shellScript = "cd \"$SRCROOT/../../..\"\n./gradlew :architecture:embedAndSignAppleFrameworkForXcode\n";
     		};
     /* End PBXShellScriptBuildPhase section */
 
@@ -315,7 +315,7 @@
     				ENABLE_PREVIEWS = YES;
     				FRAMEWORK_SEARCH_PATHS = (
     					"$(inherited)",
-					"$(SRCROOT)/../../architecture/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+					"$(SRCROOT)/../../../architecture/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
 				);
     				INFOPLIST_FILE = ios/Info.plist;
     				LD_RUNPATH_SEARCH_PATHS = (
@@ -343,7 +343,7 @@
     				ENABLE_PREVIEWS = YES;
     				FRAMEWORK_SEARCH_PATHS = (
     					"$(inherited)",
-    					"$(SRCROOT)/../../architecture/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+    					"$(SRCROOT)/../../../architecture/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
     				);
     				INFOPLIST_FILE = ios/Info.plist;
     				LD_RUNPATH_SEARCH_PATHS = (
