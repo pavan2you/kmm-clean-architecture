@@ -2,6 +2,16 @@ plugins {
     id("io.tagd.kmm.library")
 }
 
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(project(":language:kmm-lang-langx"))
+            }
+        }
+    }
+}
+
 android {
     namespace = "io.tagd.core"
 }

@@ -1,33 +1,34 @@
-
-import com.android.build.api.dsl.LibraryExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.configure
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.gradle.kotlin.dsl.withType
 
-class KmmLibraryConventionPlugin : Plugin<Project> {
+class KotlinLibraryConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.multiplatform")
-                apply("convention.publish.kmm")
+                apply("java-library")
+                apply("org.jetbrains.kotlin.jvm")
+                apply("convention.publish.jar")
             }
 
-            extensions.configure<KotlinMultiplatformExtension> {
-                configureKmmKotlinBlock(this)
+            extensions.configure<JavaPluginExtension> {
+                sourceCompatibility = JavaVersion.VERSION_1_8
+                targetCompatibility = JavaVersion.VERSION_1_8
             }
 
-            extensions.configure<LibraryExtension> {
-                compileSdk = 33
-                defaultConfig {
-                    minSdk = 21
-                    targetSdk = 33
+            tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+                kotlinOptions {
+                    jvmTarget = JavaVersion.VERSION_1_8.toString()
                 }
             }
+
+            configureKotlinLibraryDependencies()
 
             val pomBuilderExtension: MavenPomBuilderExtension = project.extensions.create(
                 "pomBuilder",
@@ -38,7 +39,7 @@ class KmmLibraryConventionPlugin : Plugin<Project> {
                     this as MavenPublication
                     pom {
                         val setDescription = pomBuilderExtension.description.orNull
-                            ?: "The technology agnostic's kmm lib"
+                            ?: "The technology agnostic's kotlin lib"
                         description.set(setDescription)
                     }
                 }

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 internal fun Project.configureKmmKotlinBlock(
     kotlinExtension: KotlinMultiplatformExtension
 ) {
+
     kotlinExtension.apply {
         android {
             compilations.all {
@@ -70,6 +71,8 @@ internal fun Project.configureKmmKotlinBlock(
     }
 }
 
-fun KotlinMultiplatformExtension.sourceSets(configure: Action<NamedDomainObjectContainer<KotlinSourceSet>>) {
+private fun KotlinMultiplatformExtension.sourceSets(
+    configure: Action<NamedDomainObjectContainer<KotlinSourceSet>>
+) {
     (this as ExtensionAware).extensions.configure("sourceSets", configure)
 }

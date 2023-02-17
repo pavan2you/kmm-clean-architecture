@@ -3,9 +3,7 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.plugins.ExtensionAware
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.provideDelegate
+import org.gradle.kotlin.dsl.*
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 
 /**
@@ -47,7 +45,7 @@ internal fun Project.configureKotlinInAndroidBlock(
     }
 }
 
-fun CommonExtension<*, *, *, *>.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
+private fun CommonExtension<*, *, *, *>.kotlinOptions(block: KotlinJvmOptions.() -> Unit) {
     (this as ExtensionAware).extensions.configure("kotlinOptions", block)
 }
 
@@ -75,12 +73,43 @@ internal fun Project.configureBuildTypesInAndroidBlock(
     }
 }
 
-internal fun Project.configureDependencies() {
+internal fun Project.configureAndroidApplicationDependencies() {
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     dependencies {
         add("coreLibraryDesugaring", libs.findLibrary("jdk8plus.libs.desugar").get())
         add("implementation", libs.findLibrary("tagd.android").get())
-        add("implementation", libs.findLibrary("guava").get())
+
+        add("implementation", libs.findLibrary("android.material").get())
+        add("implementation", libs.findLibrary("androidx.appcompat").get())
+        add("implementation", libs.findLibrary("androidx.core.ktx").get())
     }
 }
+
+internal fun Project.configureAndroidLibraryDependencies() {
+    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+    configurations.configureEach {
+        resolutionStrategy {
+            force(libs.findLibrary("junit4").get())
+            // Temporary workaround for https://issuetracker.google.com/174733673
+            force("org.objenesis:objenesis:2.6")
+        }
+    }
+
+    dependencies {
+        add("api", libs.findLibrary("android.material").get())
+        add("api", libs.findLibrary("androidx.appcompat").get())
+        add("api", libs.findLibrary("androidx.core.ktx").get())
+
+        add("androidTestImplementation", kotlin("test"))
+        add("androidTestImplementation", libs.findLibrary("androidx.test.ext").get())
+        add("androidTestImplementation", libs.findLibrary("androidx.test.espresso.core").get())
+
+        add("testImplementation", kotlin("test"))
+        add("testImplementation", libs.findLibrary("mockito.core").get())
+        add("testImplementation", libs.findLibrary("mockito.inline").get())
+        add("testImplementation", libs.findLibrary("mockito.kotlin").get())
+    }
+}
+
