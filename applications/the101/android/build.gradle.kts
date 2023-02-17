@@ -21,13 +21,10 @@ android {
 
 dependencies {
 //    implementation(project(":architecture:kmm-tagd-android"))
-    implementation(libs.androidx.appcompat)
-    implementation(libs.android.material)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
 }

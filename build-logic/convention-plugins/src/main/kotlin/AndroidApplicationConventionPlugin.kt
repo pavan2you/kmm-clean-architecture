@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
+
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
@@ -17,7 +18,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configurePackageOptionsInAndroidBlock(this)
                 configureBuildTypesInAndroidBlock(this)
             }
-            configureDependencies()
+            configureAndroidApplicationDependencies()
         }
     }
 }

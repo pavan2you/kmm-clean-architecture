@@ -25,9 +25,17 @@ gradlePlugin {
             id = "io.tagd.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
+        register("androidLibrary") {
+            id = "io.tagd.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
+        }
         register("kmmLibrary") {
             id = "io.tagd.kmm.library"
             implementationClass = "KmmLibraryConventionPlugin"
+        }
+        register("kotlinLibrary") {
+            id = "io.tagd.kotlin.library"
+            implementationClass = "KotlinLibraryConventionPlugin"
         }
     }
 }
