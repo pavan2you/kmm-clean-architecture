@@ -39,34 +39,11 @@ publishing {
         }
 
         it.withType(MavenPublication) {
-            groupId artifactGroupId
-            artifactId artifactIdName
-            version = artifactVersionName
-
             artifact(sourceJar)
             if (file("$buildDir/outputs/aar/${project.name}-release.aar").exists()) {
                 artifact("$buildDir/outputs/aar/${project.name}-release.aar")
             } else {
                 artifact("$buildDir/outputs/aar/${project.name}-debug.aar")
-            }
-
-            pom {
-                name = artifactIdName
-                description = artifactDescription
-                url = gitProjectUrl
-
-                licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
-
-                scm {
-                    connection = "scm:git:github.com/${gitProject}"
-                    developerConnection = "scm:git:ssh://github.com/${gitProject}"
-                    url = gitProjectUrl
-                }
             }
         }
     }
