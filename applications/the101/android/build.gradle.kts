@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-//    implementation(project(":architecture:kmm-tagd-android"))
+    implementation(project(":architecture:kmm-tagd-android"))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material)

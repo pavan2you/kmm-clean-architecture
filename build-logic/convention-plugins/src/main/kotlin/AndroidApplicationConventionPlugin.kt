@@ -12,22 +12,22 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.android")
-                apply("convention.secrets")
+//                apply("convention.secrets")
             }
 
-            repositories {
-                google()
-                mavenCentral()
-                mavenLocal()
-                maven {
-                    url = uri("https://maven.pkg.github.com/pavan2you/kmm-clean-architecture")
-
-                    credentials {
-                        username = extra["githubUser"] as? String
-                        password = extra["githubToken"] as? String
-                    }
-                }
-            }
+//            repositories {
+//                google()
+//                mavenCentral()
+//                mavenLocal()
+//                maven {
+//                    url = uri("https://maven.pkg.github.com/pavan2you/kmm-clean-architecture")
+//
+//                    credentials {
+//                        username = extra["githubUser"] as? String
+//                        password = extra["githubToken"] as? String
+//                    }
+//                }
+//            }
 
             extensions.configure<ApplicationExtension> {
                 defaultConfig.targetSdk = 33

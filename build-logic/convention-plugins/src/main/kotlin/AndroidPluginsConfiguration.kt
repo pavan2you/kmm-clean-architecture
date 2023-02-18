@@ -77,8 +77,8 @@ internal fun Project.configureAndroidApplicationDependencies() {
     val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("jdk8plus.libs.desugar").get())
-        add("implementation", libs.findLibrary("tagd.android").get())
+//        add("coreLibraryDesugaring", libs.findLibrary("jdk8plus.libs.desugar").get())
+//        add("implementation", libs.findLibrary("tagd.android").get())
 
         add("implementation", libs.findLibrary("android.material").get())
         add("implementation", libs.findLibrary("androidx.appcompat").get())
@@ -98,7 +98,7 @@ internal fun Project.configureAndroidLibraryDependencies() {
     }
 
     dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("jdk8plus.libs.desugar").get())
+//        add("coreLibraryDesugaring", libs.findLibrary("jdk8plus.libs.desugar").get())
         add("api", libs.findLibrary("android.material").get())
         add("api", libs.findLibrary("androidx.appcompat").get())
         add("api", libs.findLibrary("androidx.core.ktx").get())
