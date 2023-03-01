@@ -1,0 +1,13 @@
+
+// Read signing variables
+File secretPropsFile = project.rootProject.file('local.properties')
+if (secretPropsFile.exists()) {
+    Properties p = new Properties()
+    p.load(new FileInputStream(secretPropsFile))
+    p.each { name, value ->
+        ext[name] = value
+    }
+} else {
+    ext["githubUser"] = System.getenv('USER_GITHUB')
+    ext["githubToken"] = System.getenv('TOKEN_GITHUB')
+}

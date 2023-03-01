@@ -35,7 +35,7 @@ pomBuilder {
         "kmm-tagd-core",
         "kmm-tagd-arch",
         "kmm-tagd-di",
-        "kmm-lang-langx",
+        "kmm-langx",
         "lang-kotlinx",
         "lang-androidx"
     ))
