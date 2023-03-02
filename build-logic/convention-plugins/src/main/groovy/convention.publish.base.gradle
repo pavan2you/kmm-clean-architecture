@@ -47,7 +47,7 @@ ext {
 
     artifactGroupId = "io.github.pavan2you"
     artifactVersionCode = 0
-    artifactVersionName = "0.0.0-alpha05-snapshot"
+    artifactVersionName = "0.0.0-alpha05"
     artifactIdName = "$project.name"
     artifactDescription = "Technology agnostic clean architecture"
 
