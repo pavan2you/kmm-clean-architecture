@@ -15,7 +15,7 @@
  *
  */
 
-package io.tagd.android.launch
+package io.tagd.android.app
 
 import android.os.Handler
 import android.os.Looper
@@ -23,7 +23,10 @@ import java.lang.ref.WeakReference
 
 private const val DEFAULT_BG_TIME = 2000L
 
-open class AppForegroundBackgroundSenser(application: TagdApplication) : AppService {
+open class AppForegroundBackgroundObserver(
+    application: TagdApplication,
+    private val backgroundTimeMs: Long = DEFAULT_BG_TIME
+) : AppService {
 
     private var appReference: WeakReference<TagdApplication>? = WeakReference(application)
     protected val app: TagdApplication?
@@ -31,13 +34,13 @@ open class AppForegroundBackgroundSenser(application: TagdApplication) : AppServ
 
     private var handler: Handler? = Handler(Looper.getMainLooper())
     private var watcher: Runnable? = Runnable {
-        senseAppWentToBackground()
+        handleAppWentToBackground()
     }
 
     private var backgroundSince: Long = 0
 
     fun dispatchActivityStart() {
-        senseAppCameToForeground()
+        handleAppCameToForeground()
     }
 
     fun dispatchActivityStop() {
@@ -46,18 +49,19 @@ open class AppForegroundBackgroundSenser(application: TagdApplication) : AppServ
     }
 
     fun dispatchActivityDestroyed(isLast: Boolean = false) {
-        senseAppExit(isLast)
+        determineAndDispatchAppExit(isLast)
     }
 
     private fun watchBackground() {
         watcher?.let {
-            handler?.postDelayed(it, DEFAULT_BG_TIME)
+            handler?.postDelayed(it, backgroundTimeMs)
         }
     }
 
-    private fun senseAppCameToForeground() {
+    private fun handleAppCameToForeground() {
         if (backgroundSince == 0L ||
-            (backgroundSince > 0L && System.currentTimeMillis() - backgroundSince > DEFAULT_BG_TIME)
+            (backgroundSince > 0L &&
+                    System.currentTimeMillis() - backgroundSince > backgroundTimeMs)
         ) {
 
             removeWatcher()
@@ -66,14 +70,14 @@ open class AppForegroundBackgroundSenser(application: TagdApplication) : AppServ
         }
     }
 
-    private fun senseAppWentToBackground() {
-        if (System.currentTimeMillis() - backgroundSince > DEFAULT_BG_TIME) {
+    private fun handleAppWentToBackground() {
+        if (System.currentTimeMillis() - backgroundSince > backgroundTimeMs) {
             app?.onBackground()
         }
         removeWatcher()
     }
 
-    private fun senseAppExit(isLast: Boolean) {
+    private fun determineAndDispatchAppExit(isLast: Boolean) {
         if (isLast) {
             removeWatcher()
             app?.onExit()

@@ -15,17 +15,26 @@
  *
  */
 
-package io.tagd.the101.android
+package io.tagd.core
 
-import android.os.Handler
-import android.os.Looper
-import io.tagd.android.app.TagdApplication
+import io.tagd.core.fake.*
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
-class SampleApplication : TagdApplication() {
+class IdentifiableTest {
 
-    override fun onLoading() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            dispatchOnLoadingComplete()
-        }, 5000)
+    private val identifiable: Identifiable<String> = FakeIdentifiable("id1")
+
+    @Test
+    fun `given an Identifiable then verify identifier is present`() {
+        assertTrue(identifiable.identifier.isNotEmpty())
+    }
+
+    @Test
+    fun `given two Identifiables then verify identifiers are not same`() {
+        val identifiable1 = FakeIdentifiable("id1")
+        val identifiable2 = FakeIdentifiable("id2")
+
+        assertTrue(identifiable1.identifier != identifiable2.identifier)
     }
 }

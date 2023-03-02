@@ -15,11 +15,11 @@
  *
  */
 
-package io.tagd.android.lifecycle
+package io.tagd.android.app
 
-interface ReadyLifeCycleEventOwner {
+interface AwaitReadyLifeCycleStatesOwner {
 
-    fun readyLifeCycleEventDispatcher() : ReadyLifeCycleEventDispatcher?
+    fun awaitReadyLifeCycleEventsDispatcher() : AwaitReadyLifeCycleEventsDispatcher?
 
     fun onAwaiting()
 

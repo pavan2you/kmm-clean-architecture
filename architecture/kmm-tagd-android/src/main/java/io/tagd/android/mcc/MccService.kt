@@ -22,12 +22,12 @@ import android.content.Intent
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.mcc.Controllable
 import io.tagd.arch.control.mcc.Controller
-import io.tagd.android.launch.TagdApplication
-import io.tagd.android.lifecycle.ReadyLifeCycleEventDispatcher
-import io.tagd.android.lifecycle.ReadyLifeCycleEventOwner
+import io.tagd.android.app.TagdApplication
+import io.tagd.android.app.AwaitReadyLifeCycleEventsDispatcher
+import io.tagd.android.app.AwaitReadyLifeCycleStatesOwner
 
 abstract class MccService<C : Controllable, L : Controller<C>> : Service(), Controllable,
-    ReadyLifeCycleEventOwner {
+    AwaitReadyLifeCycleStatesOwner {
 
     protected var controller: L? = null
 
@@ -42,7 +42,7 @@ abstract class MccService<C : Controllable, L : Controller<C>> : Service(), Cont
 
     protected abstract fun onCreateController(): L?
 
-    override fun readyLifeCycleEventDispatcher(): ReadyLifeCycleEventDispatcher? {
+    override fun awaitReadyLifeCycleEventsDispatcher(): AwaitReadyLifeCycleEventsDispatcher? {
         return (application as TagdApplication).appService()!!
     }
 

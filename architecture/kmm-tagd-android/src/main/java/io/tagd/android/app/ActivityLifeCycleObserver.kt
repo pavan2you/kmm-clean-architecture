@@ -15,14 +15,14 @@
  *
  */
 
-package io.tagd.android.launch
+package io.tagd.android.app
 
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import java.lang.ref.WeakReference
 
-class ActivityLifeCycleObserver(application: TagdApplication) :
+open class ActivityLifeCycleObserver(application: TagdApplication) :
     Application.ActivityLifecycleCallbacks, ComponentLifeCycleObserver<Activity> {
 
     private var appReference: WeakReference<TagdApplication>? = WeakReference(application)
@@ -34,19 +34,12 @@ class ActivityLifeCycleObserver(application: TagdApplication) :
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         setPreviousAndCurrent(activity)
-        setAppLaunchSource(activity, savedInstanceState)
+        setupAppLauncher(activity, savedInstanceState)
     }
 
-    private fun setAppLaunchSource(
-        activity: Activity,
-        savedInstanceState: Bundle?
-    ) {
+    private fun setupAppLauncher(activity: Activity, savedInstanceState: Bundle?) {
         if (isFirst(activity)) {
-            app?.launchSource = if (savedInstanceState == null) {
-                TagdApplication.LaunchSource.LAUNCHER
-            } else {
-                TagdApplication.LaunchSource.SYSTEM
-            }
+            app?.resolveLauncher(activity, savedInstanceState)
         }
     }
 
@@ -64,6 +57,7 @@ class ActivityLifeCycleObserver(application: TagdApplication) :
             return
         }
         setPreviousAndCurrent(activity)
+        app?.appService<AppForegroundBackgroundObserver>()?.dispatchActivityStart()
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -74,11 +68,10 @@ class ActivityLifeCycleObserver(application: TagdApplication) :
     }
 
     override fun onActivityPaused(activity: Activity) {
-        app?.appService<AppForegroundBackgroundSenser>()?.dispatchActivityStart()
     }
 
     override fun onActivityStopped(activity: Activity) {
-        app?.appService<AppForegroundBackgroundSenser>()?.dispatchActivityStop()
+        app?.appService<AppForegroundBackgroundObserver>()?.dispatchActivityStop()
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
@@ -87,11 +80,11 @@ class ActivityLifeCycleObserver(application: TagdApplication) :
 
     override fun onActivityDestroyed(activity: Activity) {
         val isLast = isLast(activity)
-        nullifyCurrentOrPrevious(activity)
-        app?.appService<AppForegroundBackgroundSenser>()?.dispatchActivityDestroyed(isLast)
+        nullifyIfCurrentOrPrevious(activity)
+        app?.appService<AppForegroundBackgroundObserver>()?.dispatchActivityDestroyed(isLast)
     }
 
-    private fun nullifyCurrentOrPrevious(activity: Activity) {
+    private fun nullifyIfCurrentOrPrevious(activity: Activity) {
         if (current?.get() === activity) {
             current?.clear()
             current = null

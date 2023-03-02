@@ -15,14 +15,16 @@
  *
  */
 
-package io.tagd.android.launch
+package io.tagd.android.app
 
+import io.tagd.android.crosscutting.async.IgnoredCoroutineException
+import io.tagd.arch.domain.crosscutting.async.AsyncExceptionHandler
 import java.lang.ref.WeakReference
 
 open class AppUncaughtExceptionHandler(
     app: TagdApplication,
     defaultHandler: Thread.UncaughtExceptionHandler?
-) : Thread.UncaughtExceptionHandler, AppService {
+) : Thread.UncaughtExceptionHandler, AppService, AsyncExceptionHandler {
 
     private var appReference: WeakReference<TagdApplication>? = WeakReference(app)
     private var defaultHandlerReference: WeakReference<Thread.UncaughtExceptionHandler>? =
@@ -30,6 +32,12 @@ open class AppUncaughtExceptionHandler(
 
     override fun uncaughtException(t: Thread, e: Throwable) {
         Thread.getDefaultUncaughtExceptionHandler()?.uncaughtException(t, e)
+    }
+
+    override fun asyncException(throwable: Throwable) {
+        if (throwable !is IgnoredCoroutineException) {
+            uncaughtException(Thread.currentThread(), throwable)
+        }
     }
 
     override fun release() {

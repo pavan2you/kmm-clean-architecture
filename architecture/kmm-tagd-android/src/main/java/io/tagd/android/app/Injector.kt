@@ -15,12 +15,11 @@
  *
  */
 
-package io.tagd.android.launch
+package io.tagd.android.app
 
 import io.tagd.arch.infra.InfraService
 import io.tagd.di.Global
 import io.tagd.di.layer
-import io.tagd.android.lifecycle.ReadyLifeCycleEventDispatcher
 import java.lang.ref.WeakReference
 
 open class Injector(application: TagdApplication) : AppService {
@@ -31,19 +30,20 @@ open class Injector(application: TagdApplication) : AppService {
         get() = appReference?.get()
 
     open fun inject() {
-        val application = app!!
-        with(Global) {
-            injectAppServicesLayer(application)
+        app?.let { application ->
+            with(Global) {
+                injectAppServicesLayer(application)
+            }
         }
     }
 
     protected open fun Global.injectAppServicesLayer(application: TagdApplication) {
         layer<InfraService> {
-            bind<AppForegroundBackgroundSenser>().toInstance(
-                AppForegroundBackgroundSenser(application)
+            bind<AppForegroundBackgroundObserver>().toInstance(
+                AppForegroundBackgroundObserver(application)
             )
-            bind<ReadyLifeCycleEventDispatcher>().toInstance(
-                ReadyLifeCycleEventDispatcher()
+            bind<AwaitReadyLifeCycleEventsDispatcher>().toInstance(
+                AwaitReadyLifeCycleEventsDispatcher()
             )
         }
     }

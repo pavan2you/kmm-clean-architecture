@@ -15,22 +15,21 @@
  *
  */
 
-package io.tagd.android.lifecycle
+package io.tagd.android.app
 
-import io.tagd.android.launch.AppService
 import java.lang.ref.WeakReference
 import java.util.*
 
-class ReadyLifeCycleEventDispatcher : AppService {
+class AwaitReadyLifeCycleEventsDispatcher : AppService {
 
-    private var queue : Queue<WeakReference<ReadyLifeCycleEventOwner>>? = ArrayDeque()
+    private var queue : Queue<WeakReference<AwaitReadyLifeCycleStatesOwner>>? = ArrayDeque()
     private var ready: Boolean = false
 
-    fun register(owner: ReadyLifeCycleEventOwner) {
+    fun register(owner: AwaitReadyLifeCycleStatesOwner) {
         queue?.offer(WeakReference(owner))
     }
 
-    fun unregister(owner: ReadyLifeCycleEventOwner) {
+    fun unregister(owner: AwaitReadyLifeCycleStatesOwner) {
         queue?.firstOrNull {
             it?.get() === owner
         }?.let {

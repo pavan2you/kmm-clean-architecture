@@ -22,12 +22,12 @@ import androidx.appcompat.app.AppCompatActivity
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.Presenter
-import io.tagd.android.launch.TagdApplication
-import io.tagd.android.lifecycle.ReadyLifeCycleEventDispatcher
-import io.tagd.android.lifecycle.ReadyLifeCycleEventOwner
+import io.tagd.android.app.TagdApplication
+import io.tagd.android.app.AwaitReadyLifeCycleEventsDispatcher
+import io.tagd.android.app.AwaitReadyLifeCycleStatesOwner
 
 abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatActivity(),
-    PresentableView, ReadyLifeCycleEventOwner {
+    PresentableView, AwaitReadyLifeCycleStatesOwner {
 
     protected var presenter: P? = null
 
@@ -50,15 +50,15 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatAct
     override fun onStart() {
         super.onStart()
         presenter?.onStart()
-        if (readyLifeCycleEventDispatcher().ready()) {
+        if (awaitReadyLifeCycleEventsDispatcher().ready()) {
             onReady()
         } else {
-            readyLifeCycleEventDispatcher().register(this)
+            awaitReadyLifeCycleEventsDispatcher().register(this)
             onAwaiting()
         }
     }
 
-    override fun readyLifeCycleEventDispatcher(): ReadyLifeCycleEventDispatcher {
+    override fun awaitReadyLifeCycleEventsDispatcher(): AwaitReadyLifeCycleEventsDispatcher {
         return (application as TagdApplication).appService()!!
     }
 
@@ -100,7 +100,7 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatAct
     }
 
     override fun release() {
-        readyLifeCycleEventDispatcher().unregister(this)
+        awaitReadyLifeCycleEventsDispatcher().unregister(this)
         presenter = null
     }
 }

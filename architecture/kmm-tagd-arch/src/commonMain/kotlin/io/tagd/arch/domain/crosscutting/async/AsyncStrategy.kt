@@ -21,9 +21,18 @@ import io.tagd.arch.access.crosscutting
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.core.Cancellable
 
+interface AsyncExceptionHandler {
+
+    fun asyncException(throwable: Throwable)
+}
+
+interface AsyncContext
+
 interface AsyncStrategy : CrossCutting, Cancellable {
 
-    fun execute(context: Any? = null, delay: Long = 0, work: () -> Unit)
+    val exceptionHandler: AsyncExceptionHandler?
+
+    fun execute(context: AsyncContext? = null, delay: Long = 0, work: () -> Unit)
 }
 
 interface PresentationStrategy : AsyncStrategy
@@ -36,32 +45,36 @@ interface DiskIOStrategy : AsyncStrategy
 
 interface DaoStrategy : AsyncStrategy
 
-fun Any.compute(context: Any? = this, delay: Long = 0, computation: () -> Unit) {
+fun AsyncContext.compute(context: AsyncContext? = this, delay: Long = 0, computation: () -> Unit) {
     val strategy = crosscutting<ComputationStrategy>()
     strategy?.execute(context, delay, computation)
 }
 
-fun Any.present(context: Any? = this, delay: Long = 0, presentation: () -> Unit) {
+fun AsyncContext.present(context: AsyncContext? = this, delay: Long = 0, presentation: () -> Unit) {
     val strategy = crosscutting<PresentationStrategy>()
     strategy?.execute(context, delay, presentation)
 }
 
-fun Any.networkIO(context: Any? = this, delay: Long = 0, api: () -> Unit) {
+fun AsyncContext.networkIO(context: AsyncContext? = this, delay: Long = 0, api: () -> Unit) {
     val strategy = crosscutting<NetworkIOStrategy>()
     strategy?.execute(context, delay, api)
 }
 
-fun Any.diskIO(context: Any? = this, delay: Long = 0, operation: () -> Unit) {
+fun AsyncContext.diskIO(context: AsyncContext? = this, delay: Long = 0, operation: () -> Unit) {
     val strategy = crosscutting<DiskIOStrategy>()
     strategy?.execute(context, delay, operation)
 }
 
-fun Any.daoCrud(context: Any? = this, delay: Long = 0, crudOperation: () -> Unit) {
+fun AsyncContext.daoCrud(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    crudOperation: () -> Unit
+) {
     val strategy = crosscutting<DaoStrategy>()
     strategy?.execute(context, delay, crudOperation)
 }
 
-fun Any.cancelAsync(context: Any = this) {
+fun AsyncContext.cancelAsync(context: AsyncContext = this) {
     cancelPresentations(context)
     cancelComputations(context)
     cancelNetworkIO(context)
@@ -69,27 +82,27 @@ fun Any.cancelAsync(context: Any = this) {
     cancelDaoCrud(context)
 }
 
-fun Any.cancelPresentations(context: Any = this) {
+fun AsyncContext.cancelPresentations(context: AsyncContext = this) {
     val strategy = crosscutting<PresentationStrategy>()
     strategy?.cancel(context)
 }
 
-fun Any.cancelComputations(context: Any = this) {
+fun AsyncContext.cancelComputations(context: AsyncContext = this) {
     val strategy = crosscutting<ComputationStrategy>()
     strategy?.cancel(context)
 }
 
-fun Any.cancelNetworkIO(context: Any = this) {
+fun AsyncContext.cancelNetworkIO(context: AsyncContext = this) {
     val strategy = crosscutting<NetworkIOStrategy>()
     strategy?.cancel(context)
 }
 
-fun Any.cancelDiskIO(context: Any = this) {
+fun AsyncContext.cancelDiskIO(context: AsyncContext = this) {
     val strategy = crosscutting<DiskIOStrategy>()
     strategy?.cancel(context)
 }
 
-fun Any.cancelDaoCrud(context: Any = this) {
+fun AsyncContext.cancelDaoCrud(context: AsyncContext = this) {
     val strategy = crosscutting<DaoStrategy>()
     strategy?.cancel(context)
 }

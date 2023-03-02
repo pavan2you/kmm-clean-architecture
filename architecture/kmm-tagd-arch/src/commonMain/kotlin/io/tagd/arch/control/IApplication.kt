@@ -17,9 +17,10 @@
 
 package io.tagd.arch.control
 
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.core.Releasable
 
-interface IApplication : Releasable {
+interface IApplication : Releasable, AsyncContext {
 
     fun <A : IApplication> controller(): ApplicationController<A>?
 }

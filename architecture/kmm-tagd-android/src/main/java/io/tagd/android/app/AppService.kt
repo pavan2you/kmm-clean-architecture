@@ -15,6 +15,8 @@
  *
  */
 
-package io.tagd.android.launch
+package io.tagd.android.app
 
-interface ComponentLifeCycleObserver<T> : AppService
+import io.tagd.arch.infra.InfraService
+
+interface AppService : InfraService

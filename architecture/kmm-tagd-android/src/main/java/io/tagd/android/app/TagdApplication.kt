@@ -15,11 +15,15 @@
  *
  */
 
-package io.tagd.android.launch
+package io.tagd.android.app
 
+import android.app.Activity
 import android.app.Application
 import android.app.Notification
+import android.app.Service
+import android.content.BroadcastReceiver
 import android.net.Uri
+import android.os.Bundle
 import androidx.annotation.MainThread
 import io.tagd.arch.control.ApplicationController
 import io.tagd.arch.control.IApplication
@@ -28,41 +32,59 @@ import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.get
-import io.tagd.android.lifecycle.ReadyLifeCycleEventDispatcher
 
 open class TagdApplication : Application(), IApplication {
 
-    enum class LaunchSource {
-        UNKNOWN, LAUNCHER, NOTIFICATION, DEEPLINK, CONTENT, SYSTEM
-    }
-
     enum class State {
-        INIT, LAUNCHING, READY, EXIT
+        INITIALIZING, LAUNCHING, LOADING, READY, BACKGROUND, FOREGROUND, RELEASED
     }
-
-    var appState : State = State.INIT
-        protected set
-
-    var launchSource : LaunchSource = LaunchSource.UNKNOWN
 
     protected var controller: ApplicationController<IApplication>? = null
 
+    var lifecycleState : State = State.INITIALIZING
+        private set
+
+    private lateinit var launcherResolver : LauncherResolver
+
+    lateinit var launcher : Launcher<*>
+
     override fun onCreate() {
         super.onCreate()
-        setup()
-        controller = onCreateController()
-        controller?.onCreate()
+        setupSelf()
+        initController()
 
         onInject()
         onLaunch()
     }
 
-    protected open fun onCreateController(): ApplicationController<IApplication> =
-        LifeCycleAwareApplicationController(this)
-
-    protected open fun setup() {
+    protected open fun setupSelf() {
+        setupLauncherResolver()
+        setupActivityCallbacksObserver()
         setupExceptionHandler()
         setupInjector()
+    }
+
+    protected open fun setupLauncherResolver() {
+        launcherResolver = configLauncherResolver()
+    }
+
+    protected open fun configLauncherResolver() =
+        LauncherResolver.Builder().schemes(listOf("http", "https")).hosts(listOf()).build()
+
+    fun resolveLauncher(activity: Activity, savedInstanceState: Bundle?) {
+        launcher = launcherResolver.resolve(activity, savedInstanceState)
+    }
+
+    fun resolve(service: Service, marshalledJob: String): JobLauncher {
+        return launcherResolver.resolve(service, marshalledJob)
+    }
+
+    fun resolve(receiver: BroadcastReceiver, marshalledEvent: String): EventLauncher {
+        return launcherResolver.resolve(receiver, marshalledEvent)
+    }
+
+    private fun setupActivityCallbacksObserver() {
+        registerActivityLifecycleCallbacks(ActivityLifeCycleObserver(this))
     }
 
     protected open fun setupExceptionHandler() {
@@ -78,14 +100,23 @@ open class TagdApplication : Application(), IApplication {
         Injector.setInjector(Injector(this))
     }
 
+    private fun initController() {
+        controller = onCreateController()
+        controller?.onCreate()
+    }
+
+    protected open fun onCreateController(): ApplicationController<IApplication> =
+        LifeCycleAwareApplicationController(this)
+
     protected open fun onInject() {
         appService<Injector>()?.inject()
     }
 
     protected open fun onLaunch() {
-        appState = State.LAUNCHING
+        lifecycleState = State.LAUNCHING
         controller?.onLaunch()
 
+        lifecycleState = State.LOADING
         onLoading()
         controller?.onLoading()
     }
@@ -108,27 +139,31 @@ open class TagdApplication : Application(), IApplication {
 
     @MainThread
     protected open fun onReady() {
-        appState = State.READY
+        lifecycleState = State.READY
         controller?.onReady()
-        appService<ReadyLifeCycleEventDispatcher>()?.dispatchOnReady()
+        appService<AwaitReadyLifeCycleEventsDispatcher>()?.dispatchOnReady()
     }
 
     @MainThread
     open fun onForeground() {
+        lifecycleState = State.FOREGROUND
         controller?.onForeground()
     }
 
     @MainThread
     open fun onBackground() {
+        lifecycleState = State.BACKGROUND
         controller?.onBackground()
     }
 
     @MainThread
     open fun onPushNotification(notification: Notification) {
+        //no-op
     }
 
     @MainThread
     open fun onDeeplink(uri: Uri) {
+        //no-op
     }
 
     inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
@@ -149,7 +184,7 @@ open class TagdApplication : Application(), IApplication {
     }
 
     override fun release() {
-        appState = State.EXIT
+        lifecycleState = State.RELEASED
         cancelAsync(this)
         controller?.onDestroy()
         controller = null
