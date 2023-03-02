@@ -24,7 +24,10 @@ open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationS
 
     var released: Boolean = false
 
-    override fun execute(context: Any?, delay: Long, work: () -> Unit) {
+    override val exceptionHandler: AsyncExceptionHandler?
+        get() = FakeAsyncExceptionHandler()
+
+    override fun execute(context: AsyncContext?, delay: Long, work: () -> Unit) {
         work.invoke()
     }
 

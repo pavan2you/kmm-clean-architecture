@@ -17,7 +17,7 @@
 
 package io.tagd.arch.domain.usecase
 
-import io.tagd.arch.domain.DomainEntity
+import io.tagd.arch.fake.FakeDomainEntity
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +28,7 @@ class DomainEntityTest {
 
     @Test
     fun `given a domain entity is created then verify it is not null`() {
-        val domainEntity = DomainEntity()
-        Assert.assertNotNull(domainEntity)
+        val domainEntity = FakeDomainEntity("fake")
+        Assert.assertNotNull(domainEntity.identifier)
     }
 }

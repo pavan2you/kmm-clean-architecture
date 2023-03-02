@@ -26,7 +26,7 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class AsyncStrategyTest {
+class AsyncStrategyTest : AsyncContext {
 
     private lateinit var asyncStrategy: AsyncStrategy
 
@@ -53,7 +53,7 @@ class AsyncStrategyTest {
     @Test
     fun `verify execute calls the work with context`() {
         var executed = false
-        asyncStrategy.execute("test") {
+        asyncStrategy.execute(this) {
             executed = true
         }
         assert(executed)
@@ -61,7 +61,7 @@ class AsyncStrategyTest {
 
     @Test
     fun `verify cancel is successful`() {
-        val result = asyncStrategy.cancel("test")
+        val result = asyncStrategy.cancel(this)
         assert(result)
     }
 
@@ -83,7 +83,7 @@ class AsyncStrategyTest {
     @Test
     fun `verify computation work with context`() {
         var executed = false
-        compute("test") {
+        compute {
             executed = true
         }
         assert(executed)
@@ -101,7 +101,7 @@ class AsyncStrategyTest {
     @Test
     fun `verify presentation work with context`() {
         var executed = false
-        present("test") {
+        present {
             executed = true
         }
         assert(executed)
@@ -119,7 +119,7 @@ class AsyncStrategyTest {
     @Test
     fun `verify networkIO work with context`() {
         var executed = false
-        networkIO("test") {
+        networkIO {
             executed = true
         }
         assert(executed)
@@ -137,7 +137,7 @@ class AsyncStrategyTest {
     @Test
     fun `verify diskIO work with context`() {
         var executed = false
-        diskIO("test") {
+        diskIO {
             executed = true
         }
         assert(executed)
@@ -155,7 +155,7 @@ class AsyncStrategyTest {
     @Test
     fun `verify daoCrud work with context`() {
         var executed = false
-        daoCrud("test") {
+        daoCrud {
             executed = true
         }
         assert(executed)
