@@ -20,10 +20,11 @@ package io.tagd.arch.data.bind
 import io.tagd.core.Initializable
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
+import io.tagd.langx.Serializable
 import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
 
-open class BindableSubject : Initializable {
+open class BindableSubject : Initializable, Serializable {
 
     @VisibleForTesting(otherwise = Visibility.PRIVATE)
     var bindables = CopyOnWriteArraySet<WeakReference<Bindable<out BindableSubject>>>()
@@ -67,6 +68,10 @@ open class BindableSubject : Initializable {
         bindables.forEach {
             (it.get() as? Bindable<BindableSubject>)?.bindTo(this)
         }
+    }
+
+    companion object {
+        private const val serialVersionUID: Long = 1
     }
 }
 

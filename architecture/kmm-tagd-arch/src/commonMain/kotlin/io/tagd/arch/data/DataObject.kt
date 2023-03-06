@@ -18,9 +18,8 @@
 package io.tagd.arch.data
 
 import io.tagd.arch.data.bind.BindableSubject
-import io.tagd.core.Initializable
 
-open class DataObject : BindableSubject(), Initializable {
+open class DataObject : BindableSubject() {
 
     enum class CrudOperation(val value: String) {
         CREATE("C"), UPDATE("U"), DELETE("D"), READ("R")
@@ -31,11 +30,6 @@ open class DataObject : BindableSubject(), Initializable {
     override fun initialize() {
         crudOperation = CrudOperation.CREATE
     }
-
-    companion object {
-        private const val serialVersionUID: Long = 1
-    }
-
 }
 
 

@@ -41,13 +41,13 @@ if (secretPropsFile.exists()) {
 }
 
 ext {
-    enableRemotePublish = true
-    enableGithubPublish = true
+    enableRemotePublish = false
+    enableGithubPublish = false
     enableNexusPublish = false
 
     artifactGroupId = "io.github.pavan2you"
     artifactVersionCode = 0
-    artifactVersionName = "0.0.0-alpha05"
+    artifactVersionName = "0.0.0-alpha06-snapshot"
     artifactIdName = "$project.name"
     artifactDescription = "Technology agnostic clean architecture"
 
