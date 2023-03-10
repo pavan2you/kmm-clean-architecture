@@ -25,6 +25,8 @@ import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
+import io.tagd.arch.library.Library
+import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.State
 import io.tagd.di.Global
@@ -32,6 +34,13 @@ import io.tagd.di.Key
 import io.tagd.di.create
 import io.tagd.di.get
 
+inline fun <reified S : Module> moduleService(key: Key<S>? = null): S? {
+    return Global.get<Module, S>(key ?: io.tagd.di.key())
+}
+
+inline fun <reified S : Library> libraryService(key: Key<S>? = null): S? {
+    return Global.get<Library, S>(key ?: io.tagd.di.key())
+}
 
 inline fun <reified S : InfraService> infraService(key: Key<S>? = null): S? {
     return Global.get<InfraService, S>(key ?: io.tagd.di.key())
