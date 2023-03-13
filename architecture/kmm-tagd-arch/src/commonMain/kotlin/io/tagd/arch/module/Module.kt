@@ -18,5 +18,6 @@ inline fun <reified T : Service> Module.inject(
     name: String,
     bindings: Layer<T>.() -> Unit
 ): Layer<T> {
+
     return Scope(name).locator.layer(bindings)
 }
