@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.net.Uri
 import android.os.Bundle
+import java.lang.ref.WeakReference
 
 class LauncherResolver private constructor(
     val schemes: List<String>,
@@ -19,18 +20,18 @@ class LauncherResolver private constructor(
         return if (isAppDeepLink) {
             DeepLinkLauncher(activity.intent.data!!)
         } else if (savedInstanceState == null) {
-            PageLauncher(activityName = activity.javaClass.name)
+            PageLauncher(activity = WeakReference(activity))
         } else {
             SystemLauncher()
         }
     }
 
     fun resolve(service: Service, marshalledJob: String): JobLauncher {
-        return JobLauncher(service, marshalledJob)
+        return JobLauncher(WeakReference(service), marshalledJob)
     }
 
     fun resolve(receiver: BroadcastReceiver, marshalledEvent: String): EventLauncher {
-        return EventLauncher(receiver, marshalledEvent)
+        return EventLauncher(WeakReference(receiver), marshalledEvent)
     }
 
     class Builder {
@@ -68,16 +69,18 @@ abstract class Launcher<T>(open val source: Source, val cause: T)
 
 open class SystemLauncher : Launcher<String>(source = Source.SYSTEM, cause = "system")
 
-open class PageLauncher(val activityName: String) :
-    Launcher<String>(source = Source.PAGE, cause = activityName)
+open class PageLauncher(val activity: WeakReference<Activity>) :
+    Launcher<String>(source = Source.PAGE, cause = activity.get()!!::class.java.name)
 
 class DeepLinkLauncher(val uri: Uri) : Launcher<Uri>(source = Source.DEEPLINK, cause = uri)
 
 class NotificationLauncher(marshalledNotification: String) :
     Launcher<String>(source = Source.NOTIFICATION, cause = marshalledNotification)
 
-data class JobLauncher(val service: Service, val marshalledJob: String) :
+data class JobLauncher(val service: WeakReference<Service>, val marshalledJob: String) :
     Launcher<String>(source = Source.JOB, cause = marshalledJob)
 
-data class EventLauncher(val receiver: BroadcastReceiver, val marshalledEvent: String) :
-    Launcher<String>(source = Source.EVENT, cause = marshalledEvent)
+data class EventLauncher(
+    val receiver: WeakReference<BroadcastReceiver>,
+    val marshalledEvent: String
+) : Launcher<String>(source = Source.EVENT, cause = marshalledEvent)

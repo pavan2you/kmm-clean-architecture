@@ -22,6 +22,7 @@ import android.app.Application
 import android.app.Notification
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.MainThread
@@ -54,7 +55,6 @@ open class TagdApplication : Application(), IApplication {
         initController()
 
         onInject()
-        onLaunch()
     }
 
     protected open fun setupSelf() {
@@ -73,14 +73,17 @@ open class TagdApplication : Application(), IApplication {
 
     fun resolveLauncher(activity: Activity, savedInstanceState: Bundle?) {
         launcher = launcherResolver.resolve(activity, savedInstanceState)
+        onLaunch()
     }
 
-    fun resolve(service: Service, marshalledJob: String): JobLauncher {
-        return launcherResolver.resolve(service, marshalledJob)
+    fun resolve(service: Service, marshalledJob: String) {
+        launcher = launcherResolver.resolve(service, marshalledJob)
+        onLaunch()
     }
 
-    fun resolve(receiver: BroadcastReceiver, marshalledEvent: String): EventLauncher {
-        return launcherResolver.resolve(receiver, marshalledEvent)
+    fun resolve(receiver: BroadcastReceiver, marshalledEvent: String) {
+        launcher = launcherResolver.resolve(receiver, marshalledEvent)
+        onLaunch()
     }
 
     private fun setupActivityCallbacksObserver() {
@@ -114,11 +117,16 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun onLaunch() {
         lifecycleState = State.LAUNCHING
+        interceptOnLaunch()
         controller?.onLaunch()
 
         lifecycleState = State.LOADING
         onLoading()
         controller?.onLoading()
+    }
+
+    protected open fun interceptOnLaunch() {
+        //no-op
     }
 
     /**

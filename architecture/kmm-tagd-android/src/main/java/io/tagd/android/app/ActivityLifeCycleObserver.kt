@@ -32,9 +32,13 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     private var previous: WeakReference<Activity>? = null
     private var current: WeakReference<Activity>? = null
 
+    override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
+        super.onActivityPreCreated(activity, savedInstanceState)
+        setupAppLauncher(activity, savedInstanceState)
+    }
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         setPreviousAndCurrent(activity)
-        setupAppLauncher(activity, savedInstanceState)
     }
 
     private fun setupAppLauncher(activity: Activity, savedInstanceState: Bundle?) {
@@ -44,7 +48,8 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     }
 
     private fun isFirst(activity: Activity): Boolean {
-        return (previous == null || current != null && current?.get() === activity)
+        return ((previous == null && current == null) ||
+                (current != null && current?.get() === activity))
     }
 
     private fun setPreviousAndCurrent(activity: Activity) {
