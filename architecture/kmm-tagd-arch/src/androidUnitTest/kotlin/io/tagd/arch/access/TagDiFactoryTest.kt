@@ -81,7 +81,7 @@ class TagDiFactoryTest {
             }
         }
 
-        val service = useCase<Command<*, *>>()
+        val service = usecase<Command<*, *>>()
         assert(service != null)
     }
 
