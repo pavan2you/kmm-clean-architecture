@@ -22,5 +22,5 @@ import io.tagd.core.Releasable
 
 interface IApplication : Releasable, AsyncContext {
 
-    fun <A : IApplication> controller(): ApplicationController<A>?
+    fun controller(): ApplicationController<*>?
 }

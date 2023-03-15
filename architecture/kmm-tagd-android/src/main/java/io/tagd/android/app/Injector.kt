@@ -18,7 +18,9 @@
 package io.tagd.android.app
 
 import io.tagd.arch.infra.InfraService
+import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.di.Global
+import io.tagd.di.key2
 import io.tagd.di.layer
 import java.lang.ref.WeakReference
 
@@ -61,6 +63,12 @@ open class Injector(application: TagdApplication) : AppService {
                 }
             }
         }
+    }
+}
+
+inline fun <reified T : Any> Injector.bindReference(reference: T) {
+    Global.layer<ReferenceHolder<*>> {
+        bind(key2<ReferenceHolder<T>, T>()).toInstance(ReferenceHolder(reference))
     }
 }
 

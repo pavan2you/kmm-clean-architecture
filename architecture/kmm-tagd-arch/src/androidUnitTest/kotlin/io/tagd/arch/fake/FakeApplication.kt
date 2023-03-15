@@ -26,8 +26,8 @@ class FakeApplication : IApplication {
     var controller: ApplicationController<IApplication>? =
         LifeCycleAwareApplicationController(this)
 
-    override fun <A : IApplication> controller(): ApplicationController<A>? {
-        return controller as? ApplicationController<A>
+    override fun controller(): ApplicationController<*>? {
+        return controller
     }
 
     override fun release() {

@@ -19,12 +19,12 @@ package io.tagd.arch.control
 
 import io.tagd.langx.ref.WeakReference
 
-class LifeCycleAwareApplicationController(application: IApplication) :
-    ApplicationController<IApplication> {
+open class LifeCycleAwareApplicationController<A : IApplication>(application: A) :
+    ApplicationController<A> {
 
-    private var applicationReference: WeakReference<IApplication>? = WeakReference(application)
+    private var applicationReference: WeakReference<A>? = WeakReference(application)
 
-    override val app: IApplication?
+    override val app: A?
         get() = applicationReference?.get()
 
     override fun onCreate() {

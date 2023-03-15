@@ -22,7 +22,6 @@ import android.app.Application
 import android.app.Notification
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.MainThread
@@ -40,7 +39,7 @@ open class TagdApplication : Application(), IApplication {
         INITIALIZING, LAUNCHING, LOADING, READY, BACKGROUND, FOREGROUND, RELEASED
     }
 
-    protected var controller: ApplicationController<IApplication>? = null
+    protected var controller: ApplicationController<*>? = null
 
     var lifecycleState : State = State.INITIALIZING
         private set
@@ -108,7 +107,7 @@ open class TagdApplication : Application(), IApplication {
         controller?.onCreate()
     }
 
-    protected open fun onCreateController(): ApplicationController<IApplication> =
+    protected open fun onCreateController(): ApplicationController<*> =
         LifeCycleAwareApplicationController(this)
 
     protected open fun onInject() {
@@ -178,8 +177,7 @@ open class TagdApplication : Application(), IApplication {
         return Global.get<AppService, S>(key ?: io.tagd.di.key())
     }
 
-    override fun <A : IApplication> controller(): ApplicationController<A>? =
-        controller as? ApplicationController<A>
+    override fun controller(): ApplicationController<*>? = controller
 
     override fun onTerminate() {
         onExit()

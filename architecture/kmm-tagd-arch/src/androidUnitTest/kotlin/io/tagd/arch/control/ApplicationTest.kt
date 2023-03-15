@@ -30,13 +30,13 @@ class ApplicationTest {
     @Test
     fun `given cancel is called and verify controller is not null`() {
         application as FakeApplication
-        assert(application.controller<FakeApplication>() != null)
+        assert(application.controller() != null)
     }
 
     @Test
     fun `verify when release is called controller is cleared`() {
         application.release()
 
-        assert(application.controller<FakeApplication>() == null)
+        assert(application.controller() == null)
     }
 }
