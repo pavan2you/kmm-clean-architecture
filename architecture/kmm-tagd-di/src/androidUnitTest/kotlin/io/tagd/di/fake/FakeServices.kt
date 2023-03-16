@@ -33,3 +33,8 @@ class FakeTypedMapService<T, S> : Service {
     override fun release() {
     }
 }
+
+class FakeMultiTypedService<T, S, U, V> : Service {
+    override fun release() {
+    }
+}

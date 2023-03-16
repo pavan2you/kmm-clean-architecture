@@ -18,11 +18,17 @@
 package io.tagd.the101.android
 
 import android.content.Context
+import io.tagd.arch.access.reference
+import io.tagd.arch.access.referenceHolder
+import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.core.Releasable
+import io.tagd.di.Global
 import io.tagd.di.inject
 import io.tagd.di.injectX
 import io.tagd.di.key
 import io.tagd.di.key2
+import io.tagd.di.layer
+import io.tagd.langx.UnixEpochInMillis
 
 class Usage : Releasable {
 
@@ -58,10 +64,25 @@ class Usage : Releasable {
         println("typedTwo -> $typeSomeObjectService")
         println("Repo2Obj2 -> $simpleRepo2Obj2")
         println("Repo2Obj3 -> $simpleRepo2Obj3")
+        val x = referenceHolder(key2<ReferenceHolder<UnixEpochInMillis>, UnixEpochInMillis>())
+        println("x -> $x")
+
+        bindReference("hello")
+        val hello = reference(key2<ReferenceHolder<String>, String>())
+        println("hello -> $hello")
+
+        val hello2 = referenceHolder(key2<ReferenceHolder<String>, String>())
+        println("hello2 -> ${hello2?.value}")
     }
 
     override fun release() {
         simpleRepo2Obj2 = null
         simpleRepo2Obj3 = null
+    }
+
+    protected inline fun <reified T : Any> bindReference(reference: T) {
+        Global.layer<ReferenceHolder<*>> {
+            bind(key2<ReferenceHolder<T>, T>()).toInstance(ReferenceHolder(reference))
+        }
     }
 }

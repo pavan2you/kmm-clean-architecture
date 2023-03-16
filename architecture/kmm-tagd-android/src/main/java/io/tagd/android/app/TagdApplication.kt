@@ -51,9 +51,8 @@ open class TagdApplication : Application(), IApplication {
     override fun onCreate() {
         super.onCreate()
         setupSelf()
-        initController()
-
         onInject()
+        initController()
     }
 
     protected open fun setupSelf() {

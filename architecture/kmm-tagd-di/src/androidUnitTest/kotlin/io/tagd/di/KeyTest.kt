@@ -17,6 +17,7 @@ package io.tagd.di/*
 
 import io.tagd.core.Service
 import io.tagd.di.*
+import io.tagd.di.fake.FakeMultiTypedService
 import io.tagd.di.fake.FakeTypedMapService
 import io.tagd.di.fake.FakeTypedService
 import org.junit.Test
@@ -118,6 +119,51 @@ class KeyTest {
     fun `given two inline keys with typed and three different parameters then verify they are not same`() {
         val key1: Key<FakeTypedMapService<String, Int>> = key3<FakeTypedMapService<String, Int>, String, Int>()
         val key2: Key<FakeTypedMapService<Int, String>> = key3<FakeTypedMapService<Int, String>, Int, String>()
+        assert(key1 != key2)
+        assert(key1.hashCode() != key2.hashCode())
+    }
+
+    @Test
+    fun `given two multi typed inline keys with same typed class values then verify they are same`() {
+        val key1: Key<FakeMultiTypedService<String, Int, Float, Long>> = key(String::class, Int::class, Float::class, Long::class)
+        val key2: Key<FakeMultiTypedService<String, Int, Float, Long>> = key(String::class, Int::class, Float::class, Long::class)
+        assert(key1 == key2)
+        assert(key1.hashCode() == key2.hashCode())
+    }
+
+    @Test
+    fun `given two multi typed inline keys with same with different typed class values then verify they are not same`() {
+        val key1: Key<FakeMultiTypedService<String, Int, Float, Long>> = key(String::class, Int::class, Float::class, Long::class)
+        val key2: Key<FakeMultiTypedService<String, Int, Float, Long>> = key(String::class, Int::class, Long::class, Float::class)
+        assert(key1 != key2)
+        assert(key1.hashCode() != key2.hashCode())
+    }
+
+    @Test
+    fun `given two different multi typed inline keys with same typed class values then verify they are same`() {
+        //todo : fix order of rhs keys as lhs
+        val key1: Key<FakeMultiTypedService<String, Int, Float, Long>> = key(String::class, Int::class, Float::class, Long::class)
+        val key2: Key<FakeMultiTypedService<String, Int, Long, Float>> = key(String::class, Int::class, Float::class, Long::class)
+        val key3: Key<FakeMultiTypedService<String, Long, Float, Int>> = key(String::class, Int::class, Float::class, Long::class)
+        val key4: Key<FakeMultiTypedService<Long, Float, Int, String>> = key(String::class, Int::class, Float::class, Long::class)
+        assert(key1 == key2)
+        assert(key1 == key3)
+        assert(key1 == key4)
+        assert(key2 == key3)
+        assert(key2 == key4)
+        assert(key3 == key4)
+        assert(key1.hashCode() == key2.hashCode())
+        assert(key1.hashCode() == key3.hashCode())
+        assert(key1.hashCode() == key4.hashCode())
+        assert(key2.hashCode() == key3.hashCode())
+        assert(key2.hashCode() == key4.hashCode())
+        assert(key3.hashCode() == key4.hashCode())
+    }
+
+    @Test
+    fun `given two multi typed inline keys with different typed class values then verify they are not same`() {
+        val key1: Key<FakeMultiTypedService<String, Int, Float, Long>> = key(String::class, Int::class, Float::class, Long::class)
+        val key2: Key<FakeMultiTypedService<String, Int, Long, Float>> = key(String::class, Int::class, Float::class, Any::class)
         assert(key1 != key2)
         assert(key1.hashCode() != key2.hashCode())
     }

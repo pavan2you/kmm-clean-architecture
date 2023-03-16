@@ -119,6 +119,10 @@ inline fun <reified S : CrossCutting> crosscutting(key: Key<S>? = null): S? {
 /**
  * Vertical - Reference Access
  */
+inline fun <reified S : ReferenceHolder<*>> referenceHolder(key: Key<S>? = null): S? {
+    return Global.get<ReferenceHolder<*>, S>(key ?: io.tagd.di.key())
+}
+
 inline fun <T, reified S : ReferenceHolder<T>> reference(key: Key<S>? = null): T? {
-    return (Global.get<ReferenceHolder<T>, S>(key ?: io.tagd.di.key()))?.value
+    return referenceHolder(key)?.value
 }
