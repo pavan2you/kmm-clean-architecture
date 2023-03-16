@@ -24,11 +24,14 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.MainThread
 import io.tagd.arch.control.ApplicationController
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
+import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.get
@@ -51,7 +54,6 @@ open class TagdApplication : Application(), IApplication {
     override fun onCreate() {
         super.onCreate()
         setupSelf()
-        onInject()
         initController()
     }
 
@@ -60,6 +62,7 @@ open class TagdApplication : Application(), IApplication {
         setupActivityCallbacksObserver()
         setupExceptionHandler()
         setupInjector()
+        onInject()
     }
 
     protected open fun setupLauncherResolver() {
@@ -101,6 +104,10 @@ open class TagdApplication : Application(), IApplication {
         Injector.setInjector(Injector(this))
     }
 
+    protected open fun onInject() {
+        appService<Injector>()?.inject()
+    }
+
     private fun initController() {
         controller = onCreateController()
         controller?.onCreate()
@@ -108,10 +115,6 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun onCreateController(): ApplicationController<*> =
         LifeCycleAwareApplicationController(this)
-
-    protected open fun onInject() {
-        appService<Injector>()?.inject()
-    }
 
     protected open fun onLaunch() {
         lifecycleState = State.LAUNCHING
@@ -132,7 +135,9 @@ open class TagdApplication : Application(), IApplication {
      * like system libraries, database setup etc
      */
     protected open fun onLoading() {
-        dispatchOnLoadingComplete()
+        Handler(Looper.getMainLooper()).postDelayed({
+            dispatchOnLoadingComplete()
+        }, 1L)
     }
 
     /**
