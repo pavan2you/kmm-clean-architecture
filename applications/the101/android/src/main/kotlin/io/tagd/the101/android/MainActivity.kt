@@ -13,6 +13,7 @@ import io.tagd.arch.Greeting
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("Launching MainActivity")
         setContent {
             MyApplicationTheme {
                 Surface(

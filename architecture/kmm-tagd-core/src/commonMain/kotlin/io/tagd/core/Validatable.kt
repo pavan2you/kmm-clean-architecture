@@ -6,5 +6,8 @@ interface Validatable {
     fun validate()
 }
 
-class ValidateException(val validatable: Validatable, message: String, cause: Throwable) :
-    Exception(message, cause)
+class ValidateException(
+    val validatable: Validatable,
+    message: String? = null,
+    cause: Throwable? = null
+) : Exception(message, cause)

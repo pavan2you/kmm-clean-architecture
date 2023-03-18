@@ -18,8 +18,10 @@
 package io.tagd.arch.data
 
 import io.tagd.arch.data.bind.BindableSubject
+import io.tagd.core.Copyable
+import io.tagd.core.Validatable
 
-open class DataObject : BindableSubject() {
+open class DataObject : BindableSubject(), Validatable, Copyable {
 
     enum class CrudOperation(val value: String) {
         CREATE("C"), UPDATE("U"), DELETE("D"), READ("R")
@@ -29,6 +31,10 @@ open class DataObject : BindableSubject() {
 
     override fun initialize() {
         crudOperation = CrudOperation.CREATE
+    }
+
+    override fun validate() {
+        //no-op
     }
 }
 
