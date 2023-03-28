@@ -1,6 +1,7 @@
 [versions]
 androidGradlePlugin = "8.0-rc-4"
-androidPlugin = "8.1.0-alpha09"
+androidGradleBuildPlugin = "8.1.0-alpha09"
+androidPlugin = "8.1.0-alpha10"
 androidMaterial = "1.8.0"
 androidxActivity = "1.6.1"
 androidxAppCompat = "1.6.1"
@@ -45,7 +46,7 @@ mockito-kotlin = { group = "com.nhaarman", name = "mockito-kotlin", version.ref 
 tagd-android = { group = "io.github.pavan2you", name = "kmm-tagd-android", version.ref = "tagd" }
 
 # Dependencies of the included build-logic
-android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidPlugin" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradleBuildPlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
