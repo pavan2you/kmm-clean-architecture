@@ -22,6 +22,7 @@ import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.di.Global
 import io.tagd.di.key2
 import io.tagd.di.layer
+import io.tagd.kotlinx.coroutines.Dispatchers
 import java.lang.ref.WeakReference
 
 open class Injector(application: TagdApplication) : AppService {
@@ -34,9 +35,14 @@ open class Injector(application: TagdApplication) : AppService {
     open fun inject() {
         app?.let { application ->
             with(Global) {
-                injectAppServicesLayer(application)
+                injectInfraLayer(application)
             }
         }
+    }
+
+    protected open fun Global.injectInfraLayer(application: TagdApplication) {
+        injectAppServicesLayer(application)
+        injectAppReferencesLayer(application)
     }
 
     protected open fun Global.injectAppServicesLayer(application: TagdApplication) {
@@ -48,6 +54,27 @@ open class Injector(application: TagdApplication) : AppService {
                 AwaitReadyLifeCycleEventsDispatcher()
             )
         }
+    }
+
+    protected open fun Global.injectAppReferencesLayer(application: TagdApplication) {
+        layer<ReferenceHolder<*>> {
+            bind(
+                key2<ReferenceHolder<Dispatchers>, Dispatchers>(),
+                ReferenceHolder(provideDispatchers())
+            )
+        }
+    }
+
+    private fun provideDispatchers(): Dispatchers {
+        Dispatchers.set(
+            Dispatchers.Builder()
+                .Main(kotlinx.coroutines.Dispatchers.Main.immediate)
+                .Default(kotlinx.coroutines.Dispatchers.Default)
+                .IO(kotlinx.coroutines.Dispatchers.IO)
+                .Unconfined(kotlinx.coroutines.Dispatchers.Unconfined)
+                .build()
+        )
+        return Dispatchers.get()
     }
 
     override fun release() {
