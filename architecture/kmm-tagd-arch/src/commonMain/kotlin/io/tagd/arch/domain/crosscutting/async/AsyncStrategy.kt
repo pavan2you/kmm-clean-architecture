@@ -20,13 +20,17 @@ package io.tagd.arch.domain.crosscutting.async
 import io.tagd.arch.access.crosscutting
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.core.Cancellable
+import io.tagd.core.Releasable
 
 interface AsyncExceptionHandler {
 
     fun asyncException(throwable: Throwable)
 }
 
-interface AsyncContext
+/**
+ * Any class which is performing async operations, must be an AsyncContext.
+ */
+interface AsyncContext : Releasable
 
 interface AsyncStrategy : CrossCutting, Cancellable {
 

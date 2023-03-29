@@ -160,4 +160,8 @@ class AsyncStrategyTest : AsyncContext {
         }
         assert(executed)
     }
+
+    override fun release() {
+        cancelAsync()
+    }
 }
