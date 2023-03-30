@@ -22,6 +22,7 @@ import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.android.mvp.MvpActivity
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.async.present
 
 interface UsageView : PresentableView, AsyncContext {
@@ -61,6 +62,10 @@ class UsageActivity : MvpActivity<UsageView, UsagePresenter>(), UsageView {
 
         present {
             println("from present async block")
+        }
+
+        compute {
+            println("from compute async block")
         }
     }
 
