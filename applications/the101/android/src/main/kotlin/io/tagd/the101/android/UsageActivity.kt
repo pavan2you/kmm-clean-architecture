@@ -60,7 +60,7 @@ class UsageActivity : MvpActivity<UsageView, UsagePresenter>(), UsageView {
         usage.release()
 
         present {
-            println("from present")
+            println("from present async block")
         }
     }
 
