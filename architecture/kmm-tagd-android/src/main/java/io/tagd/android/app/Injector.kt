@@ -17,6 +17,17 @@
 
 package io.tagd.android.app
 
+import io.tagd.android.crosscutting.async.CoroutineComputationStrategy
+import io.tagd.android.crosscutting.async.CoroutineDaoStrategy
+import io.tagd.android.crosscutting.async.CoroutineDiskStrategy
+import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
+import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
+import io.tagd.arch.domain.crosscutting.CrossCutting
+import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
+import io.tagd.arch.domain.crosscutting.async.DaoStrategy
+import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
+import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
+import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.di.Global
@@ -43,6 +54,7 @@ open class Injector(application: TagdApplication) : AppService {
     protected open fun Global.injectInfraLayer(application: TagdApplication) {
         injectAppServicesLayer(application)
         injectAppReferencesLayer(application)
+        injectCrossCuttings()
     }
 
     protected open fun Global.injectAppServicesLayer(application: TagdApplication) {
@@ -75,6 +87,16 @@ open class Injector(application: TagdApplication) : AppService {
                 .build()
         )
         return Dispatchers.get()
+    }
+
+    private fun Global.injectCrossCuttings() {
+        layer<CrossCutting> {
+            bind<PresentationStrategy>().toInstance(CoroutinePresentationStrategy())
+            bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy())
+            bind<NetworkIOStrategy>().toInstance(CoroutineNetworkStrategy())
+            bind<DiskIOStrategy>().toInstance(CoroutineDiskStrategy())
+            bind<DaoStrategy>().toInstance(CoroutineDaoStrategy())
+        }
     }
 
     override fun release() {

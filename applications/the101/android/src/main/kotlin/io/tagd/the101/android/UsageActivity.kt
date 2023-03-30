@@ -21,8 +21,10 @@ import android.os.Bundle
 import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.android.mvp.MvpActivity
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.domain.crosscutting.async.present
 
-interface UsageView : PresentableView {
+interface UsageView : PresentableView, AsyncContext {
 
     fun showCallerView()
 }
@@ -56,6 +58,10 @@ class UsageActivity : MvpActivity<UsageView, UsagePresenter>(), UsageView {
         val usage = Usage()
         usage.use()
         usage.release()
+
+        present {
+            println("from present")
+        }
     }
 
     override fun showCallerView() {
