@@ -62,6 +62,14 @@ class Layer<T : Service> : Releasable {
             ?: throw IllegalAccessException("No creator available for $service")
     }
 
+    fun all(): List<T> {
+        val values = arrayListOf<T>()
+        services?.values?.forEach {
+            values.add(it.get())
+        }
+        return values
+    }
+
     override fun release() {
         services?.clear()
         services = null

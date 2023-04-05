@@ -19,9 +19,18 @@ package io.tagd.arch.data.dao
 
 import io.tagd.core.Service
 
-interface DataAccessObject : Service
+interface Migratable {
+
+    fun migrate(oldVersion: Int, newVersion: Int)
+}
+
+interface DataAccessObject : Service, Migratable
 
 abstract class AbstractDao : DataAccessObject {
+
+    override fun migrate(oldVersion: Int, newVersion: Int) {
+        //no-op
+    }
 
     override fun release() {
     }
