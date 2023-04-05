@@ -20,11 +20,16 @@ package io.tagd.arch.fake
 import io.tagd.arch.control.ApplicationController
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
+import io.tagd.arch.control.VersionTracker
 
 class FakeApplication : IApplication {
 
     var controller: ApplicationController<IApplication>? =
         LifeCycleAwareApplicationController(this)
+
+    override fun versionTracker(): VersionTracker {
+        return VersionTracker(1, 1)
+    }
 
     override fun controller(): ApplicationController<*>? {
         return controller

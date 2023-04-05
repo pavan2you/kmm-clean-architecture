@@ -22,5 +22,7 @@ import io.tagd.core.Releasable
 
 interface IApplication : Releasable, AsyncContext {
 
+    fun versionTracker() : VersionTracker
+
     fun controller(): ApplicationController<*>?
 }

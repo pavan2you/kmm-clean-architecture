@@ -30,8 +30,8 @@ import androidx.annotation.MainThread
 import io.tagd.arch.control.ApplicationController
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
+import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
-import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.get
@@ -39,10 +39,12 @@ import io.tagd.di.get
 open class TagdApplication : Application(), IApplication {
 
     enum class State {
-        INITIALIZING, LAUNCHING, LOADING, READY, BACKGROUND, FOREGROUND, RELEASED
+        INITIALIZING, LAUNCHING, UPGRADING, LOADING, READY, BACKGROUND, FOREGROUND, RELEASED
     }
 
     protected var controller: ApplicationController<*>? = null
+    protected lateinit var versionTracker: VersionTracker
+        private set
 
     var lifecycleState : State = State.INITIALIZING
         private set
@@ -63,6 +65,7 @@ open class TagdApplication : Application(), IApplication {
         setupExceptionHandler()
         setupInjector()
         onInject()
+        initVersionTracker()
     }
 
     protected open fun setupLauncherResolver() {
@@ -108,6 +111,14 @@ open class TagdApplication : Application(), IApplication {
         appService<Injector>()?.inject()
     }
 
+    private fun initVersionTracker() {
+        versionTracker = onCreateVersionTracker()
+    }
+
+    protected open fun onCreateVersionTracker(): VersionTracker {
+        return VersionTracker(1, 1)
+    }
+
     private fun initController() {
         controller = onCreateController()
         controller?.onCreate()
@@ -121,12 +132,25 @@ open class TagdApplication : Application(), IApplication {
         interceptOnLaunch()
         controller?.onLaunch()
 
+        resolveUpgrade()
+
         lifecycleState = State.LOADING
         onLoading()
         controller?.onLoading()
     }
 
     protected open fun interceptOnLaunch() {
+        //no-op
+    }
+
+    private fun resolveUpgrade() {
+        if (versionTracker.isVersionChange()) {
+            lifecycleState = State.UPGRADING
+            onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
+        }
+    }
+
+    open fun onUpgrade(oldVersion: Int, currentVersion: Int) {
         //no-op
     }
 
@@ -179,6 +203,10 @@ open class TagdApplication : Application(), IApplication {
 
     inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
         return Global.get<AppService, S>(key ?: io.tagd.di.key())
+    }
+
+    override fun versionTracker(): VersionTracker {
+        return versionTracker
     }
 
     override fun controller(): ApplicationController<*>? = controller

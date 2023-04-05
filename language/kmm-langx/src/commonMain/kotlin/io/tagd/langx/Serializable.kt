@@ -1,5 +1,3 @@
 package io.tagd.langx
 
-expect interface Serializable {
-
-}
+expect interface Serializable
