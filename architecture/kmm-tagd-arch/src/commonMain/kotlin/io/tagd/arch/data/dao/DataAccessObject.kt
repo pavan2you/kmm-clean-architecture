@@ -24,13 +24,14 @@ interface Migratable {
     fun migrate(oldVersion: Int, newVersion: Int)
 }
 
-interface DataAccessObject : Service, Migratable
-
-abstract class AbstractDao : DataAccessObject {
+interface DataAccessObject : Service, Migratable {
 
     override fun migrate(oldVersion: Int, newVersion: Int) {
         //no-op
     }
+}
+
+abstract class AbstractDao : DataAccessObject {
 
     override fun release() {
     }
