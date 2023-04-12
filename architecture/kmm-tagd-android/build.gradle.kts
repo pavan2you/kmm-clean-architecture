@@ -27,6 +27,7 @@ dependencies {
     api(project(":language:lang-androidx"))
 
     api(libs.guava)
+    api(libs.gson)
 }
 
 pomBuilder {
@@ -48,6 +49,7 @@ pomBuilder {
     includeStartsWith.set(listOf(
         "kmm-",
         "lang-",
-        "guava"
+        "guava",
+        "gson"
     ))
 }

@@ -18,18 +18,15 @@
 package io.tagd.android.crosscutting.async
 
 import androidx.annotation.VisibleForTesting
-import com.google.common.util.concurrent.ThreadFactoryBuilder
 import io.tagd.arch.domain.crosscutting.async.*
 import io.tagd.kotlinx.coroutines.Dispatchers
 import io.tagd.langx.ref.WeakReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
 open class CoroutineStrategy(
@@ -125,9 +122,7 @@ class CoroutinePresentationStrategy(exceptionHandler: AsyncExceptionHandler? = n
 
 class CoroutineComputationStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
     CoroutineStrategy(
-        coroutineContext = Executors.newSingleThreadExecutor(
-            ThreadFactoryBuilder().setNameFormat("compute-%d").build()
-        ).asCoroutineDispatcher(),
+        coroutineContext = Dispatchers.Computation,
         exceptionHandler = exceptionHandler
     ), ComputationStrategy
 
@@ -139,18 +134,20 @@ class CoroutineNetworkStrategy(exceptionHandler: AsyncExceptionHandler? = null) 
 
 class CoroutineDiskStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
     CoroutineStrategy(
-        coroutineContext = Executors.newSingleThreadExecutor(
-            ThreadFactoryBuilder().setNameFormat("disk-%d").build()
-        ).asCoroutineDispatcher(),
+        coroutineContext = Dispatchers.IO,
         exceptionHandler = exceptionHandler
     ), DiskIOStrategy
 
-class CoroutineDaoStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
+class CoroutineDaoIOStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
     CoroutineStrategy(
-        coroutineContext = Executors.newSingleThreadExecutor(
-            ThreadFactoryBuilder().setNameFormat("dao-%d").build()
-        ).asCoroutineDispatcher(),
+        coroutineContext = Dispatchers.DaoIO,
         exceptionHandler = exceptionHandler
-    ), DaoStrategy
+    ), DaoIOStrategy
+
+class CoroutineCacheIOStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
+    CoroutineStrategy(
+        coroutineContext = Dispatchers.IO,
+        exceptionHandler = exceptionHandler
+    ), CacheIOStrategy
 
 class IgnoredCoroutineException(message: String?, cause: Throwable) : Exception(message, cause)

@@ -17,34 +17,14 @@
 
 package io.tagd.arch.domain.crosscutting.codec
 
-import io.tagd.langx.IllegalAccessException
-import io.tagd.langx.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
-abstract class JsonCodec<T : Serializable> : Codec<T, String> {
+interface JsonCodec : Codec {
 
-    override fun encode(plain: T, klass: KClass<String>?, type: KType?): String {
-        return marshal(plain, klass, type)
-    }
+    fun <T> toJson(obj: T): String
 
-    abstract fun marshal(plain: T, klass: KClass<String>?, type: KType?): String
+    fun <T : Any> fromJson(json: String, klass: KClass<T>): T
 
-    override fun decode(encoded: String, klass: KClass<T>?, type: KType?): T {
-        return unmarshal(encoded, klass, type)
-    }
-
-    fun unmarshal(marshaled: String, klass: KClass<T>?, type: KType?): T {
-        return if (klass != null) {
-            unmarshal(marshaled, klass)
-        } else if (type != null) {
-            unmarshal(marshaled, type)
-        } else {
-            throw IllegalAccessException()
-        }
-    }
-
-    abstract fun unmarshal(obj: String, klass: KClass<T>): T
-
-    abstract fun unmarshal(obj: String, type: KType): T
+    fun <T> fromJson(json: String, type: KType): T
 }

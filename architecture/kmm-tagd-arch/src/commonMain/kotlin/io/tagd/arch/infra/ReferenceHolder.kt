@@ -17,9 +17,7 @@
 
 package io.tagd.arch.infra
 
-import io.tagd.core.Service
-
-open class ReferenceHolder<T>(value: T) : Service {
+open class ReferenceHolder<T>(value: T) : InfraService {
 
     private var mutableValue: T? = value
 

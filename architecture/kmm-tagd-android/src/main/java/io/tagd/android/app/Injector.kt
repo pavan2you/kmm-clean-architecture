@@ -17,14 +17,16 @@
 
 package io.tagd.android.app
 
+import io.tagd.android.crosscutting.async.CoroutineCacheIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineComputationStrategy
-import io.tagd.android.crosscutting.async.CoroutineDaoStrategy
+import io.tagd.android.crosscutting.async.CoroutineDaoIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineDiskStrategy
 import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
 import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
 import io.tagd.arch.domain.crosscutting.CrossCutting
+import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
-import io.tagd.arch.domain.crosscutting.async.DaoStrategy
+import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
@@ -33,6 +35,8 @@ import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.di.Global
 import io.tagd.di.key2
 import io.tagd.di.layer
+import io.tagd.kotlinx.coroutines.Computation
+import io.tagd.kotlinx.coroutines.DaoIO
 import io.tagd.kotlinx.coroutines.Dispatchers
 import java.lang.ref.WeakReference
 
@@ -58,7 +62,7 @@ open class Injector(application: TagdApplication) : AppService {
     }
 
     protected open fun Global.injectAppServicesLayer(application: TagdApplication) {
-        layer<InfraService> {
+        layer {
             bind<AppForegroundBackgroundObserver>().toInstance(
                 AppForegroundBackgroundObserver(application)
             )
@@ -81,8 +85,9 @@ open class Injector(application: TagdApplication) : AppService {
         Dispatchers.set(
             Dispatchers.Builder()
                 .Main(kotlinx.coroutines.Dispatchers.Main.immediate)
-                .Default(kotlinx.coroutines.Dispatchers.Default)
+                .Computation(kotlinx.coroutines.Dispatchers.Computation)
                 .IO(kotlinx.coroutines.Dispatchers.IO)
+                .DaoIO(kotlinx.coroutines.Dispatchers.DaoIO)
                 .Unconfined(kotlinx.coroutines.Dispatchers.Unconfined)
                 .build()
         )
@@ -95,7 +100,8 @@ open class Injector(application: TagdApplication) : AppService {
             bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy())
             bind<NetworkIOStrategy>().toInstance(CoroutineNetworkStrategy())
             bind<DiskIOStrategy>().toInstance(CoroutineDiskStrategy())
-            bind<DaoStrategy>().toInstance(CoroutineDaoStrategy())
+            bind<DaoIOStrategy>().toInstance(CoroutineDaoIOStrategy())
+            bind<CacheIOStrategy>().toInstance(CoroutineCacheIOStrategy())
         }
     }
 

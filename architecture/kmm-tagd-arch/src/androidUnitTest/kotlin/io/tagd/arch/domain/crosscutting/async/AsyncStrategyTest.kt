@@ -17,7 +17,7 @@
 
 package io.tagd.arch.domain.crosscutting.async
 
-import io.tagd.arch.fake.FakeAsyncStrategy
+import io.tagd.arch.fake.FakeAsyncIOStrategy
 import io.tagd.arch.fake.FakeInjector
 import org.junit.After
 import org.junit.Before
@@ -33,7 +33,7 @@ class AsyncStrategyTest : AsyncContext {
     @Before
     fun setup() {
         FakeInjector.inject()
-        asyncStrategy = FakeAsyncStrategy()
+        asyncStrategy = FakeAsyncIOStrategy()
     }
 
     @After
@@ -68,7 +68,7 @@ class AsyncStrategyTest : AsyncContext {
     @Test
     fun `verify release is successful`() {
         asyncStrategy.release()
-        assert((asyncStrategy as FakeAsyncStrategy).released)
+        assert((asyncStrategy as FakeAsyncIOStrategy).released)
     }
 
     @Test
@@ -144,18 +144,36 @@ class AsyncStrategyTest : AsyncContext {
     }
 
     @Test
-    fun `verify daoCrud work without context`() {
+    fun `verify daoIO work without context`() {
         var executed = false
-        daoCrud {
+        daoIO {
             executed = true
         }
         assert(executed)
     }
 
     @Test
-    fun `verify daoCrud work with context`() {
+    fun `verify daoIO work with context`() {
         var executed = false
-        daoCrud {
+        daoIO {
+            executed = true
+        }
+        assert(executed)
+    }
+
+    @Test
+    fun `verify cacheIO work without context`() {
+        var executed = false
+        cacheIO {
+            executed = true
+        }
+        assert(executed)
+    }
+
+    @Test
+    fun `verify cacheIO work with context`() {
+        var executed = false
+        cacheIO {
             executed = true
         }
         assert(executed)

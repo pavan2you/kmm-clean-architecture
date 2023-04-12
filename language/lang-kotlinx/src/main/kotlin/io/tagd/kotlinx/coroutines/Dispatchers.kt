@@ -25,10 +25,13 @@ class Dispatchers private constructor() {
     lateinit var Main: CoroutineDispatcher
         private set
 
-    lateinit var Default: CoroutineDispatcher
+    lateinit var Computation: CoroutineDispatcher
         private set
 
     lateinit var IO: CoroutineDispatcher
+        private set
+
+    lateinit var DaoIO: CoroutineDispatcher
         private set
 
     lateinit var Unconfined: CoroutineDispatcher
@@ -48,8 +51,13 @@ class Dispatchers private constructor() {
             return this
         }
 
-        fun Default(dispatcher: CoroutineDispatcher): Builder {
-            cooking.Default = dispatcher
+        fun DaoIO(dispatcher: CoroutineDispatcher): Builder {
+            cooking.DaoIO = dispatcher
+            return this
+        }
+
+        fun Computation(dispatcher: CoroutineDispatcher): Builder {
+            cooking.Computation = dispatcher
             return this
         }
 
@@ -84,11 +92,11 @@ class Dispatchers private constructor() {
                 kotlinx.coroutines.Dispatchers.Main
             }
 
-        val Default
+        val Computation
             get() = try {
-                get().Default
+                get().Computation
             } catch (e: Exception) {
-                kotlinx.coroutines.Dispatchers.Default
+                kotlinx.coroutines.Dispatchers.Computation
             }
 
         val IO
@@ -96,6 +104,13 @@ class Dispatchers private constructor() {
                 get().IO
             } catch (e: Exception) {
                 kotlinx.coroutines.Dispatchers.IO
+            }
+
+        val DaoIO
+            get() = try {
+                get().DaoIO
+            } catch (e: Exception) {
+                kotlinx.coroutines.Dispatchers.DaoIO
             }
 
         val Unconfined

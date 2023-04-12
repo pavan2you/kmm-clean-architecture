@@ -18,8 +18,8 @@ class DispatchersTest {
     }
 
     @Test
-    fun `given no provider is set then verify Dispatchers#Default gets default Default`() {
-        assert(Dispatchers.Default == kotlinx.coroutines.Dispatchers.Default)
+    fun `given no provider is set then verify Dispatchers#Computation gets default Computation`() {
+        assert(Dispatchers.Computation == kotlinx.coroutines.Dispatchers.Computation)
     }
 
     @Test
@@ -48,11 +48,12 @@ class DispatchersTest {
     }
 
     @Test
-    fun `given provider is set Default then verify Dispatchers#Default returns the same`() {
-        val provider = Dispatchers.Builder().Default(kotlinx.coroutines.Dispatchers.Default).build()
+    fun `given provider is set Computation then verify Dispatchers#Computation returns the same`() {
+        val provider =
+            Dispatchers.Builder().Computation(kotlinx.coroutines.Dispatchers.Computation).build()
         Dispatchers.set(provider)
 
-        assert(Dispatchers.Default == provider.Default)
+        assert(Dispatchers.Computation == provider.Computation)
     }
 
     @Test
@@ -80,10 +81,11 @@ class DispatchersTest {
     }
 
     @Test
-    fun `given provider is set Default then verify provider#Default returns the same`() {
-        val provider = Dispatchers.Builder().Default(kotlinx.coroutines.Dispatchers.Default).build()
+    fun `given provider is set Computation then verify provider#Computation returns the same`() {
+        val provider =
+            Dispatchers.Builder().Computation(kotlinx.coroutines.Dispatchers.Computation).build()
 
-        assert(kotlinx.coroutines.Dispatchers.Default == provider.Default)
+        assert(kotlinx.coroutines.Dispatchers.Computation == provider.Computation)
     }
 
     @Test
@@ -91,6 +93,13 @@ class DispatchersTest {
         val provider = Dispatchers.Builder().IO(kotlinx.coroutines.Dispatchers.IO).build()
 
         assert(kotlinx.coroutines.Dispatchers.IO == provider.IO)
+    }
+
+    @Test
+    fun `given provider is set dao IO then verify provider#daoIO returns the same`() {
+        val provider = Dispatchers.Builder().DaoIO(kotlinx.coroutines.Dispatchers.DaoIO).build()
+
+        assert(kotlinx.coroutines.Dispatchers.DaoIO == provider.DaoIO)
     }
 
     @Test
@@ -114,6 +123,12 @@ class DispatchersTest {
     }
 
     @Test(expected = UninitializedPropertyAccessException::class)
+    fun `given dao-io dispatcher is not set verify uninitialized exception thrown`() {
+        val provider = Dispatchers.Builder().build()
+        provider.DaoIO
+    }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
     fun `given unconfined dispatcher is not set verify uninitialized exception thrown`() {
         val provider = Dispatchers.Builder().build()
         provider.Unconfined
@@ -122,6 +137,6 @@ class DispatchersTest {
     @Test(expected = UninitializedPropertyAccessException::class)
     fun `given default dispatcher is not set verify uninitialized exception thrown`() {
         val provider = Dispatchers.Builder().build()
-        provider.Default
+        provider.Computation
     }
 }

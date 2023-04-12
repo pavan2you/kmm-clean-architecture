@@ -47,7 +47,9 @@ interface NetworkIOStrategy : AsyncStrategy
 
 interface DiskIOStrategy : AsyncStrategy
 
-interface DaoStrategy : AsyncStrategy
+interface DaoIOStrategy : AsyncStrategy
+
+interface CacheIOStrategy : AsyncStrategy
 
 fun AsyncContext.compute(context: AsyncContext? = this, delay: Long = 0, computation: () -> Unit) {
     val strategy = crosscutting<ComputationStrategy>()
@@ -69,13 +71,18 @@ fun AsyncContext.diskIO(context: AsyncContext? = this, delay: Long = 0, operatio
     strategy?.execute(context, delay, operation)
 }
 
-fun AsyncContext.daoCrud(
+fun AsyncContext.daoIO(
     context: AsyncContext? = this,
     delay: Long = 0,
     crudOperation: () -> Unit
 ) {
-    val strategy = crosscutting<DaoStrategy>()
+    val strategy = crosscutting<DaoIOStrategy>()
     strategy?.execute(context, delay, crudOperation)
+}
+
+fun AsyncContext.cacheIO(context: AsyncContext? = this, delay: Long = 0, operation: () -> Unit) {
+    val strategy = crosscutting<CacheIOStrategy>()
+    strategy?.execute(context, delay, operation)
 }
 
 fun AsyncContext.cancelAsync(context: AsyncContext = this) {
@@ -83,7 +90,8 @@ fun AsyncContext.cancelAsync(context: AsyncContext = this) {
     cancelComputations(context)
     cancelNetworkIO(context)
     cancelDiskIO(context)
-    cancelDaoCrud(context)
+    cancelDaoIO(context)
+    cancelCacheIO(context)
 }
 
 fun AsyncContext.cancelPresentations(context: AsyncContext = this) {
@@ -106,7 +114,12 @@ fun AsyncContext.cancelDiskIO(context: AsyncContext = this) {
     strategy?.cancel(context)
 }
 
-fun AsyncContext.cancelDaoCrud(context: AsyncContext = this) {
-    val strategy = crosscutting<DaoStrategy>()
+fun AsyncContext.cancelDaoIO(context: AsyncContext = this) {
+    val strategy = crosscutting<DaoIOStrategy>()
+    strategy?.cancel(context)
+}
+
+fun AsyncContext.cancelCacheIO(context: AsyncContext = this) {
+    val strategy = crosscutting<CacheIOStrategy>()
     strategy?.cancel(context)
 }
