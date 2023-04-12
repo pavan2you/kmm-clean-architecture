@@ -36,7 +36,7 @@ class FakeInjector : Releasable {
         layer<CrossCutting> {
 
             //platform
-            val testStrategy = FakeAsyncIOStrategy()
+            val testStrategy = FakeAsyncStrategy()
             bind<ComputationStrategy>().toInstance(testStrategy)
             bind<PresentationStrategy>().toInstance(testStrategy)
             bind<NetworkIOStrategy>().toInstance(testStrategy)

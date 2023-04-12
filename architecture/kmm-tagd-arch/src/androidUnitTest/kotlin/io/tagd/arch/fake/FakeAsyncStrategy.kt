@@ -27,7 +27,7 @@ import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 
-open class FakeAsyncIOStrategy : AsyncStrategy, PresentationStrategy, ComputationStrategy,
+open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationStrategy,
     NetworkIOStrategy, DiskIOStrategy, DaoIOStrategy, CacheIOStrategy {
 
     var released: Boolean = false
