@@ -17,10 +17,10 @@
 
 package io.tagd.core
 
-import io.tagd.core.fake.FakeLeakableReleasableUsageClientSite
-import io.tagd.core.fake.FakeReadOnlyReleasableClientSite
-import io.tagd.core.fake.FakeReleasable
-import io.tagd.core.fake.FakeReleasableOwnerClientSite
+import io.tagd.core.test.FakeLeakableReleasableUsageClientSite
+import io.tagd.core.test.FakeReadOnlyReleasableClientSite
+import io.tagd.core.test.FakeReleasable
+import io.tagd.core.test.FakeReleasableOwnerClientSite
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertTrue

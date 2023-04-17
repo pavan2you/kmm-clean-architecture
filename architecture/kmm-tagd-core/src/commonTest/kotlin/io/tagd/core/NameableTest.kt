@@ -17,7 +17,7 @@
 
 package io.tagd.core
 
-import io.tagd.core.fake.FakeNameable
+import io.tagd.core.test.FakeNameable
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

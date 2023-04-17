@@ -17,7 +17,7 @@
 
 package io.tagd.arch.control
 
-import io.tagd.arch.fake.FakeApplication
+import io.tagd.arch.test.FakeApplication
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner

@@ -9,6 +9,12 @@ kotlin {
                 api(project(":architecture:kmm-tagd-di"))
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(project(":architecture:kmm-tagd-arch:kmm-tagd-arch-test"))
+            }
+        }
     }
 }
 

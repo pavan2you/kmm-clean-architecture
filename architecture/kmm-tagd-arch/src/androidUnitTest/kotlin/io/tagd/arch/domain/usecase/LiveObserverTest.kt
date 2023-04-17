@@ -17,7 +17,7 @@
 
 package io.tagd.arch.domain.usecase
 
-import io.tagd.arch.fake.FakeUseCaseCaller
+import io.tagd.arch.test.FakeUseCaseCaller
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner

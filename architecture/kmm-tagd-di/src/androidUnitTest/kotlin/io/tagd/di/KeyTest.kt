@@ -17,9 +17,9 @@ package io.tagd.di/*
 
 import io.tagd.core.Service
 import io.tagd.di.*
-import io.tagd.di.fake.FakeMultiTypedService
-import io.tagd.di.fake.FakeTypedMapService
-import io.tagd.di.fake.FakeTypedService
+import io.tagd.di.test.FakeMultiTypedService
+import io.tagd.di.test.FakeTypedMapService
+import io.tagd.di.test.FakeTypedService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner

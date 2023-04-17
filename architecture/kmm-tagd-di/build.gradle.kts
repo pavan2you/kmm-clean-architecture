@@ -9,13 +9,19 @@ kotlin {
                 api(project(":architecture:kmm-tagd-core"))
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(project(":architecture:kmm-tagd-di:kmm-tagd-di-test"))
+            }
+        }
     }
 }
 
 android {
-    namespace = "io.tagd.core"
+    namespace = "io.tagd.di"
 }
 
 pomBuilder {
-    description.set("The technology agnostic architecture's definition")
+    description.set("The technology agnostic architecture's di definition")
 }

@@ -21,7 +21,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.*
-import io.tagd.di.fake.FakeService
+import io.tagd.di.test.FakeService
 import junit.framework.TestCase
 import org.junit.Test
 import org.junit.runner.RunWith

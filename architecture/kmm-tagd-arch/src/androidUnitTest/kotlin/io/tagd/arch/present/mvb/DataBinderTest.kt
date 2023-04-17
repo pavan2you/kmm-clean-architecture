@@ -20,7 +20,7 @@ package io.tagd.arch.present.mvb
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import io.tagd.arch.data.DataObject
-import io.tagd.arch.fake.FakeDataBinder
+import io.tagd.arch.test.FakeDataBinder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito

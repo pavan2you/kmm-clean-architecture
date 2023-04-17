@@ -21,6 +21,10 @@ android {
     }
 }
 
+dependencies {
+    testImplementation(project(":language:lang-androidx:lang-androidx-test"))
+}
+
 pomBuilder {
     description.set("The technology agnostic android's extensions")
 }

@@ -17,7 +17,7 @@
 
 package io.tagd.arch.domain.usecase
 
-import io.tagd.arch.fake.FakeDomainEntity
+import io.tagd.arch.test.FakeDomainEntity
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

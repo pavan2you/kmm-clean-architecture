@@ -1,7 +1,7 @@
 [versions]
 androidGradlePlugin = "8.0-rc-4"
 androidGradleBuildPlugin = "8.1.0-alpha09"
-androidPlugin = "8.1.0-alpha10"
+androidPlugin = "8.1.0-alpha11"
 androidMaterial = "1.8.0"
 androidxActivity = "1.7.0"
 androidxAppCompat = "1.6.1"
@@ -22,6 +22,7 @@ ksp = "1.8.0-1.0.9"
 mockito = "5.1.1"
 mockitoKotlin = "1.6.0"
 tagd = "0.0.0-alpha1-snapshot"
+junit = "1.1.5"
 
 [libraries]
 android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
@@ -51,6 +52,7 @@ tagd-android = { group = "io.github.pavan2you", name = "kmm-tagd-android", versi
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradleBuildPlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidPlugin" }

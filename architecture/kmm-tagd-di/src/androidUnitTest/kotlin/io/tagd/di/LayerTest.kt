@@ -20,7 +20,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.tagd.core.Service
 import io.tagd.core.State
-import io.tagd.di.fake.FakeTypedService
+import io.tagd.di.test.FakeTypedService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner

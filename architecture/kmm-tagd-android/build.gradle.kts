@@ -28,6 +28,8 @@ dependencies {
 
     api(libs.guava)
     api(libs.gson)
+
+    testImplementation(project(":architecture:kmm-tagd-android:kmm-tagd-android-test"))
 }
 
 pomBuilder {

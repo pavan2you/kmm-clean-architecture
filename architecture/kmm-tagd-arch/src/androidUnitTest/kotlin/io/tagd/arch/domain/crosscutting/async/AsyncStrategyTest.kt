@@ -17,8 +17,8 @@
 
 package io.tagd.arch.domain.crosscutting.async
 
-import io.tagd.arch.fake.FakeAsyncStrategy
-import io.tagd.arch.fake.FakeInjector
+import io.tagd.arch.test.FakeAsyncStrategy
+import io.tagd.arch.test.FakeInjector
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

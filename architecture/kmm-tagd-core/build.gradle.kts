@@ -9,6 +9,12 @@ kotlin {
                 api(project(":language:kmm-langx"))
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(project(":architecture:kmm-tagd-core:kmm-tagd-core-test"))
+            }
+        }
     }
 }
 
@@ -17,5 +23,5 @@ android {
 }
 
 pomBuilder {
-    description.set("The technology agnostic architecture's core traits")
+    description.set("The technology agnostic architecture's core traits definition")
 }

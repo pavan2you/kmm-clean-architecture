@@ -25,7 +25,7 @@ import io.tagd.arch.data.repo.Repository
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
-import io.tagd.arch.fake.FakeInjector
+import io.tagd.arch.test.FakeInjector
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.di.Global

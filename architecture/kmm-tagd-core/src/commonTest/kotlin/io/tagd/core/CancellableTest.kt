@@ -17,7 +17,7 @@
 
 package io.tagd.core
 
-import io.tagd.core.fake.FakeCancellable
+import io.tagd.core.test.FakeCancellable
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
