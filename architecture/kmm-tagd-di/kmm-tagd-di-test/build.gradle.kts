@@ -9,6 +9,11 @@ kotlin {
                 api(project(":architecture:kmm-tagd-di"))
             }
         }
+        val androidMain by getting {
+            dependencies {
+                api(libs.mockito.kotlin)
+            }
+        }
     }
 }
 

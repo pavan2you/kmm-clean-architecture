@@ -15,7 +15,7 @@
  *
  */
 
-package io.tagd.di.util
+package io.tagd.di.test
 
 import com.nhaarman.mockito_kotlin.mock
 import io.tagd.core.Service

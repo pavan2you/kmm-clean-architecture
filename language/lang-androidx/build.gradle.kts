@@ -22,6 +22,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":language:kmm-langx"))
     testImplementation(project(":language:lang-androidx:lang-androidx-test"))
 }
 

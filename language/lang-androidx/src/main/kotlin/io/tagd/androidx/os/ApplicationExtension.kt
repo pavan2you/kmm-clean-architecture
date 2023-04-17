@@ -7,7 +7,8 @@ import java.lang.reflect.InvocationTargetException
 
 fun Application.processName(): String? {
     return if (Build.VERSION.SDK_INT >= 28) Application.getProcessName() else try {
-        @SuppressLint("PrivateApi") val activityThread = Class.forName("android.app.ActivityThread")
+        @SuppressLint("PrivateApi")
+        val activityThread = Class.forName("android.app.ActivityThread")
         val methodName = "currentProcessName"
         val getProcessName = activityThread.getDeclaredMethod(methodName)
         getProcessName.invoke(null) as String

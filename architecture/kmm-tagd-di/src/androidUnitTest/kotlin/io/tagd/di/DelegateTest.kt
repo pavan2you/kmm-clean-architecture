@@ -19,8 +19,8 @@ import com.nhaarman.mockito_kotlin.mock
 import io.tagd.di.*
 import io.tagd.di.test.FakeService
 import io.tagd.di.test.FakeTypedService
-import io.tagd.di.util.getInject
-import io.tagd.di.util.getInjectX
+import io.tagd.di.test.getInject
+import io.tagd.di.test.getInjectX
 import junit.framework.TestCase
 import org.junit.Test
 import org.junit.runner.RunWith
