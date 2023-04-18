@@ -26,6 +26,7 @@ class KmmLibraryConventionPlugin : Plugin<Project> {
                 defaultConfig {
                     minSdk = 21
                     targetSdk = 33
+                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 }
             }
 
