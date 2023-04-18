@@ -38,14 +38,14 @@ import io.tagd.di.get
 /**
  * Module Access
  */
-inline fun <reified S : Module> moduleService(key: Key<S>? = null): S? {
+inline fun <reified S : Module> module(key: Key<S>? = null): S? {
     return Global.get<Module, S>(key ?: io.tagd.di.key())
 }
 
 /**
  * Library Access
  */
-inline fun <reified S : Library> libraryService(key: Key<S>? = null): S? {
+inline fun <reified S : Library> library(key: Key<S>? = null): S? {
     return Global.get<Library, S>(key ?: io.tagd.di.key())
 }
 

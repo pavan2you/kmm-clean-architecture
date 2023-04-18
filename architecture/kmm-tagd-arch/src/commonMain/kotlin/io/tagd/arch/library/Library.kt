@@ -29,18 +29,18 @@ interface Library : Service, Nameable {
     }
 }
 
-fun Library.inject(name: String, parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
+fun Library.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
     return scope(name, parent, bindings)
 }
 
-inline fun <reified S : Module> Library.moduleService(key: Key<S>? = null): S? {
+inline fun <reified S : Module> Library.module(key: Key<S>? = null): S? {
     return Scope(name).get<Module, S>(key ?: io.tagd.di.key())
 }
 
 /**
  * Library Access
  */
-inline fun <reified S : Library> Library.libraryService(key: Key<S>? = null): S? {
+inline fun <reified S : Library> Library.library(key: Key<S>? = null): S? {
     return Scope(name).get<Library, S>(key ?: io.tagd.di.key())
 }
 
