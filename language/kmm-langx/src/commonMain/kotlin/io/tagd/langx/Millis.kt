@@ -1,6 +1,11 @@
 package io.tagd.langx
 
-data class Millis(var millis: Long = 0L)
+data class Millis(var millis: Long = 0L) {
+
+    override fun toString(): String {
+        return "$millis"
+    }
+}
 
 @Suppress("warnings")
 fun Millis?.isNull(): Boolean {
