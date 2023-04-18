@@ -104,8 +104,10 @@ open class TagdApplication : Application(), IApplication {
     }
 
     protected open fun setupInjector() {
-        Injector.setInjector(Injector(this))
+        Injector.setInjector(initInjector())
     }
+
+    protected open fun initInjector() = Injector(this)
 
     protected open fun onInject() {
         appService<Injector>()?.inject()
