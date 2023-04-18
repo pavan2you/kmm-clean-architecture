@@ -14,12 +14,12 @@ import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.Nameable
 import io.tagd.core.Service
 import io.tagd.core.State
+import io.tagd.di.Global
 import io.tagd.di.Key
-import io.tagd.di.Layer
 import io.tagd.di.Scope
 import io.tagd.di.create
 import io.tagd.di.get
-import io.tagd.di.layer
+import io.tagd.di.scope
 
 interface Library : Service, Nameable {
 
@@ -29,11 +29,8 @@ interface Library : Service, Nameable {
     }
 }
 
-inline fun <reified T : Service> Library.inject(
-    name: String,
-    bindings: Layer<T>.() -> Unit
-): Layer<T> {
-    return Scope(name).locator.layer(bindings)
+fun Library.inject(name: String, parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
+    return scope(name, parent, bindings)
 }
 
 inline fun <reified S : Module> Library.moduleService(key: Key<S>? = null): S? {
