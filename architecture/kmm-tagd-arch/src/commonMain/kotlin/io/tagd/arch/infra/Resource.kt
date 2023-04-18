@@ -1,5 +1,8 @@
 package io.tagd.arch.infra
 
+import io.tagd.core.assert
+import io.tagd.langx.IllegalAccessException
+
 interface Resource
 
 interface INamedResource : Resource {
@@ -104,5 +107,45 @@ data class UnifiedResource(
 
     fun isCompressed(): Boolean {
         return !(identifier == -1 && type.isNullOrEmpty())
+    }
+}
+
+fun INamedResource.toFileNameParts(): List<String> {
+    assert(!nameWithOrWithoutRelativePath.isNullOrEmpty())
+
+    val pathAndNames: ArrayList<String> = arrayListOf()
+    nameWithOrWithoutRelativePath?.let { nameWithPath ->
+        if (nameWithPath.contains("/")) {
+            val fileNameParts = nameWithPath.split("/")
+            assertFileNameValidness(fileNameParts)
+            pathAndNames.add(fileNameParts[0] /* resource folder */)
+            pathAndNames.add(fileNameParts[1] /* resource file name */)
+        } else {
+            pathAndNames.add("raw")
+            pathAndNames.add(nameWithPath)
+        }
+    }
+
+    return pathAndNames
+}
+
+fun INamedResource.assertFileNameValidness(fileNameParts: List<String>) {
+    if (fileNameParts.size < 2 || fileNameParts.size > 2) {
+        throw IllegalAccessException(
+            "the resource must be named path/resource_name format"
+        )
+    }
+
+    val folder = fileNameParts[0]
+    if (folder.isEmpty()) {
+        throw IllegalAccessException(
+            "the resource folder should not be empty"
+        )
+    }
+    val file = fileNameParts[1]
+    if (file.isEmpty()) {
+        throw IllegalAccessException(
+            "the resource name should not be empty"
+        )
     }
 }

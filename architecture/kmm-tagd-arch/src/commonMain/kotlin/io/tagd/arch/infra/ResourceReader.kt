@@ -1,5 +1,8 @@
 package io.tagd.arch.infra
 
+import io.tagd.arch.access.crosscutting
+import io.tagd.arch.domain.crosscutting.codec.JsonCodec
+import io.tagd.di.typeOf
 import io.tagd.langx.IllegalValueException
 
 interface ResourceReader : InfraService {
@@ -65,4 +68,16 @@ interface UnifiedResourceReader : NamedResourceReader, CompressedResourceReader 
 
     override fun readCompressed(resource: ICompressedResource): String?
 
+}
+
+inline fun <reified T : Any> UnifiedResourceReader.readNamedJson(fileName: String): T? {
+    return readNamed(NamedResource(nameWithOrWithoutRelativePath = fileName))?.let { json ->
+        crosscutting<JsonCodec>()?.fromJson(json, typeOf())
+    }
+}
+
+inline fun <reified T : Any> UnifiedResourceReader.readCompressedJson(id: Int): T? {
+    return readCompressed(CompressedResource(identifier = id))?.let { json ->
+        crosscutting<JsonCodec>()?.fromJson(json, typeOf())
+    }
 }

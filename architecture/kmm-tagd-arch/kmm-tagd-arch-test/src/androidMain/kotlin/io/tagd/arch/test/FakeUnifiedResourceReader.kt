@@ -2,15 +2,12 @@ package io.tagd.arch.test
 
 import android.annotation.SuppressLint
 import android.content.Context
-import io.tagd.arch.access.crosscutting
-import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.infra.CompressedResource
 import io.tagd.arch.infra.ICompressedResource
 import io.tagd.arch.infra.INamedResource
-import io.tagd.arch.infra.NamedResource
 import io.tagd.arch.infra.UnifiedResource
 import io.tagd.arch.infra.UnifiedResourceReader
-import io.tagd.di.typeOf
+import io.tagd.arch.infra.toFileNameParts
 import java.io.IOException
 import java.io.InputStream
 import java.lang.ref.WeakReference
@@ -35,13 +32,16 @@ actual class FakeUnifiedResourceReader actual constructor(context: Any?) : Unifi
 
     @SuppressLint("DiscouragedApi")
     override fun readNamed(resource: INamedResource): String? {
+        val pathAndNames = resource.toFileNameParts()
+
         val pkg = weakContext!!.get()!!.packageName
         val id = weakContext!!.get()!!.resources.getIdentifier(
-            resource.nameWithOrWithoutRelativePath,
-            "raw",
+            pathAndNames[1],
+            pathAndNames[0],
             pkg
         )
-        return readCompressed(CompressedResource(type = "raw", identifier = id))
+
+        return readCompressed(CompressedResource(type = pathAndNames[0], identifier = id))
     }
 
     override fun readCompressed(resource: ICompressedResource): String? {
@@ -57,17 +57,5 @@ actual class FakeUnifiedResourceReader actual constructor(context: Any?) : Unifi
             ex.printStackTrace()
             return null
         }
-    }
-}
-
-inline fun <reified T : Any> FakeUnifiedResourceReader.readNamedJson(fileName: String): T? {
-    return readNamed(NamedResource(nameWithOrWithoutRelativePath = fileName))?.let { json ->
-        crosscutting<JsonCodec>()?.fromJson(json, typeOf())
-    }
-}
-
-inline fun <reified T : Any> FakeUnifiedResourceReader.readCompressedJson(id: Int): T? {
-    return readCompressed(CompressedResource(identifier = id))?.let { json ->
-        crosscutting<JsonCodec>()?.fromJson(json, typeOf())
     }
 }

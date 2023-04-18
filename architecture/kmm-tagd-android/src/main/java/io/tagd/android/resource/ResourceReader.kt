@@ -8,6 +8,7 @@ import io.tagd.arch.infra.INamedResource
 import io.tagd.arch.infra.NamedResourceReader
 import io.tagd.arch.infra.UnifiedResource
 import io.tagd.arch.infra.UnifiedResourceReader
+import io.tagd.arch.infra.toFileNameParts
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -59,13 +60,16 @@ open class ContextResourceReader(context: Any?) : UnifiedResourceReader {
 
     @SuppressLint("DiscouragedApi")
     override fun readNamed(resource: INamedResource): String? {
+        val pathAndNames = resource.toFileNameParts()
+
         val pkg = weakContext!!.get()!!.packageName
         val id = weakContext!!.get()!!.resources.getIdentifier(
-            resource.nameWithOrWithoutRelativePath,
-            "raw",
+            pathAndNames[1],
+            pathAndNames[0],
             pkg
         )
-        return readCompressed(CompressedResource(type = "raw", identifier = id))
+
+        return readCompressed(CompressedResource(type = pathAndNames[0], identifier = id))
     }
 
     override fun readCompressed(resource: ICompressedResource): String? {
