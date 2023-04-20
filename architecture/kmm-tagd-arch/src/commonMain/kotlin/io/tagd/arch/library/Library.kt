@@ -22,13 +22,15 @@ import io.tagd.di.get
 import io.tagd.di.layer
 import io.tagd.di.scope
 
+typealias BidirectionalLibraryDependentInjector = (context: Library) -> Unit
+
 interface Library : Service, Nameable {
 
     abstract class Builder<T : Library> {
 
-        private var biDirectionalInjector: ((context: Library) -> Unit)? = null
-        protected open var name: String? = null
-        protected open var injectionInvoker: InjectionInvoker? = null
+        private var name: String? = null
+        private var injectionInvoker: InjectionInvoker? = null
+        private var bidirectionalInjector: BidirectionalLibraryDependentInjector? = null
 
         open fun name(name: String): Builder<T> {
             this.name = name
@@ -40,8 +42,11 @@ interface Library : Service, Nameable {
             return this
         }
 
-        open fun injectBidirectionalDependents(injector: (context: Library) -> Unit): Builder<T> {
-            this.biDirectionalInjector = injector
+        open fun injectBidirectionalDependents(
+            injector: BidirectionalLibraryDependentInjector
+        ): Builder<T> {
+
+            this.bidirectionalInjector = injector
             return this
         }
 
@@ -55,7 +60,7 @@ interface Library : Service, Nameable {
 
         protected open fun inject(context: Library) {
             injectionInvoker?.invoke(context)
-            biDirectionalInjector?.invoke(context)
+            bidirectionalInjector?.invoke(context)
         }
 
         protected open class InjectionInvoker(
@@ -102,6 +107,7 @@ inline fun <reified S : InfraService> Library.createInfra(
     key: Key<S>? = null,
     state: State? = null
 ): S? {
+
     return Global.subScope(name)?.create(key ?: io.tagd.di.key(), state)
 }
 

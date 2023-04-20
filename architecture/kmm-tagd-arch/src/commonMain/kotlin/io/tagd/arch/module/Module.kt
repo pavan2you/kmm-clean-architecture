@@ -22,13 +22,15 @@ import io.tagd.di.get
 import io.tagd.di.layer
 import io.tagd.di.scope
 
+typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
+
 interface Module : Service, Nameable {
 
     abstract class Builder<T : Module> {
 
-        private var biDirectionalInjector: ((context: Module) -> Unit)? = null
-        protected open var name: String? = null
-        protected open var injectionInvoker: InjectionInvoker? = null
+        private var name: String? = null
+        private var bidirectionalInjector: BidirectionalModuleDependentInjector? = null
+        private var injectionInvoker: InjectionInvoker? = null
 
         open fun name(name: String): Builder<T> {
             this.name = name
@@ -40,8 +42,11 @@ interface Module : Service, Nameable {
             return this
         }
 
-        open fun injectBidirectionalDependents(injector: (context: Module) -> Unit): Builder<T> {
-            this.biDirectionalInjector = injector
+        open fun injectBidirectionalDependents(
+            injector: BidirectionalModuleDependentInjector
+        ): Builder<T> {
+
+            this.bidirectionalInjector = injector
             return this
         }
 
@@ -55,7 +60,7 @@ interface Module : Service, Nameable {
 
         protected open fun inject(context: Module) {
             injectionInvoker?.invoke(context)
-            biDirectionalInjector?.invoke(context)
+            bidirectionalInjector?.invoke(context)
         }
 
         protected open class InjectionInvoker(
