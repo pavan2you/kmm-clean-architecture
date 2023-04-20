@@ -25,7 +25,47 @@ interface Module : Service, Nameable {
 
     abstract class Builder<T : Module> {
 
-        abstract fun build(): T
+        private var biDirectionalInjector: ((context: Module) -> Unit)? = null
+        protected open var name: String? = null
+        protected open var injectionInvoker: InjectionInvoker? = null
+
+        fun name(name: String): Module.Builder<T> {
+            this.name = name
+            return this
+        }
+
+        fun inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Builder<T> {
+            this.injectionInvoker = InjectionInvoker(parent, bindings)
+            return this
+        }
+
+        fun injectBidirectionalDependents(injector: (context: Module) -> Unit): Builder<T> {
+            this.biDirectionalInjector = injector
+            return this
+        }
+
+        fun build(): T {
+            return buildModule().also { module ->
+                inject(context = module)
+            }
+        }
+
+        protected abstract fun buildModule(): T
+
+        protected open fun inject(context: Module) {
+            injectionInvoker?.invoke(context)
+            biDirectionalInjector?.invoke(context)
+        }
+
+        protected open class InjectionInvoker(
+            private val parent: Scope? = Global,
+            private val bindings: Scope.() -> Unit
+        ) {
+
+            open operator fun invoke(context: Module): Scope {
+                return context.inject(parent, bindings)
+            }
+        }
     }
 }
 

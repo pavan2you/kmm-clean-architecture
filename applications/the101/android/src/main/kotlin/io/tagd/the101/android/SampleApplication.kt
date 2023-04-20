@@ -23,9 +23,7 @@ import io.tagd.android.app.Injector
 import io.tagd.android.app.TagdApplication
 import io.tagd.arch.access.library
 import io.tagd.arch.access.usecase
-import io.tagd.arch.domain.usecase.Args
 import io.tagd.arch.domain.usecase.Command
-import io.tagd.arch.domain.usecase.LiveUseCase
 import io.tagd.arch.library.Library
 import io.tagd.arch.library.inject
 import io.tagd.arch.library.usecase
@@ -64,13 +62,17 @@ class SampleApplication : TagdApplication() {
         }
 
         private fun initSampleLibrary(): SampleLibrary {
-            return SampleLibrary("sample").apply {
+            return SampleLibrary.Builder()
+                .name("sample").
                 inject {
+                    println("inside library specific injection")
                     layer<Command<*, *>> {
                         bind(key(), LibraryUsecase())
                     }
+                }.injectBidirectionalDependents {
+                    println("inside bidirectional dependents")
                 }
-            }
+                .build()
         }
     }
 }
