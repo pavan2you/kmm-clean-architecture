@@ -28,7 +28,7 @@ interface Library : Service, Nameable {
 
     abstract class Builder<T : Library> {
 
-        private var name: String? = null
+        protected var name: String? = null
         private var injectionInvoker: InjectionInvoker? = null
         private var bidirectionalInjector: BidirectionalLibraryDependentInjector? = null
 
@@ -43,7 +43,7 @@ interface Library : Service, Nameable {
         }
 
         open fun injectBidirectionalDependents(
-            injector: BidirectionalLibraryDependentInjector
+            injector: BidirectionalLibraryDependentInjector?
         ): Builder<T> {
 
             this.bidirectionalInjector = injector
