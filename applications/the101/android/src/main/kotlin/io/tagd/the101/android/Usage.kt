@@ -18,8 +18,10 @@
 package io.tagd.the101.android
 
 import android.content.Context
+import io.tagd.arch.access.bind
 import io.tagd.arch.access.reference
 import io.tagd.arch.access.referenceHolder
+import io.tagd.arch.data.gateway.Gateway
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.core.Releasable
 import io.tagd.di.Global

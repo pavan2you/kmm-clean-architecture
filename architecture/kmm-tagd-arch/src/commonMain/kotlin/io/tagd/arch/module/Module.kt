@@ -19,6 +19,7 @@ import io.tagd.di.Key
 import io.tagd.di.Scope
 import io.tagd.di.create
 import io.tagd.di.get
+import io.tagd.di.layer
 import io.tagd.di.scope
 
 interface Module : Service, Nameable {
@@ -29,22 +30,22 @@ interface Module : Service, Nameable {
         protected open var name: String? = null
         protected open var injectionInvoker: InjectionInvoker? = null
 
-        fun name(name: String): Module.Builder<T> {
+        open fun name(name: String): Builder<T> {
             this.name = name
             return this
         }
 
-        fun inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Builder<T> {
+        open fun inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Builder<T> {
             this.injectionInvoker = InjectionInvoker(parent, bindings)
             return this
         }
 
-        fun injectBidirectionalDependents(injector: (context: Module) -> Unit): Builder<T> {
+        open fun injectBidirectionalDependents(injector: (context: Module) -> Unit): Builder<T> {
             this.biDirectionalInjector = injector
             return this
         }
 
-        fun build(): T {
+        open fun build(): T {
             return buildModule().also { module ->
                 inject(context = module)
             }
@@ -71,6 +72,12 @@ interface Module : Service, Nameable {
 
 fun Module.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
     return scope(name, parent, bindings)
+}
+
+inline fun <reified T : Service, reified S : T> Module.bind(key: Key<S>? = null, instance: S) {
+    Global.subScope(name)?.layer<T> {
+        bind(service = key ?: io.tagd.di.key(), instance = instance)
+    }
 }
 
 inline fun <reified S : Module> Module.module(key: Key<S>? = null): S? {

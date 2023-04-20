@@ -184,4 +184,10 @@ fun <T : Service, S : T> Scope.create(key: Key<S>, args: State? = null): S {
     return value ?: throw exception!!
 }
 
+inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, instance: S) {
+    layer<T> {
+        bind(service = key ?: key(), instance = instance)
+    }
+}
+
 object Global : Scope()

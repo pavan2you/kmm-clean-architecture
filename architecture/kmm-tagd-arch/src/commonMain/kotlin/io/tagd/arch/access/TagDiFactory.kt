@@ -29,11 +29,17 @@ import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.library.Library
 import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
+import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
+import io.tagd.di.bind
 import io.tagd.di.create
 import io.tagd.di.get
+
+inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instance: S) {
+    Global.bind<T, S>(key, instance)
+}
 
 /**
  * Module Access
