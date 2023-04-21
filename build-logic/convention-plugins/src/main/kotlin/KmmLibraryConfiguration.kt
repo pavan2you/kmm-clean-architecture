@@ -27,7 +27,7 @@ internal fun Project.configureKmmKotlinBlock(
             iosSimulatorArm64()
         ).forEach {
             it.binaries.framework {
-                baseName = "${project.name}"
+                baseName = project.name
             }
         }
 

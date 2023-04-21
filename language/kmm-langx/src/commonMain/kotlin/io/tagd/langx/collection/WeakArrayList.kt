@@ -105,10 +105,11 @@ class WeakArrayList<E> : MutableList<E>, RandomAccess {
 
     override fun remove(element: E): Boolean {
         var result = false
-        list.forEach {
-            if (it.get() == element) {
-                result = list.remove(it)
-                return@forEach
+        for (i in  0 until list.size) {
+            if (list[i].get() == element) {
+                list.removeAt(i)
+                result = true
+                break
             }
         }
         return result
