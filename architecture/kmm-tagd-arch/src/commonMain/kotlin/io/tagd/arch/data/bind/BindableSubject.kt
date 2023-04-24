@@ -23,10 +23,12 @@ import io.tagd.core.annotation.VisibleForTesting
 import io.tagd.langx.Serializable
 import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
+import kotlin.jvm.Transient
 
 open class BindableSubject : Initializable, Serializable {
 
     @VisibleForTesting(otherwise = Visibility.PRIVATE)
+    @Transient
     var bindables = CopyOnWriteArraySet<WeakReference<Bindable<out BindableSubject>>>()
 
     override fun initialize() {
