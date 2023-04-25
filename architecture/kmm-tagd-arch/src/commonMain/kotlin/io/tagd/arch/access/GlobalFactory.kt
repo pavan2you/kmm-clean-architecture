@@ -34,8 +34,6 @@ import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.bind
-import io.tagd.di.create
-import io.tagd.di.get
 
 inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instance: S) {
     Global.bind<T, S>(key, instance)
@@ -45,88 +43,88 @@ inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instan
  * Module Access
  */
 inline fun <reified S : Module> module(key: Key<S>? = null): S? {
-    return Global.get<Module, S>(key ?: io.tagd.di.key())
+    return Global.module(key)
 }
 
 /**
  * Library Access
  */
 inline fun <reified S : Library> library(key: Key<S>? = null): S? {
-    return Global.get<Library, S>(key ?: io.tagd.di.key())
+    return Global.library(key)
 }
 
 /**
  * Infra Access
  */
 inline fun <reified S : InfraService> infraService(key: Key<S>? = null): S? {
-    return Global.get<InfraService, S>(key ?: io.tagd.di.key())
+    return Global.infraService(key)
 }
 
 inline fun <reified S : InfraService> createInfra(key: Key<S>? = null, state: State? = null): S {
-    return Global.create(key ?: io.tagd.di.key(), state)
+    return Global.createInfra(key)
 }
 
 /**
  * Presentation Access
  */
 inline fun <reified S : PresentationService> presentationService(key: Key<S>? = null): S? {
-    return Global.get<PresentationService, S>(key ?: io.tagd.di.key())
+    return Global.presentationService(key)
 }
 
 /**
  * Domain - Usecases Access
  */
 inline fun <reified S : Command<*, *>> usecase(key: Key<S>? = null): S? {
-    return Global.get<Command<*, *>, S>(key ?: io.tagd.di.key())
+    return Global.usecase(key)
 }
 
 /**
  * Domain - Services Access
  */
 inline fun <reified S : DomainService> domainService(key: Key<S>? = null): S? {
-    return Global.get<DomainService, S>(key ?: io.tagd.di.key())
+    return Global.domainService(key)
 }
 
 /**
  * Data - Repositories Access
  */
 inline fun <reified S : Repository> repository(key: Key<S>? = null): S? {
-    return Global.get<Repository, S>(key ?: io.tagd.di.key())
+    return Global.repository(key)
 }
 
 /**
  * Data - Gateways Access
  */
 inline fun <reified S : Gateway> gateway(key: Key<S>? = null): S? {
-    return Global.get<Gateway, S>(key ?: io.tagd.di.key())
+    return Global.gateway(key)
 }
 
 /**
  * Data - Daos Access
  */
 inline fun <reified S : DataAccessObject> dao(key: Key<S>? = null): S? {
-    return Global.get<DataAccessObject, S>(key ?: io.tagd.di.key())
+    return Global.dao(key)
 }
 
 /**
  * Data - Cache Access
  */
 inline fun <reified S : Cache<*>> cache(key: Key<S>? = null): S? {
-    return Global.get<Cache<*>, S>(key ?: io.tagd.di.key())
+    return Global.cache(key)
 }
 
 /**
  * Vertical - CrossCutting Access
  */
 inline fun <reified S : CrossCutting> crosscutting(key: Key<S>? = null): S? {
-    return Global.get<CrossCutting, S>(key ?: io.tagd.di.key())
+    return Global.crosscutting(key)
 }
 
 /**
  * Vertical - Reference Access
  */
 inline fun <reified S : ReferenceHolder<*>> referenceHolder(key: Key<S>? = null): S? {
-    return Global.get<ReferenceHolder<*>, S>(key ?: io.tagd.di.key())
+    return Global.referenceHolder(key)
 }
 
 inline fun <T, reified S : ReferenceHolder<T>> reference(key: Key<S>? = null): T? {
