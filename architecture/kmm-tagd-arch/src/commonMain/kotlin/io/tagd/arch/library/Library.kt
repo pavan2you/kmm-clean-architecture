@@ -13,6 +13,7 @@ import io.tagd.arch.access.presentationService
 import io.tagd.arch.access.reference
 import io.tagd.arch.access.repository
 import io.tagd.arch.access.usecase
+import io.tagd.arch.access.scope
 import io.tagd.arch.data.cache.Cache
 import io.tagd.arch.data.dao.DataAccessObject
 import io.tagd.arch.data.gateway.Gateway
@@ -91,27 +92,27 @@ fun Library.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
 }
 
 inline fun <reified T : Service, reified S : T> Library.bind(key: Key<S>? = null, instance: S) {
-    Global.subScope(name)?.layer<T> {
+    scope(name)?.layer<T> {
         bind(service = key ?: io.tagd.di.key(), instance = instance)
     }
 }
 
 inline fun <reified S : Module> Library.module(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.module(key)
+    return scope(name)?.module(key)
 }
 
 /**
  * Library Access
  */
 inline fun <reified S : Library> Library.library(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.library(key)
+    return scope(name)?.library(key)
 }
 
 /**
  * Infra Access
  */
 inline fun <reified S : InfraService> Library.infraService(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.infraService(key)
+    return scope(name)?.infraService(key)
 }
 
 inline fun <reified S : InfraService> Library.createInfra(
@@ -119,68 +120,68 @@ inline fun <reified S : InfraService> Library.createInfra(
     state: State? = null
 ): S? {
 
-    return Global.subScope(name)?.createInfra(key, state)
+    return scope(name)?.createInfra(key, state)
 }
 
 /**
  * Presentation Access
  */
 inline fun <reified S : PresentationService> Library.presentationService(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.presentationService(key)
+    return scope(name)?.presentationService(key)
 }
 
 /**
  * Domain - Usecases Access
  */
 inline fun <reified S : Command<*, *>> Library.usecase(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.usecase(key)
+    return scope(name)?.usecase(key)
 }
 
 /**
  * Domain - Services Access
  */
 inline fun <reified S : DomainService> Library.domainService(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.domainService(key)
+    return scope(name)?.domainService(key)
 }
 
 /**
  * Data - Repositories Access
  */
 inline fun <reified S : Repository> Library.repository(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.repository(key)
+    return scope(name)?.repository(key)
 }
 
 /**
  * Data - Gateways Access
  */
 inline fun <reified S : Gateway> Library.gateway(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.gateway(key)
+    return scope(name)?.gateway(key)
 }
 
 /**
  * Data - Daos Access
  */
 inline fun <reified S : DataAccessObject> Library.dao(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.dao(key)
+    return scope(name)?.dao(key)
 }
 
 /**
  * Data - Cache Access
  */
 inline fun <reified S : Cache<*>> Library.cache(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.cache(key)
+    return scope(name)?.cache(key)
 }
 
 /**
  * Vertical - CrossCutting Access
  */
 inline fun <reified S : CrossCutting> Library.crosscutting(key: Key<S>? = null): S? {
-    return Global.subScope(name)?.crosscutting(key)
+    return scope(name)?.crosscutting(key)
 }
 
 /**
  * Vertical - Reference Access
  */
 inline fun <T, reified S : ReferenceHolder<T>> Library.reference(key: Key<S>? = null): T? {
-    return Global.subScope(name)?.reference(key)
+    return scope(name)?.reference(key)
 }

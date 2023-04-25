@@ -30,11 +30,15 @@ import io.tagd.arch.library.Library
 import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.State
+import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scope
 import io.tagd.di.create
 import io.tagd.di.get
 
+fun scope(name: String): Scope? {
+    return if (name == Global.name) Global else Global.subScope(name)
+}
 
 /**
  * Module Access
