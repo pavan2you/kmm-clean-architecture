@@ -18,48 +18,33 @@
 package io.tagd.android.mvp
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import io.tagd.android.app.AppCompatActivity
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.Presenter
-import io.tagd.android.app.TagdApplication
-import io.tagd.android.app.AwaitReadyLifeCycleEventsDispatcher
-import io.tagd.android.app.AwaitReadyLifeCycleStatesOwner
 
 abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatActivity(),
-    PresentableView, AwaitReadyLifeCycleStatesOwner {
+    PresentableView {
 
     protected var presenter: P? = null
 
     override val app: IApplication?
         get() = application as IApplication
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun interceptOnCreate(savedInstanceState: Bundle?) {
+        super.interceptOnCreate(savedInstanceState)
         presenter = onCreatePresenter(savedInstanceState)
         presenter?.onCreate()
-        onCreateView(savedInstanceState)
     }
 
     protected abstract fun onCreatePresenter(savedInstanceState: Bundle?): P?
 
-    protected abstract fun onCreateView(savedInstanceState: Bundle?)
-
+    @Suppress("UNCHECKED_CAST")
     override fun <V : PresentableView> presenter(): Presenter<V>? = presenter as? Presenter<V>
 
-    override fun onStart() {
-        super.onStart()
+    override fun interceptOnStart() {
+        super.interceptOnStart()
         presenter?.onStart()
-        if (awaitReadyLifeCycleEventsDispatcher().ready()) {
-            onReady()
-        } else {
-            awaitReadyLifeCycleEventsDispatcher().register(this)
-            onAwaiting()
-        }
-    }
-
-    override fun awaitReadyLifeCycleEventsDispatcher(): AwaitReadyLifeCycleEventsDispatcher {
-        return (application as TagdApplication).appService()!!
     }
 
     override fun onResume() {
@@ -68,10 +53,12 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatAct
     }
 
     override fun onAwaiting() {
+        super.onAwaiting()
         presenter?.onAwaiting()
     }
 
     override fun onReady() {
+        super.onReady()
         presenter?.onReady()
     }
 

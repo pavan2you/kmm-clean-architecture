@@ -18,9 +18,10 @@
 package io.tagd.arch.control
 
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.module.Module
 import io.tagd.core.Releasable
 
-interface IApplication : Releasable, AsyncContext {
+interface IApplication : Releasable, AsyncContext, Module {
 
     fun versionTracker() : VersionTracker
 

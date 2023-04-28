@@ -53,6 +53,9 @@ open class TagdApplication : Application(), IApplication {
 
     lateinit var launcher : Launcher<*>
 
+    override val name: String
+        get() = this.packageName
+
     override fun onCreate() {
         super.onCreate()
         setupSelf()

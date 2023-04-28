@@ -12,8 +12,8 @@ import io.tagd.arch.access.module
 import io.tagd.arch.access.presentationService
 import io.tagd.arch.access.reference
 import io.tagd.arch.access.repository
-import io.tagd.arch.access.usecase
 import io.tagd.arch.access.scope
+import io.tagd.arch.access.usecase
 import io.tagd.arch.data.cache.Cache
 import io.tagd.arch.data.dao.DataAccessObject
 import io.tagd.arch.data.gateway.Gateway
@@ -25,28 +25,25 @@ import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.library.Library
 import io.tagd.arch.present.service.PresentationService
-import io.tagd.core.Nameable
+import io.tagd.core.Factory
 import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scope
-import io.tagd.di.create
-import io.tagd.di.get
 import io.tagd.di.layer
 import io.tagd.di.scope
 
 typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
 
-interface Module : Service, Nameable {
+interface Module : Factory {
 
-    abstract class Builder<T : Module> {
+    abstract class Builder<T : Module> : Factory.Builder<T>() {
 
-        protected var name: String? = null
         private var bidirectionalInjector: BidirectionalModuleDependentInjector? = null
         private var injectionInvoker: InjectionInvoker? = null
 
-        open fun name(name: String): Builder<T> {
+        override fun name(name: String): Builder<T> {
             this.name = name
             return this
         }
@@ -64,7 +61,7 @@ interface Module : Service, Nameable {
             return this
         }
 
-        open fun build(): T {
+        override fun build(): T {
             return buildModule().also { module ->
                 inject(context = module)
             }

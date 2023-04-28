@@ -17,9 +17,10 @@
 
 package io.tagd.arch.data.cache
 
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.core.Service
 
-interface Cache<T> : Service
+interface Cache<T> : Service, AsyncContext
 
 abstract class AbstractCache<T> : Cache<T> {
 
