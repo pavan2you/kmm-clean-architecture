@@ -15,4 +15,8 @@ actual class AtomicInteger actual constructor(value: Int) {
     actual fun compareAndSet(expect: Int, update: Int): Boolean {
         TODO("Not yet implemented")
     }
+
+    actual fun getAndIncrement(): Int {
+        TODO("Not yet implemented")
+    }
 }
