@@ -1,4 +1,4 @@
-package io.tagd.androidx.os
+package io.tagd.androidx.content
 
 import android.app.NotificationManager
 import android.content.Context

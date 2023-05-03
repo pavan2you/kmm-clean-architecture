@@ -1,4 +1,4 @@
-package io.tagd.androidx.os
+package io.tagd.androidx.app
 
 import android.annotation.SuppressLint
 import android.app.Application
