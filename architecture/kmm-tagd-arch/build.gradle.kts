@@ -15,6 +15,11 @@ kotlin {
                 implementation(project(":architecture:kmm-tagd-arch:kmm-tagd-arch-test"))
             }
         }
+        val androidMain by getting {
+            dependencies {
+                api("com.google.code.gson:gson:2.9.0")
+            }
+        }
     }
 }
 

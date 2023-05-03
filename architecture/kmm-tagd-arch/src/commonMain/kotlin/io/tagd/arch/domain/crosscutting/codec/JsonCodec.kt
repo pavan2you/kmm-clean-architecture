@@ -28,3 +28,15 @@ interface JsonCodec : Codec {
 
     fun <T> fromJson(json: String, type: KType): T
 }
+
+expect annotation class SerializedName(
+
+    /**
+     * @return the desired name of the field when it is serialized or deserialized
+     */
+    val value: String,
+    /**
+     * @return the alternative names of the field when it is deserialized
+     */
+    val alternate: Array<String>
+)
