@@ -17,7 +17,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("com.google.code.gson:gson:2.9.0")
+                api(libs.gson)
             }
         }
     }
