@@ -1,5 +1,6 @@
 
 import com.android.build.api.dsl.LibraryExtension
+import io.tagd.convention.plugin.internal.kmm.configureKmmKotlinBlock
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension

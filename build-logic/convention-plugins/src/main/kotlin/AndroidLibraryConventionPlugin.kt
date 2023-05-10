@@ -1,4 +1,9 @@
 import com.android.build.api.dsl.LibraryExtension
+import io.tagd.convention.plugin.internal.android.androidblock.configureBuildTypesInAndroidLibraryBlock
+import io.tagd.convention.plugin.internal.android.androidblock.configureKotlinInAndroidBlock
+import io.tagd.convention.plugin.internal.android.androidblock.configurePackageOptionsInAndroidBlock
+import io.tagd.convention.plugin.internal.android.dependenciesblock.configureAndroidLibraryDependencies
+import io.tagd.convention.plugin.internal.android.publishingblock.configurePomXmlWithDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -19,8 +24,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk = 33
                 configureKotlinInAndroidBlock(this)
                 configurePackageOptionsInAndroidBlock(this)
-                configureBuildTypesInAndroidBlock(this)
-//                configureFlavorsInAndroidBlock(this)
+                configureBuildTypesInAndroidLibraryBlock(this)
             }
             configureAndroidLibraryDependencies()
 
@@ -30,8 +34,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             )
             extensions.configure<PublishingExtension> {
                 publications.withType(MavenPublication::class.java) {
-                    this as MavenPublication
-
                     pom {
                         val setDescription = pomBuilderExtension.description.orNull
                             ?: "The technology agnostic's kmm lib"

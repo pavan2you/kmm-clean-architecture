@@ -1,9 +1,11 @@
 import com.android.build.api.dsl.ApplicationExtension
+import io.tagd.convention.plugin.internal.android.dependenciesblock.configureAndroidApplicationDependencies
+import io.tagd.convention.plugin.internal.android.androidblock.configureBuildTypesInAndroidApplicationBlock
+import io.tagd.convention.plugin.internal.android.androidblock.configureKotlinInAndroidBlock
+import io.tagd.convention.plugin.internal.android.androidblock.configurePackageOptionsInAndroidBlock
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.extra
-import org.gradle.kotlin.dsl.repositories
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
 
@@ -33,7 +35,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 defaultConfig.targetSdk = 33
                 configureKotlinInAndroidBlock(this)
                 configurePackageOptionsInAndroidBlock(this)
-                configureBuildTypesInAndroidBlock(this)
+                configureBuildTypesInAndroidApplicationBlock(this)
             }
             configureAndroidApplicationDependencies()
         }

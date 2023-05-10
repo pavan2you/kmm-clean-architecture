@@ -1,3 +1,6 @@
+package io.tagd.convention.plugin.internal.android.publishingblock
+
+import MavenPomBuilderExtension
 import org.gradle.api.Project
 import org.gradle.api.XmlProvider
 import org.gradle.api.artifacts.Dependency

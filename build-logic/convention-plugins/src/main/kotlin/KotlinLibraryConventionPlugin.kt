@@ -1,3 +1,4 @@
+import io.tagd.convention.plugin.internal.kotlin.configureKotlinLibraryDependencies
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project

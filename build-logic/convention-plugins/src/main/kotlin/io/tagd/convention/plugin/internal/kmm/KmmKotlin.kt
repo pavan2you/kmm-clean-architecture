@@ -1,3 +1,5 @@
+package io.tagd.convention.plugin.internal.kmm
+
 import org.gradle.api.Action
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -47,6 +49,13 @@ internal fun Project.configureKmmKotlinBlock(
                     implementation(libs.findLibrary("mockito.core").get())
                     implementation(libs.findLibrary("mockito.inline").get())
                     implementation(libs.findLibrary("mockito.kotlin").get())
+                }
+            }
+            val androidInstrumentedTest by getting {
+                dependencies {
+                    dependsOn(commonTest)
+                    implementation(libs.findLibrary("androidx.test.espresso.core").get())
+                    implementation(libs.findLibrary("androidx.test.junit.ext").get())
                 }
             }
             val iosX64Main by getting
