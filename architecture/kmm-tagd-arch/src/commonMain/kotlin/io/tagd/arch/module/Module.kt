@@ -24,6 +24,7 @@ import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.library.Library
+import io.tagd.arch.present.mvnp.Navigatable
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.Factory
 import io.tagd.core.Service
@@ -36,7 +37,7 @@ import io.tagd.di.scope
 
 typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
 
-interface Module : Factory {
+interface Module : Factory, Navigatable {
 
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 

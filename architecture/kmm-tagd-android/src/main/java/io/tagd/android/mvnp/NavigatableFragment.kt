@@ -33,7 +33,7 @@ abstract class NavigatableFragment<
     protected var navigator: N? = null
 
     override fun interceptOnCreate(savedInstanceState: Bundle?) {
-        onCreateNavigator(savedInstanceState)
+        navigator = onCreateNavigator(savedInstanceState)
         super.interceptOnCreate(savedInstanceState)
     }
 
