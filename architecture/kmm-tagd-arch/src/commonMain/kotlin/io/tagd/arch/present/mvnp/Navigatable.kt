@@ -7,7 +7,7 @@ interface Navigatable : NavigateToService {
 
     fun <N : Navigatable> navigator(): Navigator<out N>?
 
-    override fun navigateTo(pathWithArgs: String) {
+    override fun navigateTo(pathWithArgs: String, builder: NavigateToBuilder?) {
         navigator<Navigatable>()?.navigateTo(pathWithArgs)
     }
 
@@ -15,11 +15,11 @@ interface Navigatable : NavigateToService {
         navigator<Navigatable>()?.navigateTo(intent)
     }
 
-    override fun navigateImplicitlyTo(action: String) {
+    override fun navigateImplicitlyTo(action: String, builder: NavigateToBuilder?) {
         navigator<Navigatable>()?.navigateTo(action)
     }
 
-    override fun navigateTo(kclass: KClass<out Navigatable>) {
+    override fun navigateTo(kclass: KClass<out Navigatable>, builder: NavigateToBuilder?) {
         navigator<Navigatable>()?.navigateTo(kclass)
     }
 }
