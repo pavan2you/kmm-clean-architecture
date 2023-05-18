@@ -53,6 +53,9 @@ open class TagdApplication : Application(), IApplication {
 
     lateinit var launcher : Launcher<*>
 
+    var lifeCycleObserver: ActivityLifeCycleObserver? = null
+        private set
+
     override val name: String
         get() = this.packageName
 
@@ -94,7 +97,9 @@ open class TagdApplication : Application(), IApplication {
     }
 
     private fun setupActivityCallbacksObserver() {
-        registerActivityLifecycleCallbacks(ActivityLifeCycleObserver(this))
+        registerActivityLifecycleCallbacks(ActivityLifeCycleObserver(this).also {
+            lifeCycleObserver = it
+        })
     }
 
     protected open fun setupExceptionHandler() {
@@ -215,6 +220,12 @@ open class TagdApplication : Application(), IApplication {
     }
 
     override fun controller(): ApplicationController<*>? = controller
+
+    val currentActivity
+        get() = lifeCycleObserver?.currentActivity()
+
+    val previousActivity
+        get() = lifeCycleObserver?.previousActivity()
 
     override fun onTerminate() {
         onExit()
