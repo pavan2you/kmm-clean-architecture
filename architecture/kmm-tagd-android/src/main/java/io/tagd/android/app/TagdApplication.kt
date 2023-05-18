@@ -32,6 +32,7 @@ import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
+import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.get
@@ -226,6 +227,20 @@ open class TagdApplication : Application(), IApplication {
 
     val previousActivity
         get() = lifeCycleObserver?.previousActivity()
+
+    /**
+     * Unsafe if Activity is not a [PresentableView]
+     */
+    override fun currentView(): PresentableView? {
+        return currentActivity as? PresentableView
+    }
+
+    /**
+     * Unsafe if Activity is not a [PresentableView]
+     */
+    override fun previousView(): PresentableView? {
+        return previousActivity as? PresentableView
+    }
 
     override fun onTerminate() {
         onExit()

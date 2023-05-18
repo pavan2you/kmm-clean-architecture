@@ -21,6 +21,7 @@ import io.tagd.arch.control.ApplicationController
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
+import io.tagd.arch.present.mvp.PresentableView
 
 class FakeApplication : IApplication {
 
@@ -29,6 +30,14 @@ class FakeApplication : IApplication {
 
     override fun versionTracker(): VersionTracker {
         return VersionTracker(1, 1)
+    }
+
+    override fun currentView(): PresentableView? {
+        return null
+    }
+
+    override fun previousView(): PresentableView? {
+        return null
     }
 
     override fun controller(): ApplicationController<*>? {

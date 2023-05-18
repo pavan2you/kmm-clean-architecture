@@ -23,6 +23,7 @@ import io.tagd.android.crosscutting.async.CoroutineDaoIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineDiskStrategy
 import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
 import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
+import io.tagd.arch.control.IApplication
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
@@ -77,6 +78,12 @@ open class Injector(application: TagdApplication) : AppService {
             bind(
                 key2<ReferenceHolder<Dispatchers>, Dispatchers>(),
                 ReferenceHolder(provideDispatchers())
+            )
+            bind(
+                key2<ReferenceHolder<
+                        WeakReference<IApplication>>,
+                        WeakReference<IApplication>>(),
+                ReferenceHolder(WeakReference(application))
             )
         }
     }
