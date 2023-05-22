@@ -21,6 +21,7 @@ import android.content.Context
 import io.tagd.arch.access.bind
 import io.tagd.arch.access.reference
 import io.tagd.arch.access.referenceHolder
+import io.tagd.arch.access.repository
 import io.tagd.arch.data.gateway.Gateway
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.core.Releasable
@@ -29,7 +30,9 @@ import io.tagd.di.inject
 import io.tagd.di.injectX
 import io.tagd.di.key
 import io.tagd.di.key2
+import io.tagd.di.key3
 import io.tagd.di.layer
+import io.tagd.di.typeOf
 import io.tagd.langx.UnixEpochInMillis
 
 class Usage : Releasable {
@@ -55,6 +58,9 @@ class Usage : Releasable {
     private var simpleRepo2Obj3 by injectX<SimpleRepo2>(
         key = key("Repo2Obj3")
     )
+    private var mapStringString by injectX(
+        key = key3<SimpleMappedRepository<String, String>, String, String>()
+    )
 
     fun use() {
         println("Gateway -> $simpleGateway")
@@ -75,6 +81,14 @@ class Usage : Releasable {
 
         val hello2 = referenceHolder(key2<ReferenceHolder<String>, String>())
         println("hello2 -> ${hello2?.value}")
+
+        val mapIntFloat = repository(key = key3<SimpleMappedRepository<Int, Float>, Int, Float>())
+        val anyToUnit = repository(key = key<SimpleMappedRepository<Any, Unit>>(
+            typeOf<Any>(), typeOf<Unit>()
+        ))
+        println("mapStringString -> " + mapStringString)
+        println("mapIntFloat -> " + mapIntFloat)
+        println("anyToUnit -> " + anyToUnit)
     }
 
     override fun release() {

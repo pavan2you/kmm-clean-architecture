@@ -64,4 +64,9 @@ class SimpleTypedService<T> : TypedService<T> {
     }
 }
 
+class SimpleMappedRepository<K, V> : Repository {
+    override fun release() {
+    }
+}
+
 class SomeObject

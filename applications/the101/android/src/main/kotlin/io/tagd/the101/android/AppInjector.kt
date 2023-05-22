@@ -56,6 +56,20 @@ class AppInjector {
                 )
                 bind(key("Repo2Obj2"), SimpleRepo2())
                 bind(key("Repo2Obj3"), SimpleRepo2())
+                bind(
+                    key3<SimpleMappedRepository<String, String>, String, String>(),
+                    SimpleMappedRepository()
+                )
+                bind(
+                    key3<SimpleMappedRepository<Int, Float>, Int, Float>(),
+                    SimpleMappedRepository()
+                )
+                bind(
+                    key<SimpleMappedRepository<Any, Unit>>(
+                        typeOf<Any>(), typeOf<Unit>()
+                    ),
+                    SimpleMappedRepository()
+                )
             }
 
             //Dao layer
