@@ -31,7 +31,7 @@ open class AppUncaughtExceptionHandler(
         WeakReference(defaultHandler)
 
     override fun uncaughtException(t: Thread, e: Throwable) {
-        Thread.getDefaultUncaughtExceptionHandler()?.uncaughtException(t, e)
+        defaultHandlerReference?.get()?.uncaughtException(t, e)
     }
 
     override fun asyncException(throwable: Throwable) {
