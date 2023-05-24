@@ -2,7 +2,6 @@ package io.tagd.android.mvnp
 
 import android.os.Bundle
 import io.tagd.android.mvp.MvpActivity
-import io.tagd.arch.present.mvnp.Navigatable
 import io.tagd.arch.present.mvnp.NavigatablePresenter
 import io.tagd.arch.present.mvnp.NavigatableView
 import io.tagd.arch.present.mvnp.Navigator
@@ -22,8 +21,7 @@ abstract class NavigatableActivity<
 
     protected abstract fun onCreateNavigator(savedInstanceState: Bundle?): N
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <N : Navigatable> navigator(): Navigator<N>? = navigator as? Navigator<N>
+    override fun navigator(): Navigator<V>? = navigator
 
     override fun release() {
         navigator?.release()

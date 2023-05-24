@@ -21,7 +21,7 @@ interface NavigateToService : Service, AsyncContext {
     fun navigateTo(kclass: KClass<out Navigatable>, builder: NavigateToBuilder? = null)
 }
 
-interface Navigator<N : Navigatable> : NavigateToService {
+interface Navigator<out N : Navigatable> : NavigateToService {
 
     val navigatable: Navigatable?
 

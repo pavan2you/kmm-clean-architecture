@@ -6,16 +6,14 @@ import io.tagd.langx.Context
 import io.tagd.langx.Intent
 import kotlin.reflect.KClass
 
-abstract class ModuleNavigator(val moduleName: String) : Navigator<Module> {
+abstract class ModuleNavigator(val module: Module) : Navigator<Module> {
 
-    override var navigatable: Navigatable?
-        get() = TODO("Not yet implemented")
-        set(value) {}
+    override var navigatable: Navigatable? = null
 
     fun <T : Navigatable> navigator() {
     }
 
-    fun putDecorNavigator(kclass: KClass<out Navigatable>, navigator: Navigator<out Navigatable>) {
+    fun putDecorNavigator(kclass: KClass<out Navigatable>, navigator: Navigator<Navigatable>) {
         //todo
     }
 

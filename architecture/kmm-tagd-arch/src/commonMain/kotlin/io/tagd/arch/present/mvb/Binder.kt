@@ -18,6 +18,7 @@
 package io.tagd.arch.present.mvb
 
 import io.tagd.arch.data.DataObject
+import io.tagd.arch.data.bind.Bindable
 import io.tagd.core.Releasable
 
 /**
@@ -29,7 +30,7 @@ import io.tagd.core.Releasable
  * To handle ui changes, the recommendation is to implement onChangeXXX(xxxValue) { ... }
  * Or having a template method onChange(elementId, elementValue) { ... }
  */
-interface Binder<T : DataObject, V : BindableView<T>> : Releasable {
+interface Binder<T : Any, V : Bindable<T>> : Releasable {
 
     val view: V?
 

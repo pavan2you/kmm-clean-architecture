@@ -40,8 +40,15 @@ typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
 
 interface Module : Factory, Navigatable {
 
-    override fun <N : Navigatable> navigator(): Navigator<out N>? {
-        return null
+    var navigator: ModuleNavigator?
+
+    override fun navigator(): Navigator<Module>? {
+        return navigator
+    }
+
+    override fun release() {
+        navigator?.release()
+        navigator = null
     }
 
     abstract class Builder<T : Module> : Factory.Builder<T>() {

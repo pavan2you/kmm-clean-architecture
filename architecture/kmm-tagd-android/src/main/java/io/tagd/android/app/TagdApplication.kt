@@ -32,6 +32,7 @@ import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
+import io.tagd.arch.module.ModuleNavigator
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.di.Global
 import io.tagd.di.Key
@@ -56,9 +57,6 @@ open class TagdApplication : Application(), IApplication {
 
     var lifeCycleObserver: ActivityLifeCycleObserver? = null
         private set
-
-    override val name: String
-        get() = this.packageName
 
     override fun onCreate() {
         super.onCreate()

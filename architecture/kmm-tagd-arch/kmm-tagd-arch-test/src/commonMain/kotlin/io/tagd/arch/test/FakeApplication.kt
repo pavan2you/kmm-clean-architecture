@@ -48,7 +48,4 @@ class FakeApplication : IApplication {
         controller?.onDestroy()
         controller = null
     }
-
-    override val name: String
-        get() = "fake-app"
 }
