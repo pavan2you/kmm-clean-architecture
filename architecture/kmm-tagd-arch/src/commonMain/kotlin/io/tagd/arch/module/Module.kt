@@ -38,18 +38,7 @@ import io.tagd.di.scope
 
 typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
 
-interface Module : Factory, Navigatable {
-
-    var navigator: ModuleNavigator?
-
-    override fun navigator(): Navigator<Module>? {
-        return navigator
-    }
-
-    override fun release() {
-        navigator?.release()
-        navigator = null
-    }
+interface Module : Factory {
 
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 

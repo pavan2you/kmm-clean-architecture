@@ -20,17 +20,17 @@ package io.tagd.arch.present.mvb
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import io.tagd.arch.data.DataObject
-import io.tagd.arch.test.FakeDataBinder
+import io.tagd.arch.test.FakeLifeCycleAwareBinder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
-class DataBinderTest {
+class LifeCycleAwareBinderTest {
 
     private val view: BindableView<DataObject> = mock()
-    private val binder = spy(FakeDataBinder(view))
+    private val binder = spy(FakeLifeCycleAwareBinder(view))
 
     @Test
     fun `verify view is not null`() {

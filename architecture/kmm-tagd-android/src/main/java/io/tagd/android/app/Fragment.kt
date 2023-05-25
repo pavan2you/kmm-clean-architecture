@@ -18,15 +18,9 @@
 package io.tagd.android.app
 
 import android.os.Bundle
-import io.tagd.arch.control.IApplication
-import io.tagd.arch.present.View
 
 abstract class Fragment : androidx.fragment.app.Fragment(),
-    View,
     AwaitReadyLifeCycleStatesOwner {
-
-    override val app: IApplication?
-        get() = context?.applicationContext as? IApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,11 +59,7 @@ abstract class Fragment : androidx.fragment.app.Fragment(),
     }
 
     override fun onDestroy() {
-        release()
-        super.onDestroy()
-    }
-
-    override fun release() {
         awaitReadyLifeCycleEventsDispatcher().unregister(this)
+        super.onDestroy()
     }
 }

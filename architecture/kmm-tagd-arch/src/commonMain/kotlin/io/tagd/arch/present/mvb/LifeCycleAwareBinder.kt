@@ -20,7 +20,7 @@ package io.tagd.arch.present.mvb
 import io.tagd.arch.data.DataObject
 import io.tagd.langx.ref.WeakReference
 
-abstract class DataBinder<T: DataObject, V: BindableView<T>>(view: V) : Binder<T, V> {
+abstract class LifeCycleAwareBinder<T: DataObject, V: BindableView<T>>(view: V) : Binder<T, V> {
 
     private val viewReference = WeakReference(view)
 

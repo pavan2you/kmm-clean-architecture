@@ -19,10 +19,10 @@ package io.tagd.arch.test
 
 import io.tagd.arch.data.DataObject
 import io.tagd.arch.present.mvb.BindableView
-import io.tagd.arch.present.mvb.DataBinder
+import io.tagd.arch.present.mvb.LifeCycleAwareBinder
 
-class FakeDataBinder<V : BindableView<DataObject>>(view: V) :
-    DataBinder<DataObject, BindableView<DataObject>>(view) {
+class FakeLifeCycleAwareBinder<V : BindableView<DataObject>>(view: V) :
+    LifeCycleAwareBinder<DataObject, BindableView<DataObject>>(view) {
 
     override fun onBind(model: DataObject, vararg optionals: Any?) {
     }

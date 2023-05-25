@@ -18,16 +18,10 @@
 package io.tagd.android.app
 
 import android.os.Bundle
-import io.tagd.arch.control.IApplication
-import io.tagd.arch.present.View
 
 abstract class AppCompatActivity :
     androidx.appcompat.app.AppCompatActivity(),
-    View,
     AwaitReadyLifeCycleStatesOwner {
-
-    override val app: IApplication?
-        get() = application as IApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,11 +63,7 @@ abstract class AppCompatActivity :
     }
 
     override fun onDestroy() {
-        release()
-        super.onDestroy()
-    }
-
-    override fun release() {
         awaitReadyLifeCycleEventsDispatcher().unregister(this)
+        super.onDestroy()
     }
 }
