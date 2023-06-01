@@ -10,7 +10,7 @@ import java.util.Queue
 
 open class AppLoadingStateHandler(application: TagdApplication) : Service, AsyncContext {
 
-    object States {
+    object Steps {
         const val INVALID = -1
         const val INITIALIZING = 0
         const val INJECTING = 1
@@ -24,6 +24,9 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
         private var nextStateRegistryId = initialNextId
         private val stateRegistry = LinkedHashMap<Int, String>()
         val insertedOrder = ArrayList<Int>()
+
+        val size: Int
+            get() = nextStateRegistryId
 
         fun register(stateLabel: String): Int {
             val stateId = nextStateRegistryId++
@@ -50,21 +53,21 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
     private val application
         get() = weakApplication?.get()
 
-    private val registry = StateRegistry(States.UPGRADING + 1)
+    private val registry = StateRegistry(Steps.UPGRADING + 1)
 
     private val toBeCompletedQueue : Queue<Int> = LinkedList()
 
-    private var currentState: Int = States.INVALID
+    private var currentState: Int = Steps.INVALID
 
     private var hasVersionChange: Boolean = false
 
     @MainThread
     fun start() {
-        if (currentState > States.INITIALIZING) {
+        if (currentState > Steps.INITIALIZING) {
             throw IllegalAccessException("Loading is already in progress")
         }
 
-        currentState = States.INITIALIZING
+        currentState = Steps.INITIALIZING
         dispatchRegisterState()
         toBeCompletedQueue.addAll(registry.insertedOrder)
         dispatchHandleState(nextState())
@@ -75,10 +78,10 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
     }
 
     protected open fun onRegisterState() {
-        registry.register(States.INJECTING, "injecting")
-        registry.register(States.LAUNCHING, "launching")
-        registry.register(States.VERSION_CHECK, "version-check")
-        registry.register(States.UPGRADING, "upgrading")
+        registry.register(Steps.INJECTING, "injecting")
+        registry.register(Steps.LAUNCHING, "launching")
+        registry.register(Steps.VERSION_CHECK, "version-check")
+        registry.register(Steps.UPGRADING, "upgrading")
     }
 
     fun register(stateLabel: String): Int {
@@ -91,6 +94,8 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
 
     @MainThread
     fun onComplete(state: Int) {
+        assert(state > Steps.INITIALIZING && state < registry.size)
+
         toBeCompletedQueue.remove(state)
         dispatchHandleState(nextState())
     }
@@ -105,7 +110,7 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
 
     private fun dispatchHandleState(state: Int) {
         if (state != this.currentState) {
-            if (state == States.INVALID) {
+            if (state == Steps.INVALID) {
                 dispatchLoadingDone()
             } else {
                 this.currentState = state
@@ -121,19 +126,19 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
     @MainThread
     protected open fun onHandleState(state: Int): Boolean {
         return when (state) {
-            States.INJECTING -> {
+            Steps.INJECTING -> {
                 application?.dispatchInject()
                 true
             }
-            States.LAUNCHING -> {
+            Steps.LAUNCHING -> {
                 /* no-op, taken care by OS */
                 true
             }
-            States.VERSION_CHECK -> {
+            Steps.VERSION_CHECK -> {
                 detectIfThereIsAnyVersionChange()
                 true
             }
-            States.UPGRADING -> {
+            Steps.UPGRADING -> {
                 handleUpgradeIfAny()
                 true
             }
@@ -147,14 +152,14 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
         if (application?.versionTracker()?.isVersionChange() == true) {
             hasVersionChange = true
         }
-        onComplete(States.VERSION_CHECK)
+        onComplete(Steps.VERSION_CHECK)
     }
 
     private fun handleUpgradeIfAny() {
         if (hasVersionChange) {
             application?.dispatchUpgrade()
         } else {
-            onComplete(States.UPGRADING)
+            onComplete(Steps.UPGRADING)
         }
     }
 

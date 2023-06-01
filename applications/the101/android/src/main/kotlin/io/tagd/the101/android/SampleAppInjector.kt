@@ -41,7 +41,7 @@ class SampleAppInjector(application: TagdApplication) : Injector(application), A
     private fun injectAsync() {
         compute(delay = 1000L) {
             present {
-                app?.dispatchOnLoadingStateStepDone(AppLoadingStateHandler.States.INJECTING)
+                app?.dispatchLoadingStepDone(AppLoadingStateHandler.Steps.INJECTING)
             }
         }
     }

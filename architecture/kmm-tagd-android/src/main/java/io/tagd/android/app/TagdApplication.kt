@@ -95,13 +95,15 @@ open class TagdApplication : Application(), IApplication {
         RELEASED
     }
 
-    private var state: State = State.INITIALIZING
+    protected var lifecycleState: State = State.INITIALIZING
+        private set
 
     private lateinit var loadingStateHandler: AppLoadingStateHandler
 
     private lateinit var launcherResolver: LauncherResolver
 
-    private lateinit var launcher: Launcher<*>
+    protected lateinit var launcher: Launcher<*>
+        private set
 
     protected var controller: ApplicationController<*>? = null
 
@@ -196,7 +198,7 @@ open class TagdApplication : Application(), IApplication {
     /* -----------------------------  Life Cycle State Dispatcher  ------------------------------ */
 
     private fun dispatchLoading() {
-        state = State.LOADING
+        lifecycleState = State.LOADING
         onLoading()
         controller?.onLoading()
     }
@@ -208,7 +210,7 @@ open class TagdApplication : Application(), IApplication {
     private fun dispatchLaunch() {
         this.onLaunch()
         controller?.onLaunch()
-        dispatchOnLoadingStateStepDone(AppLoadingStateHandler.States.LAUNCHING)
+        dispatchLoadingStepDone(AppLoadingStateHandler.Steps.LAUNCHING)
     }
 
     internal fun dispatchUpgrade() {
@@ -216,12 +218,16 @@ open class TagdApplication : Application(), IApplication {
         controller?.onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
     }
 
+    /**
+     * The [step] value must be one of [AppLoadingStateHandler.Steps] or the derived
+     * [AppLoadingStateHandler]'s steps.
+     */
     @MainThread
-    fun dispatchOnLoadingStateStepDone(state: Int) {
-        if (state == AppLoadingStateHandler.States.INJECTING) {
+    fun dispatchLoadingStepDone(step: Int) {
+        if (step == AppLoadingStateHandler.Steps.INJECTING) {
             setupVersionTracker()
         }
-        loadingStateHandler.onComplete(state)
+        loadingStateHandler.onComplete(step)
     }
 
     internal fun dispatchReady() {
@@ -275,26 +281,26 @@ open class TagdApplication : Application(), IApplication {
 
     open fun onUpgrade(oldVersion: Int, currentVersion: Int) {
         Handler(Looper.getMainLooper()).postDelayed({
-            dispatchOnLoadingStateStepDone(AppLoadingStateHandler.States.UPGRADING)
+            dispatchLoadingStepDone(AppLoadingStateHandler.Steps.UPGRADING)
         }, 1L)
     }
 
     @MainThread
     protected open fun onReady() {
-        state = State.READY
+        lifecycleState = State.READY
         controller?.onReady()
         appService<AwaitReadyLifeCycleEventsDispatcher>()?.dispatchOnReady()
     }
 
     @MainThread
     open fun onBackground() {
-        state = State.BACKGROUND
+        lifecycleState = State.BACKGROUND
         controller?.onBackground()
     }
 
     @MainThread
     open fun onForeground() {
-        state = State.FOREGROUND
+        lifecycleState = State.FOREGROUND
         controller?.onForeground()
     }
 
@@ -352,7 +358,7 @@ open class TagdApplication : Application(), IApplication {
     }
 
     override fun release() {
-        state = State.RELEASED
+        lifecycleState = State.RELEASED
         cancelAsync(this)
         controller?.onDestroy()
         controller = null
