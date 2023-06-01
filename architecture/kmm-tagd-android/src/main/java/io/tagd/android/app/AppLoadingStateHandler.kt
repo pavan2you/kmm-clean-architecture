@@ -19,32 +19,38 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
         const val UPGRADING = 4
     }
 
-    internal class StateRegistry(initialNextId: Int) : Releasable {
+    internal class StepRegistry(initialNextId: Int) : Releasable {
 
-        private var nextStateRegistryId = initialNextId
-        private val stateRegistry = LinkedHashMap<Int, String>()
+        private var nextStepRegistryId = initialNextId
+        private val registry = LinkedHashMap<Int, String>()
+        private val reverseRegistry = LinkedHashMap<String, Int>()
         val insertedOrder = ArrayList<Int>()
 
         val size: Int
-            get() = nextStateRegistryId
+            get() = nextStepRegistryId
 
-        fun register(stateLabel: String): Int {
-            val stateId = nextStateRegistryId++
-            return register(stateId, stateLabel)
+        fun register(stepLabel: String): Int {
+            val stepId = nextStepRegistryId++
+            return register(stepId, stepLabel)
         }
 
-        fun register(stateId: Int, stateLabel: String): Int {
-            stateRegistry[stateId] = stateLabel
-            insertedOrder.add(stateId)
-            return stateId
+        fun register(stepId: Int, stepLabel: String): Int {
+            registry[stepId] = stepLabel
+            reverseRegistry[stepLabel] = stepId
+            insertedOrder.add(stepId)
+            return stepId
         }
 
-        fun stateLabel(state: Int): String? {
-            return stateRegistry[state]
+        fun stepLabel(step: Int): String? {
+            return registry[step]
+        }
+
+        fun step(label: String): Int {
+            return reverseRegistry[label] ?: -1
         }
 
         override fun release() {
-            stateRegistry.clear()
+            registry.clear()
         }
     }
 
@@ -53,54 +59,58 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
     private val application
         get() = weakApplication?.get()
 
-    private val registry = StateRegistry(Steps.UPGRADING + 1)
+    private val registry = StepRegistry(Steps.UPGRADING + 1)
 
     private val toBeCompletedQueue : Queue<Int> = LinkedList()
 
-    private var currentState: Int = Steps.INVALID
+    private var currentStep: Int = Steps.INVALID
 
     private var hasVersionChange: Boolean = false
 
     @MainThread
     fun start() {
-        if (currentState > Steps.INITIALIZING) {
+        if (currentStep > Steps.INITIALIZING) {
             throw IllegalAccessException("Loading is already in progress")
         }
 
-        currentState = Steps.INITIALIZING
-        dispatchRegisterState()
+        currentStep = Steps.INITIALIZING
+        dispatchRegisterStep()
         toBeCompletedQueue.addAll(registry.insertedOrder)
-        dispatchHandleState(nextState())
+        dispatchHandleStep(nextStep())
     }
 
-    private fun dispatchRegisterState() {
-        onRegisterState()
+    private fun dispatchRegisterStep() {
+        onRegisterStep()
     }
 
-    protected open fun onRegisterState() {
+    protected open fun onRegisterStep() {
         registry.register(Steps.INJECTING, "injecting")
         registry.register(Steps.LAUNCHING, "launching")
         registry.register(Steps.VERSION_CHECK, "version-check")
         registry.register(Steps.UPGRADING, "upgrading")
     }
 
-    fun register(stateLabel: String): Int {
-        return registry.register(stateLabel)
+    fun register(stepLabel: String): Int {
+        return registry.register(stepLabel)
     }
 
-    fun stateLabel(state: Int): String? {
-        return registry.stateLabel(state)
+    fun stepLabel(step: Int): String? {
+        return registry.stepLabel(step)
+    }
+
+    fun step(label: String): Int {
+        return registry.step(label)
     }
 
     @MainThread
-    fun onComplete(state: Int) {
-        assert(state > Steps.INITIALIZING && state < registry.size)
+    fun onComplete(step: Int) {
+        assert(step > Steps.INITIALIZING && step < registry.size)
 
-        toBeCompletedQueue.remove(state)
-        dispatchHandleState(nextState())
+        toBeCompletedQueue.remove(step)
+        dispatchHandleStep(nextStep())
     }
 
-    private fun nextState(): Int {
+    private fun nextStep(): Int {
         return if (toBeCompletedQueue.isEmpty()) {
             -1
         } else {
@@ -108,13 +118,13 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
         }
     }
 
-    private fun dispatchHandleState(state: Int) {
-        if (state != this.currentState) {
-            if (state == Steps.INVALID) {
+    private fun dispatchHandleStep(step: Int) {
+        if (step != this.currentStep) {
+            if (step == Steps.INVALID) {
                 dispatchLoadingDone()
             } else {
-                this.currentState = state
-                onHandleState(state)
+                this.currentStep = step
+                onHandleStep(step)
             }
         }
     }
@@ -124,8 +134,8 @@ open class AppLoadingStateHandler(application: TagdApplication) : Service, Async
     }
 
     @MainThread
-    protected open fun onHandleState(state: Int): Boolean {
-        return when (state) {
+    protected open fun onHandleStep(step: Int): Boolean {
+        return when (step) {
             Steps.INJECTING -> {
                 application?.dispatchInject()
                 true

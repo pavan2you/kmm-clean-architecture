@@ -11,19 +11,19 @@ import io.tagd.arch.library.usecase
 class SampleAppLoadingStateHandler(application: TagdApplication) :
     AppLoadingStateHandler(application) {
 
-    override fun onRegisterState() {
-        super.onRegisterState()
+    override fun onRegisterStep() {
+        super.onRegisterStep()
         register(APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK)
     }
 
-    override fun onHandleState(state: Int): Boolean {
-        var handled = super.onHandleState(state)
+    override fun onHandleStep(step: Int): Boolean {
+        var handled = super.onHandleStep(step)
 
         if (!handled) {
 
-            when (stateLabel(state)) {
+            when (stepLabel(step)) {
                 APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK -> {
-                    doHeavyLongBackgroundWork(state)
+                    doHeavyLongBackgroundWork(step)
                     handled = true
                 }
             }
