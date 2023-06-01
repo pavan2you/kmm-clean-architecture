@@ -70,6 +70,34 @@ class LifeCycleAwareApplicationControllerTest {
     }
 
     @Test
+    fun `verify onLoading is called`() {
+        var called = false
+        Mockito.`when`(controller.onLoading()).thenAnswer {
+            it.callRealMethod()
+            called = true
+            return@thenAnswer Unit
+        }
+
+        controller.onLoading()
+
+        assert(called)
+    }
+
+    @Test
+    fun `verify onUpgrade is called`() {
+        var called = false
+        Mockito.`when`(controller.onUpgrade(1, 2)).thenAnswer {
+            it.callRealMethod()
+            called = true
+            return@thenAnswer Unit
+        }
+
+        controller.onUpgrade(1, 2)
+
+        assert(called)
+    }
+
+    @Test
     fun `verify onReady is called`() {
         var called = false
         Mockito.`when`(controller.onReady()).thenAnswer {

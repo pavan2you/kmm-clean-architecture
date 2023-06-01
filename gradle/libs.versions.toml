@@ -1,14 +1,13 @@
 [versions]
-androidGradlePlugin = "8.0-rc-4"
-androidGradleBuildPlugin = "8.1.0-alpha09"
+androidGradlePlugin = "8.1.0-beta03"
 androidPlugin = "8.1.0-alpha11"
 androidMaterial = "1.9.0"
-androidxActivity = "1.7.1"
+androidxActivity = "1.7.2"
 androidxAppCompat = "1.6.1"
-androidxCore = "1.10.0"
-androidxComposeFoundation = "1.4.2"
-androidxComposeMaterial = "1.4.2"
-androidxComposeUi = "1.4.2"
+androidxCore = "1.10.1"
+androidxComposeFoundation = "1.4.3"
+androidxComposeMaterial = "1.4.3"
+androidxComposeUi = "1.4.3"
 androidxTestCore = "1.5.0"
 androidxTestEspresso = "3.5.1"
 androidxTestExt = "1.1.5"
@@ -51,7 +50,7 @@ tagd-arch = { group = "io.github.pavan2you", name = "kmm-tagd-arch", version.ref
 tagd-android = { group = "io.github.pavan2you", name = "kmm-tagd-android", version.ref = "tagd" }
 
 # Dependencies of the included build-logic
-android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradleBuildPlugin" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 

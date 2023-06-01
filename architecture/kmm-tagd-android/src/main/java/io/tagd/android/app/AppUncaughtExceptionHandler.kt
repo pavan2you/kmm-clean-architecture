@@ -26,12 +26,12 @@ open class AppUncaughtExceptionHandler(
     defaultHandler: Thread.UncaughtExceptionHandler?
 ) : Thread.UncaughtExceptionHandler, AppService, AsyncExceptionHandler {
 
-    private var appReference: WeakReference<TagdApplication>? = WeakReference(app)
-    private var defaultHandlerReference: WeakReference<Thread.UncaughtExceptionHandler>? =
+    private var weakApplication: WeakReference<TagdApplication>? = WeakReference(app)
+    private var weakDefaultHandler: WeakReference<Thread.UncaughtExceptionHandler>? =
         WeakReference(defaultHandler)
 
     override fun uncaughtException(t: Thread, e: Throwable) {
-        defaultHandlerReference?.get()?.uncaughtException(t, e)
+        weakDefaultHandler?.get()?.uncaughtException(t, e)
     }
 
     override fun asyncException(throwable: Throwable) {
@@ -41,10 +41,10 @@ open class AppUncaughtExceptionHandler(
     }
 
     override fun release() {
-        appReference?.clear()
-        appReference = null
+        weakApplication?.clear()
+        weakApplication = null
 
-        defaultHandlerReference?.clear()
-        defaultHandlerReference = null
+        weakDefaultHandler?.clear()
+        weakDefaultHandler = null
     }
 }

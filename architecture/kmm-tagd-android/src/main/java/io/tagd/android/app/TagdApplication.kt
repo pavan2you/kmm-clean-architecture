@@ -32,199 +32,88 @@ import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
-import io.tagd.arch.module.ModuleNavigator
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.get
 
+/**
+ * The [TagdApplication] addresses some of the core problems associated to an android [Application].
+ * It comes with
+ * - enriched states - [TagdApplication.State]
+ * - handles injection
+ * - handles launch time loading
+ * - default exception handler
+ * - an application controller
+ */
 open class TagdApplication : Application(), IApplication {
 
+    /**
+     * The [TagdApplication] states
+     */
     enum class State {
-        INITIALIZING, LAUNCHING, UPGRADING, LOADING, READY, BACKGROUND, FOREGROUND, RELEASED
+        /**
+         * The state from the [TagdApplication] construction to [onCreate] end.
+         */
+        INITIALIZING,
+
+        /**
+         * The state for any app level loading work. This is the next state after [INITIALIZING].
+         * In [LOADING] state, the [TagdApplication] is supposed to perform
+         * - loading system libraries
+         * - dependency injection
+         * - retrieving application specific global state
+         * - performing upgrade
+         * - fetch remote config
+         */
+        LOADING,
+
+        /**
+         * When the application completes loading launch time dependencies, then it moves to [READY]
+         * state. This is safe to assume that, the app is now have all the global state,
+         * dependencies, libraries etc.
+         *
+         * This is the first opportunity to trigger any domain logic.
+         */
+        READY,
+
+        /**
+         * When the last shown window(/activity) goes to background, then
+         * [ActivityLifeCycleObserver] determines whether it is a true [BACKGROUND] state to app.
+         */
+        BACKGROUND,
+
+        /**
+         * When an application specific window(/activity) comes into visibility, then
+         * [ActivityLifeCycleObserver] determines whether it is a true [FOREGROUND] state to app.
+         */
+        FOREGROUND,
+
+        /**
+         * When the application's process is going to be killed then it will be called.
+         */
+        RELEASED
     }
+
+    private var state: State = State.INITIALIZING
+
+    private lateinit var loadingStateHandler: AppLoadingStateHandler
+
+    private lateinit var launcherResolver: LauncherResolver
+
+    private lateinit var launcher: Launcher<*>
 
     protected var controller: ApplicationController<*>? = null
-    protected lateinit var versionTracker: VersionTracker
-        private set
 
-    var lifecycleState : State = State.INITIALIZING
-        private set
+    private lateinit var versionTracker: VersionTracker
 
-    private lateinit var launcherResolver : LauncherResolver
-
-    lateinit var launcher : Launcher<*>
-
-    var lifeCycleObserver: ActivityLifeCycleObserver? = null
-        private set
-
-    override fun onCreate() {
-        super.onCreate()
-        setupSelf()
-        initController()
-    }
-
-    protected open fun setupSelf() {
-        setupLauncherResolver()
-        setupActivityCallbacksObserver()
-        setupExceptionHandler()
-        setupInjector()
-        onInject()
-        initVersionTracker()
-    }
-
-    protected open fun setupLauncherResolver() {
-        launcherResolver = configLauncherResolver()
-    }
-
-    protected open fun configLauncherResolver() =
-        LauncherResolver.Builder().schemes(listOf("http", "https")).hosts(listOf()).build()
-
-    fun resolveLauncher(activity: Activity, savedInstanceState: Bundle?) {
-        launcher = launcherResolver.resolve(activity, savedInstanceState)
-        onLaunch()
-    }
-
-    fun resolve(service: Service, marshalledJob: String) {
-        launcher = launcherResolver.resolve(service, marshalledJob)
-        onLaunch()
-    }
-
-    fun resolve(receiver: BroadcastReceiver, marshalledEvent: String) {
-        launcher = launcherResolver.resolve(receiver, marshalledEvent)
-        onLaunch()
-    }
-
-    private fun setupActivityCallbacksObserver() {
-        registerActivityLifecycleCallbacks(ActivityLifeCycleObserver(this).also {
-            lifeCycleObserver = it
-        })
-    }
-
-    protected open fun setupExceptionHandler() {
-        Thread.setDefaultUncaughtExceptionHandler(
-            AppUncaughtExceptionHandler(
-                this,
-                Thread.getDefaultUncaughtExceptionHandler()
-            )
-        )
-    }
-
-    protected open fun setupInjector() {
-        Injector.setInjector(initInjector())
-    }
-
-    protected open fun initInjector() = Injector(this)
-
-    protected open fun onInject() {
-        appService<Injector>()?.inject()
-    }
-
-    private fun initVersionTracker() {
-        versionTracker = onCreateVersionTracker()
-    }
-
-    protected open fun onCreateVersionTracker(): VersionTracker {
-        return VersionTracker(1, 1)
-    }
-
-    private fun initController() {
-        controller = onCreateController()
-        controller?.onCreate()
-    }
-
-    protected open fun onCreateController(): ApplicationController<*> =
-        LifeCycleAwareApplicationController(this)
-
-    protected open fun onLaunch() {
-        lifecycleState = State.LAUNCHING
-        interceptOnLaunch()
-        controller?.onLaunch()
-
-        resolveUpgrade()
-
-        lifecycleState = State.LOADING
-        onLoading()
-        controller?.onLoading()
-    }
-
-    protected open fun interceptOnLaunch() {
-        //no-op
-    }
-
-    private fun resolveUpgrade() {
-        if (versionTracker.isVersionChange()) {
-            lifecycleState = State.UPGRADING
-            onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
-        }
-    }
-
-    open fun onUpgrade(oldVersion: Int, currentVersion: Int) {
-        //no-op
-    }
-
-    /**
-     * The applications must override this to load any long running launch time dependencies
-     * like system libraries, database setup etc
-     */
-    protected open fun onLoading() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            dispatchOnLoadingComplete()
-        }, 1L)
-    }
-
-    /**
-     * If applications overriding [TagdApplication.onLoading] then they must ensure
-     * [dispatchOnLoadingComplete] will be called as the last step
-     */
-    protected fun dispatchOnLoadingComplete() {
-        onReady()
-    }
-
-    @MainThread
-    protected open fun onReady() {
-        lifecycleState = State.READY
-        controller?.onReady()
-        appService<AwaitReadyLifeCycleEventsDispatcher>()?.dispatchOnReady()
-    }
-
-    @MainThread
-    open fun onForeground() {
-        lifecycleState = State.FOREGROUND
-        controller?.onForeground()
-    }
-
-    @MainThread
-    open fun onBackground() {
-        lifecycleState = State.BACKGROUND
-        controller?.onBackground()
-    }
-
-    @MainThread
-    open fun onPushNotification(notification: Notification) {
-        //no-op
-    }
-
-    @MainThread
-    open fun onDeeplink(uri: Uri) {
-        //no-op
-    }
-
-    inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
-        return Global.get<AppService, S>(key ?: io.tagd.di.key())
-    }
-
-    override fun versionTracker(): VersionTracker {
-        return versionTracker
-    }
-
-    override fun controller(): ApplicationController<*>? = controller
+    protected var activityLifecycleObserver: ActivityLifeCycleObserver? = null
 
     val currentActivity
-        get() = lifeCycleObserver?.currentActivity()
+        get() = activityLifecycleObserver?.currentActivity()
 
     val previousActivity
-        get() = lifeCycleObserver?.previousActivity()
+        get() = activityLifecycleObserver?.previousActivity()
 
     /**
      * Unsafe if Activity is not a [PresentableView]
@@ -240,6 +129,218 @@ open class TagdApplication : Application(), IApplication {
         return previousActivity as? PresentableView
     }
 
+    override fun versionTracker(): VersionTracker {
+        return versionTracker
+    }
+
+    override fun controller(): ApplicationController<*>? = controller
+
+    inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
+        return Global.get<AppService, S>(key ?: io.tagd.di.key())
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////  Application's Life Cycle  ///////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onCreate() {
+        super.onCreate()
+        setupSelf()
+        setupController()
+        dispatchLoading()
+    }
+
+    /* ------------------------------------  Setup Self ----------------------------------------- */
+
+    protected open fun setupSelf() {
+        setupActivityLifeCycleObserver()
+        setupLoadingStateHandler()
+        setupLauncherResolver()
+        setupExceptionHandler()
+        setupInjector()
+    }
+
+    private fun setupActivityLifeCycleObserver() {
+        registerActivityLifecycleCallbacks(newActivityLifeCycleObserver())
+    }
+
+    private fun setupLoadingStateHandler() {
+        loadingStateHandler = newLoadingStateHandler()
+    }
+
+    private fun setupLauncherResolver() {
+        launcherResolver = newLauncherResolver()
+    }
+
+    private fun setupExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(newUncaughtExceptionHandler())
+    }
+
+    private fun setupInjector() {
+        Injector.setInjector(newInjector())
+    }
+
+
+    /* ----------------------------------  Setup Controller  ------------------------------------ */
+
+    private fun setupController() {
+        controller = onCreateController()
+        controller?.onCreate()
+    }
+
+    protected open fun onCreateController(): ApplicationController<*> =
+        LifeCycleAwareApplicationController(this)
+
+
+    /* -----------------------------  Life Cycle State Dispatcher  ------------------------------ */
+
+    private fun dispatchLoading() {
+        state = State.LOADING
+        onLoading()
+        controller?.onLoading()
+    }
+
+    internal fun dispatchInject() {
+        onInject()
+    }
+
+    private fun dispatchLaunch() {
+        this.onLaunch()
+        controller?.onLaunch()
+        dispatchOnLoadingStateStepDone(AppLoadingStateHandler.States.LAUNCHING)
+    }
+
+    internal fun dispatchUpgrade() {
+        onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
+        controller?.onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
+    }
+
+    @MainThread
+    fun dispatchOnLoadingStateStepDone(state: Int) {
+        if (state == AppLoadingStateHandler.States.INJECTING) {
+            setupVersionTracker()
+        }
+        loadingStateHandler.onComplete(state)
+    }
+
+    internal fun dispatchReady() {
+        onReady()
+    }
+
+    /* ------------------------------  Life Cycle State Handler  -------------------------------- */
+
+    protected open fun onInject() {
+        appService<Injector>()?.inject()
+    }
+
+    /**
+     * The applications must override this to load any long running launch time dependencies
+     * like system libraries, database setup etc
+     */
+    protected open fun onLoading() {
+        loadingStateHandler.start()
+/*        Handler(Looper.getMainLooper()).postDelayed({
+            dispatchOnLoadingComplete()
+        }, 1L)*/
+    }
+
+    fun resolveLauncher(activity: Activity, savedInstanceState: Bundle?) {
+        launcher = launcherResolver.resolve(activity, savedInstanceState)
+        dispatchLaunch()
+    }
+
+    fun resolveLauncher(service: Service, marshalledJob: String) {
+        launcher = launcherResolver.resolve(service, marshalledJob)
+        dispatchLaunch()
+    }
+
+    fun resolveLauncher(receiver: BroadcastReceiver, marshalledEvent: String) {
+        launcher = launcherResolver.resolve(receiver, marshalledEvent)
+        dispatchLaunch()
+    }
+
+    protected open fun onLaunch() {
+        //no-op
+    }
+
+    /**
+     * This must be called after [onInject], the reason being [newVersionTracker] may need
+     * IO dependencies to read versions. Example - reading version information from
+     * SharedPreferences.
+     */
+    protected open fun setupVersionTracker() {
+        versionTracker = newVersionTracker()
+    }
+
+    open fun onUpgrade(oldVersion: Int, currentVersion: Int) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            dispatchOnLoadingStateStepDone(AppLoadingStateHandler.States.UPGRADING)
+        }, 1L)
+    }
+
+    @MainThread
+    protected open fun onReady() {
+        state = State.READY
+        controller?.onReady()
+        appService<AwaitReadyLifeCycleEventsDispatcher>()?.dispatchOnReady()
+    }
+
+    @MainThread
+    open fun onBackground() {
+        state = State.BACKGROUND
+        controller?.onBackground()
+    }
+
+    @MainThread
+    open fun onForeground() {
+        state = State.FOREGROUND
+        controller?.onForeground()
+    }
+
+    /* ---------------------  Setup's Default Implementations Provider  ------------------------- */
+
+    protected open fun newActivityLifeCycleObserver(): ActivityLifeCycleObserver {
+        return ActivityLifeCycleObserver(this).also {
+            activityLifecycleObserver = it
+        }
+    }
+
+    protected open fun newLoadingStateHandler(): AppLoadingStateHandler {
+        return AppLoadingStateHandler(this)
+    }
+
+    protected open fun newLauncherResolver(): LauncherResolver =
+        LauncherResolver.Builder()
+            .schemes(listOf("http", "https"))
+            .hosts(listOf())
+            .build()
+
+    protected open fun newUncaughtExceptionHandler(): AppUncaughtExceptionHandler {
+        return AppUncaughtExceptionHandler(
+            this,
+            Thread.getDefaultUncaughtExceptionHandler()
+        )
+    }
+
+    protected open fun newInjector(): Injector = Injector(this)
+
+    protected open fun newVersionTracker(): VersionTracker {
+        return VersionTracker(1, 1)
+    }
+
+    @MainThread
+    open fun onPushNotification(notification: Notification) {
+        //no-op
+    }
+
+    @MainThread
+    open fun onDeeplink(uri: Uri) {
+        //no-op
+    }
+
+    /* -----------------------------  Application's Exit Handler  ------------------------------- */
+
     override fun onTerminate() {
         onExit()
         super.onTerminate()
@@ -251,7 +352,7 @@ open class TagdApplication : Application(), IApplication {
     }
 
     override fun release() {
-        lifecycleState = State.RELEASED
+        state = State.RELEASED
         cancelAsync(this)
         controller?.onDestroy()
         controller = null

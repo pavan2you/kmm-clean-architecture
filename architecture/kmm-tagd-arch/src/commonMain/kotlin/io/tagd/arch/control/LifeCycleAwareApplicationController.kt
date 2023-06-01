@@ -35,6 +35,10 @@ open class LifeCycleAwareApplicationController<A : IApplication>(application: A)
         //no op
     }
 
+    override fun onUpgrade(oldVersion: Int, currentVersion: Int) {
+        //no op
+    }
+
     override fun onLoading() {
         //no op
     }

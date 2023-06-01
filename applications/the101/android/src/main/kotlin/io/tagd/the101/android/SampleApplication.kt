@@ -17,62 +17,17 @@
 
 package io.tagd.the101.android
 
-import android.os.Handler
-import android.os.Looper
+import io.tagd.android.app.AppLoadingStateHandler
 import io.tagd.android.app.Injector
 import io.tagd.android.app.TagdApplication
-import io.tagd.arch.access.library
-import io.tagd.arch.access.usecase
-import io.tagd.arch.domain.usecase.Command
-import io.tagd.arch.library.Library
-import io.tagd.arch.library.inject
-import io.tagd.arch.library.usecase
-import io.tagd.di.Global
-import io.tagd.di.key
-import io.tagd.di.layer
 
 class SampleApplication : TagdApplication() {
 
-    override fun initInjector(): Injector {
-        return MyInjector(this)
+    override fun newLoadingStateHandler(): AppLoadingStateHandler {
+        return SampleAppLoadingStateHandler(this)
     }
 
-    override fun onLoading() {
-        library<SampleLibrary>()?.let {
-            val usecase = it.usecase<LibraryUsecase>()
-            println("access usecase within library scope $usecase")
-            println("access usecase through global scope ${usecase<LibraryUsecase>()}")
-            usecase?.execute()
-        }
-        Handler(Looper.getMainLooper()).postDelayed({
-            dispatchOnLoadingComplete()
-        }, 5000)
-    }
-
-    class MyInjector(application: TagdApplication) : Injector(application) {
-
-        override fun inject() {
-            super.inject()
-            with(Global) {
-                layer<Library> {
-                    bind(key(), initSampleLibrary())
-                }
-                println()
-            }
-        }
-
-        private fun initSampleLibrary(): SampleLibrary {
-            return SampleLibrary.Builder()
-                .name("sample").
-                inject {
-                    println("inside library specific injection")
-                    layer<Command<*, *>> {
-                        bind(key(), LibraryUsecase())
-                    }
-                }.injectBidirectionalDependents {
-                    println("inside bidirectional dependents")
-                }
-                .build()
-        }
+    override fun newInjector(): Injector {
+        return SampleAppInjector(this)
     }
 }

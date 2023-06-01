@@ -27,6 +27,8 @@ interface ApplicationController<A : IApplication> : Releasable {
 
     fun onLaunch()
 
+    fun onUpgrade(oldVersion: Int, currentVersion: Int)
+
     fun onLoading()
 
     fun onReady()
