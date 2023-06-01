@@ -11,8 +11,8 @@ import java.util.Queue
 open class AppLoadingStateHandler(application: TagdApplication) : Service, AsyncContext {
 
     object Steps {
-        const val INVALID = -1
-        const val INITIALIZING = 0
+        internal const val INVALID = -1
+        internal const val INITIALIZING = 0
         const val INJECTING = 1
         const val LAUNCHING = 2
         internal const val VERSION_CHECK = 3
