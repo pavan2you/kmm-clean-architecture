@@ -20,11 +20,12 @@ package io.tagd.arch.control
 import io.tagd.arch.access.reference
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.infra.ReferenceHolder
+import io.tagd.arch.module.Module
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.di.key2
 import io.tagd.langx.ref.WeakReference
 
-interface IApplication : AsyncContext {
+interface IApplication : Module, AsyncContext {
 
     fun versionTracker() : VersionTracker
 

@@ -95,6 +95,9 @@ open class TagdApplication : Application(), IApplication {
         RELEASED
     }
 
+    override val name: String
+        get() = applicationModuleName()
+
     protected var lifecycleState: State = State.INITIALIZING
         private set
 
@@ -140,6 +143,8 @@ open class TagdApplication : Application(), IApplication {
     inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
         return Global.get<AppService, S>(key ?: io.tagd.di.key())
     }
+
+    protected open fun applicationModuleName() = Global.name
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
