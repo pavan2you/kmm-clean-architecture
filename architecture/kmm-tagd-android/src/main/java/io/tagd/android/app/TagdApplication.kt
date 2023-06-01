@@ -95,7 +95,11 @@ open class TagdApplication : Application(), IApplication {
         RELEASED
     }
 
-    override val name: String
+    /**
+     * Recommended to use [applicationModuleName] if child classes wants to customize the
+     * default application module name
+     */
+    final override val name: String
         get() = applicationModuleName()
 
     protected var lifecycleState: State = State.INITIALIZING

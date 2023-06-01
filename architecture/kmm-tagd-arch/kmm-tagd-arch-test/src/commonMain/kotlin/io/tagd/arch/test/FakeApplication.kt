@@ -25,6 +25,9 @@ import io.tagd.arch.present.mvp.PresentableView
 
 class FakeApplication : IApplication {
 
+    override val name: String
+        get() = "fake"
+
     var controller: ApplicationController<IApplication>? =
         LifeCycleAwareApplicationController(this)
 
