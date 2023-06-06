@@ -48,6 +48,14 @@ open class Injector(application: TagdApplication) : AppService {
     protected val app: TagdApplication?
         get() = appReference?.get()
 
+    /**
+     * Must be used for only synchronous injection, and must not be called this beyond application
+     * setup flow
+     */
+    open fun setup() {
+        //no-op
+    }
+
     open fun inject() {
         app?.let { application ->
             with(Global) {

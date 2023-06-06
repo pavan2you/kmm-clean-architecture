@@ -13,11 +13,14 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 internal fun Project.configureKotlinInAndroidBlock(
     commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
+
     commonExtension.apply {
         compileSdk = 33
 
         defaultConfig {
             minSdk = 21
+
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
         compileOptions {

@@ -189,7 +189,10 @@ open class TagdApplication : Application(), IApplication {
     }
 
     private fun setupInjector() {
-        Injector.setInjector(newInjector())
+        newInjector().also { injector ->
+            Injector.setInjector(injector)
+            injector.setup()
+        }
     }
 
 

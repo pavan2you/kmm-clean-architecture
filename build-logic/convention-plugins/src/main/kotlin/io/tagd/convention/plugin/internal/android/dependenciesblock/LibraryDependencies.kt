@@ -23,6 +23,12 @@ internal fun Project.configureAndroidLibraryDependencies() {
         add("api", libs.findLibrary("androidx.appcompat").get())
         add("api", libs.findLibrary("androidx.core.ktx").get())
 
+        add("testImplementation", kotlin("test"))
+        add("testImplementation", libs.findLibrary("junit4").get())
+        add("testImplementation", libs.findLibrary("mockito.core").get())
+        add("testImplementation", libs.findLibrary("mockito.inline").get())
+        add("testImplementation", libs.findLibrary("mockito.kotlin").get())
+
         add("androidTestImplementation", kotlin("test"))
         add(
             "androidTestImplementation",
@@ -32,10 +38,5 @@ internal fun Project.configureAndroidLibraryDependencies() {
             "androidTestImplementation",
             libs.findLibrary("androidx.test.espresso.core").get()
         )
-
-        add("testImplementation", kotlin("test"))
-        add("testImplementation", libs.findLibrary("mockito.core").get())
-        add("testImplementation", libs.findLibrary("mockito.inline").get())
-        add("testImplementation", libs.findLibrary("mockito.kotlin").get())
     }
 }
