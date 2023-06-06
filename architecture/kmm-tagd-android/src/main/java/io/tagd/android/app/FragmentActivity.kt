@@ -19,8 +19,7 @@ package io.tagd.android.app
 
 import android.os.Bundle
 
-abstract class ComponentActivity :
-    androidx.activity.ComponentActivity(),
+abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
     AwaitReadyLifeCycleStatesOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {

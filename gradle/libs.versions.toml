@@ -12,7 +12,7 @@ androidxTestCore = "1.5.0"
 androidxTestEspresso = "3.5.1"
 androidxTestExt = "1.1.5"
 guava = "31.0.1-android"
-gson = "2.9.0"
+gson = "2.10.1"
 jdk8LibsDesugar = "2.0.3"
 junit4 = "4.13.2"
 junitPlugin = "1.1.5"
@@ -25,6 +25,7 @@ tagd = "0.0.0-alpha06-snapshot"
 
 [libraries]
 android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidxActivity" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppCompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
