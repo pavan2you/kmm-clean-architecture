@@ -213,14 +213,16 @@ object Global : Scope() {
     }
 
     fun <S : Service> notifyDependents(key: Key<S>, instance: S) {
-        val dependents = dependencyDag[key]
-        dependents?.forEach {
-            it.onDependencyAvailable(key, instance)
-        }
-        dependents?.clear()
-        dependencyDag.remove(key)
-        if (dependencyDag.isEmpty()) {
-            dispatchDagFinish()
+        if (dependencyDag.containsKey(key)) {
+            val dependents = dependencyDag[key]
+            dependents?.forEach {
+                it.onDependencyAvailable(key, instance)
+            }
+            dependents?.clear()
+            dependencyDag.remove(key)
+            if (dependencyDag.isEmpty()) {
+                dispatchDagFinish()
+            }
         }
     }
 

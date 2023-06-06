@@ -18,12 +18,12 @@
 package io.tagd.android.mvp
 
 import android.os.Bundle
-import io.tagd.android.app.AppCompatActivity
+import io.tagd.android.app.ComponentActivity
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.Presenter
 
-abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatActivity(),
+abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : ComponentActivity(),
     PresentableView {
 
     protected var presenter: P? = null

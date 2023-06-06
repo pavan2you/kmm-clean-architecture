@@ -40,7 +40,11 @@ interface DependableService : Service, Releasable {
 
     fun initializing() = state === State.INITIALIZING
 
+    fun awaiting() = state === State.AWAITING
+
     fun ready() = state === State.READY
+
+    fun dirty() = state === State.DIRTY
 
     override fun release() {
         state = State.DIRTY

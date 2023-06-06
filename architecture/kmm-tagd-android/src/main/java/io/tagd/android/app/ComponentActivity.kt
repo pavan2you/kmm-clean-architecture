@@ -19,8 +19,8 @@ package io.tagd.android.app
 
 import android.os.Bundle
 
-abstract class AppCompatActivity :
-    androidx.appcompat.app.AppCompatActivity(),
+abstract class ComponentActivity :
+    androidx.activity.ComponentActivity(),
     AwaitReadyLifeCycleStatesOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
