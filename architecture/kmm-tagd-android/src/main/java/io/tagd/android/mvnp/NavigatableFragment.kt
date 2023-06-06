@@ -24,10 +24,10 @@ import io.tagd.arch.present.mvnp.NavigatableView
 import io.tagd.arch.present.mvnp.Navigator
 
 abstract class NavigatableFragment<
-        V : NavigatableView,
-        N : Navigator<V>,
-        P : NavigatablePresenter<V, N>
-        > : MvpFragment<V, P>(), NavigatableView {
+    V : NavigatableView,
+    N : Navigator<V>,
+    P : NavigatablePresenter<V, N>
+> : MvpFragment<V, P>(), NavigatableView {
 
     protected var navigator: N? = null
 

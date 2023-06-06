@@ -34,9 +34,12 @@ import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.bind
+import io.tagd.di.key
 
 inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instance: S) {
-    Global.bind<T, S>(key, instance)
+    val keyDerived = key ?: key()
+    Global.bind<T, S>(keyDerived, instance)
+    Global.notifyDependents(keyDerived, instance)
 }
 
 /**

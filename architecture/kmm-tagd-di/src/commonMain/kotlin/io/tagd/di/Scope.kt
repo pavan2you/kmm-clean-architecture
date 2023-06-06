@@ -190,4 +190,41 @@ inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, 
     }
 }
 
-object Global : Scope()
+object Global : Scope() {
+
+    private val dependencyDag = hashMapOf<Key<out Service>, ArrayList<DependableService>> ()
+    var dagFinishCallback: (() -> Unit)? = null
+
+    fun <T : DependableService> dependsOn(
+        dependent: T,
+        influencers: List<Key<out Service>>
+    ) {
+
+        influencers.forEach { influencer ->
+            var dependents = dependencyDag[influencer]
+            if (dependents == null) {
+                dependents = arrayListOf()
+                dependencyDag[influencer] = dependents
+            }
+            if (!dependents.contains(dependent)) {
+                dependents.add(dependent)
+            }
+        }
+    }
+
+    fun <S : Service> notifyDependents(key: Key<S>, instance: S) {
+        val dependents = dependencyDag[key]
+        dependents?.forEach {
+            it.onDependencyAvailable(key, instance)
+        }
+        dependents?.clear()
+        dependencyDag.remove(key)
+        if (dependencyDag.isEmpty()) {
+            dispatchDagFinish()
+        }
+    }
+
+    private fun dispatchDagFinish() {
+        dagFinishCallback?.invoke()
+    }
+}
