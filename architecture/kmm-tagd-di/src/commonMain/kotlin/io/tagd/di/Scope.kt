@@ -30,6 +30,13 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
     private var scopes: MutableMap<String, Scope>? = mutableMapOf()
     private var mutableState: State? = State()
 
+    private var dependsOnHandler: DependsOnHandler? = DependsOnHandler()
+    var dependsOnFinishCallback: (() -> Unit)? = null
+        set(value) {
+            field = value
+            dependsOnHandler?.finishCallback = value
+        }
+
     val locator: Locator
         get() = mutableLocator!!
 
@@ -95,13 +102,29 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
 
     fun reset() {
         releaseSubScopes()
+        dependsOnHandler?.release()
         mutableLocator = LayerLocator()
         mutableState = State()
+    }
+
+    fun <T : DependableService> dependsOn(
+        dependent: T,
+        influencers: List<Key<out Service>>
+    ) {
+        dependsOnHandler?.dependsOn(dependent, influencers)
+    }
+
+    fun <S : Service> notifyDependents(key: Key<S>, instance: S) {
+        dependsOnHandler?.notifyDependents(key, instance)
     }
 
     override fun release() {
         releaseSubScopes()
         scopes = null
+
+        dependsOnFinishCallback = null
+        dependsOnHandler?.release()
+        dependsOnHandler = null
 
         mutableLocator?.release()
         mutableLocator = null
@@ -185,48 +208,12 @@ fun <T : Service, S : T> Scope.create(key: Key<S>, args: State? = null): S {
 }
 
 inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, instance: S) {
+    val keyDerived = key ?: key()
     layer<T> {
-        bind(service = key ?: key(), instance = instance)
+        bind(service = keyDerived, instance = instance)
     }
+    notifyDependents(keyDerived, instance)
 }
 
-object Global : Scope() {
+object Global : Scope()
 
-    private val dependencyDag = hashMapOf<Key<out Service>, ArrayList<DependableService>> ()
-    var dagFinishCallback: (() -> Unit)? = null
-
-    fun <T : DependableService> dependsOn(
-        dependent: T,
-        influencers: List<Key<out Service>>
-    ) {
-
-        influencers.forEach { influencer ->
-            var dependents = dependencyDag[influencer]
-            if (dependents == null) {
-                dependents = arrayListOf()
-                dependencyDag[influencer] = dependents
-            }
-            if (!dependents.contains(dependent)) {
-                dependents.add(dependent)
-            }
-        }
-    }
-
-    fun <S : Service> notifyDependents(key: Key<S>, instance: S) {
-        if (dependencyDag.containsKey(key)) {
-            val dependents = dependencyDag[key]
-            dependents?.forEach {
-                it.onDependencyAvailable(key, instance)
-            }
-            dependents?.clear()
-            dependencyDag.remove(key)
-            if (dependencyDag.isEmpty()) {
-                dispatchDagFinish()
-            }
-        }
-    }
-
-    private fun dispatchDagFinish() {
-        dagFinishCallback?.invoke()
-    }
-}
