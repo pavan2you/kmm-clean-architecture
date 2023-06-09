@@ -51,7 +51,7 @@ interface Module : Factory {
             return this
         }
 
-        fun scope(parent: Scope = Global): Builder<T> {
+        open fun scope(parent: Scope = Global): Builder<T> {
             this.scope = parent
             return this
         }
