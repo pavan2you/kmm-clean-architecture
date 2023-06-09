@@ -23,6 +23,10 @@ android {
 
 dependencies {
     api(project(":architecture:kmm-tagd-android"))
+
+    api(project(":architecture:kmm-tagd-arch:kmm-tagd-arch-test"))
+    api(project(":language:lang-androidx:lang-androidx-test"))
+    api(project(":language:lang-kotlinx:lang-kotlinx-test"))
 }
 
 pomBuilder {

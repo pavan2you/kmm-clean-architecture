@@ -22,7 +22,8 @@ android {
 }
 
 dependencies {
-    testImplementation(project(":language:lang-androidx"))
+    api(project(":language:lang-androidx"))
+    api(project(":language:kmm-langx:kmm-langx-test"))
 }
 
 pomBuilder {

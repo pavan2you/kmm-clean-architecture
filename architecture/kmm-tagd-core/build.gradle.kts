@@ -11,8 +11,8 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(project(":architecture:kmm-tagd-core:kmm-tagd-core-test"))
+                api(kotlin("test"))
+                api(project(":architecture:kmm-tagd-core:kmm-tagd-core-test"))
             }
         }
     }

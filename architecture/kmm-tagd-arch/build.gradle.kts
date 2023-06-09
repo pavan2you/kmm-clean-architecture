@@ -11,8 +11,8 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(project(":architecture:kmm-tagd-arch:kmm-tagd-arch-test"))
+                api(kotlin("test"))
+                api(project(":architecture:kmm-tagd-arch:kmm-tagd-arch-test"))
             }
         }
         val androidMain by getting {

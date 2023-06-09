@@ -7,6 +7,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":architecture:kmm-tagd-core"))
+                api(project(":language:kmm-langx:kmm-langx-test"))
             }
         }
     }
