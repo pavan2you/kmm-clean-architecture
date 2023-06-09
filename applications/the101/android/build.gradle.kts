@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation(project(":architecture:kmm-tagd-android"))
+
     //implementation("io.github.pavan2you:kmm-tagd-android:0.0.0-alpha05-snapshot")
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.foundation)
@@ -45,4 +46,6 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.tooling.preview)
+
+    testImplementation(project(":architecture:kmm-tagd-android:kmm-tagd-android-test"))
 }
