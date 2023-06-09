@@ -42,11 +42,17 @@ interface Module : Factory {
 
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 
+        protected var scope: Scope = Global
         private var bidirectionalInjector: BidirectionalModuleDependentInjector? = null
         private var injectionInvoker: InjectionInvoker? = null
 
         override fun name(name: String): Builder<T> {
             this.name = name
+            return this
+        }
+
+        fun scope(parent: Scope = Global): Builder<T> {
+            this.scope = parent
             return this
         }
 

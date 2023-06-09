@@ -40,11 +40,17 @@ interface Library : Factory {
 
     abstract class Builder<T : Library> : Factory.Builder<T>() {
 
+        protected var scope: Scope = Global
         private var injectionInvoker: InjectionInvoker? = null
         private var bidirectionalInjector: BidirectionalLibraryDependentInjector? = null
 
         override fun name(name: String): Builder<T> {
             this.name = name
+            return this
+        }
+
+        fun scope(parent: Scope = Global): Builder<T> {
+            this.scope = parent
             return this
         }
 
