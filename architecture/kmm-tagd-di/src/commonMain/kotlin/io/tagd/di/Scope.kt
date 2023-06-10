@@ -215,15 +215,17 @@ inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, 
     notifyDependents(keyDerived, instance)
 }
 
-fun <T : Service, S : T> scopeOf(clazz: Key<S>): Scope? {
-    var value: S? = Global.locator.get(clazz)
+inline fun <reified T : Service, reified S : T> scopeOf(key: Key<S>? = null): Scope? {
+    val keyDerived = key ?: key()
+
+    var value: S? = Global.locator.get(keyDerived)
     var valueScope: Scope? = null
 
     if (value == null) {
         val scopes = Global.subScopes()
         if (scopes != null) {
             for (scope in scopes) {
-                value = scope.get(clazz)
+                value = scope.get(keyDerived)
                 if (value != null) {
                     valueScope = scope
                     break
