@@ -6,7 +6,7 @@ interface Factory : Service, Nameable {
 
         protected var name: String? = null
 
-        open fun name(name: String): Builder<T> {
+        open fun name(name: String?): Builder<T> {
             this.name = name
             return this
         }

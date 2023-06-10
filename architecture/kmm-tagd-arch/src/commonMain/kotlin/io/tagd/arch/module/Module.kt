@@ -24,8 +24,6 @@ import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.library.Library
-import io.tagd.arch.present.mvnp.Navigatable
-import io.tagd.arch.present.mvnp.Navigator
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.Factory
 import io.tagd.core.Service
@@ -42,21 +40,21 @@ interface Module : Factory {
 
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 
-        protected var scope: Scope = Global
+        protected var parent: Scope = Global
         private var bidirectionalInjector: BidirectionalModuleDependentInjector? = null
         private var injectionInvoker: InjectionInvoker? = null
 
-        override fun name(name: String): Builder<T> {
+        override fun name(name: String?): Builder<T> {
             this.name = name
             return this
         }
 
-        open fun scope(parent: Scope = Global): Builder<T> {
-            this.scope = parent
+        open fun scope(parent: Scope? = Global): Builder<T> {
+            this.parent = parent ?: Global
             return this
         }
 
-        open fun inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Builder<T> {
+        open fun inject(bindings: Scope.() -> Unit): Builder<T> {
             this.injectionInvoker = InjectionInvoker(parent, bindings)
             return this
         }

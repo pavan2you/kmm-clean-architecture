@@ -14,13 +14,13 @@ interface NavigatableModule : Module, Navigatable {
 
     abstract class Builder<T : NavigatableModule> : Module.Builder<T>() {
 
-        override fun name(name: String): Builder<T> {
+        override fun name(name: String?): Builder<T> {
             this.name = name
             return this
         }
 
-        override fun inject(parent: Scope?, bindings: Scope.() -> Unit): Builder<T> {
-            super.inject(parent, bindings)
+        override fun inject(bindings: Scope.() -> Unit): Builder<T> {
+            super.inject(bindings)
             return this
         }
 
