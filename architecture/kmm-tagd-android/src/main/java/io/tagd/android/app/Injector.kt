@@ -23,14 +23,20 @@ import io.tagd.android.crosscutting.async.CoroutineDaoIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineDiskStrategy
 import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
 import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
+import io.tagd.android.crosscutting.codec.GsonJsonCodec
+import io.tagd.arch.access.bind
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.domain.crosscutting.CrossCutting
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
 import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
+import io.tagd.arch.domain.crosscutting.async.cancelAsync
+import io.tagd.arch.domain.crosscutting.async.present
+import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.di.Global
@@ -41,7 +47,7 @@ import io.tagd.kotlinx.coroutines.DaoIO
 import io.tagd.kotlinx.coroutines.Dispatchers
 import java.lang.ref.WeakReference
 
-open class Injector(application: TagdApplication) : AppService {
+open class Injector(application: TagdApplication) : AppService, AsyncContext {
 
     protected var appReference: WeakReference<TagdApplication>? = WeakReference(application)
 
@@ -117,10 +123,19 @@ open class Injector(application: TagdApplication) : AppService {
             bind<DiskIOStrategy>().toInstance(CoroutineDiskStrategy())
             bind<DaoIOStrategy>().toInstance(CoroutineDaoIOStrategy())
             bind<CacheIOStrategy>().toInstance(CoroutineCacheIOStrategy())
+
+            bind<CrossCutting, JsonCodec>(instance = GsonJsonCodec())
+        }
+    }
+
+    protected open fun dispatchDone() {
+        present {
+            app?.dispatchLoadingStepDone(AppLoadingStateHandler.Steps.INJECTING)
         }
     }
 
     override fun release() {
+        cancelAsync()
         appReference?.clear()
         appReference = null
     }
