@@ -22,11 +22,14 @@ import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.present.mvp.PresentableView
+import io.tagd.di.Scope
 
 class FakeApplication : IApplication {
 
     override val name: String
         get() = "fake"
+    override val scope: Scope
+        get() = Scope("fake")
 
     var controller: ApplicationController<IApplication>? =
         LifeCycleAwareApplicationController(this)

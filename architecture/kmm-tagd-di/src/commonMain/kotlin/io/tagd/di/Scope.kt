@@ -215,5 +215,30 @@ inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, 
     notifyDependents(keyDerived, instance)
 }
 
+fun <T : Service, S : T> scopeOf(clazz: Key<S>): Scope? {
+    var value: S? = Global.locator.get(clazz)
+    var valueScope: Scope? = null
+
+    if (value == null) {
+        val scopes = Global.subScopes()
+        if (scopes != null) {
+            for (scope in scopes) {
+                value = scope.get(clazz)
+                if (value != null) {
+                    valueScope = scope
+                    break
+                }
+            }
+        }
+    } else {
+        valueScope = Global
+    }
+    return valueScope
+}
+
 object Global : Scope()
 
+interface Scopable : Nameable {
+
+    val scope: Scope
+}

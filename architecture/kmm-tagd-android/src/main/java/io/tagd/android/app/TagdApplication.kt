@@ -35,6 +35,7 @@ import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.di.Global
 import io.tagd.di.Key
+import io.tagd.di.Scope
 import io.tagd.di.get
 
 /**
@@ -102,6 +103,9 @@ open class TagdApplication : Application(), IApplication {
     final override val name: String
         get() = applicationModuleName()
 
+    final override val scope: Scope
+        get() = applicationScope()
+
     protected var lifecycleState: State = State.INITIALIZING
         private set
 
@@ -150,6 +154,7 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun applicationModuleName() = Global.name
 
+    protected open fun applicationScope(): Scope = Global
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////  Application's Life Cycle  ///////////////////////////////////

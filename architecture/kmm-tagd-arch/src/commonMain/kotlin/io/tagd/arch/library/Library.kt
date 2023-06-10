@@ -30,13 +30,14 @@ import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
+import io.tagd.di.Scopable
 import io.tagd.di.Scope
 import io.tagd.di.layer
 import io.tagd.di.scope
 
 typealias BidirectionalLibraryDependentInjector = (context: Library) -> Unit
 
-interface Library : Factory {
+interface Library : Factory, Scopable {
 
     abstract class Builder<T : Library> : Factory.Builder<T>() {
 
