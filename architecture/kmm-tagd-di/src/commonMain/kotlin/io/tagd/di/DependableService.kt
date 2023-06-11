@@ -23,11 +23,17 @@ interface DependableService : Service, Releasable {
         dependsOnServices.addAll(services)
 
         Global.dependsOn(this, services)
+
+        checkIfReady()
     }
 
     fun onDependencyAvailable(key: Key<out Service>, service: Service) {
         dependsOnServices.remove(key)
         dependencyAvailableCallbacks[key]?.invoke(service)
+        checkIfReady()
+    }
+
+    fun checkIfReady() {
         if (dependsOnServices.isEmpty()) {
             state = State.READY
             onReady()

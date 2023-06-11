@@ -63,6 +63,11 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
     }
 
     open fun inject() {
+        injectSynchronously()
+        injectAsynchronously()
+    }
+
+    protected open fun injectSynchronously() {
         app?.let { application ->
             with(Global) {
                 injectInfraLayer(application)
@@ -126,6 +131,10 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
 
             bind<CrossCutting, JsonCodec>(instance = GsonJsonCodec())
         }
+    }
+
+    protected open fun injectAsynchronously() {
+        //no-op
     }
 
     protected open fun dispatchDone() {

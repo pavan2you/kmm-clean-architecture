@@ -14,13 +14,16 @@ internal class DependsOnHandler : Releasable {
     ) {
 
         influencers.forEach { influencer ->
-            var dependents = dependencyDag[influencer]
-            if (dependents == null) {
-                dependents = arrayListOf()
-                dependencyDag[influencer] = dependents
-            }
-            if (!dependents.contains(dependent)) {
-                dependents.add(dependent)
+            val found = Global.get(influencer)
+            if (found == null) {
+                var dependents = dependencyDag[influencer]
+                if (dependents == null) {
+                    dependents = arrayListOf()
+                    dependencyDag[influencer] = dependents
+                }
+                if (!dependents.contains(dependent)) {
+                    dependents.add(dependent)
+                }
             }
         }
     }
