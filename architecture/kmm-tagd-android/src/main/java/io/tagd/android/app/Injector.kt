@@ -160,10 +160,4 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
     }
 }
 
-inline fun <reified T : Any> Injector.bindReference(reference: T) {
-    Global.layer<ReferenceHolder<*>> {
-        bind(key2<ReferenceHolder<T>, T>()).toInstance(ReferenceHolder(reference))
-    }
-}
-
 

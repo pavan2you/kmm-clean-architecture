@@ -35,6 +35,8 @@ import io.tagd.di.Key
 import io.tagd.di.Scope
 import io.tagd.di.create
 import io.tagd.di.get
+import io.tagd.di.key2
+import io.tagd.di.layer
 
 fun scope(name: String): Scope? {
     return if (name == Global.name) Global else Global.subScope(name)
@@ -133,4 +135,10 @@ inline fun <reified S : ReferenceHolder<*>> Scope.referenceHolder(key: Key<S>? =
 
 inline fun <T, reified S : ReferenceHolder<T>> Scope.reference(key: Key<S>? = null): T? {
     return referenceHolder(key)?.value
+}
+
+inline fun <reified T : Any> Scope.bindReference(reference: T) {
+    layer<ReferenceHolder<*>> {
+        bind(key2<ReferenceHolder<T>, T>()).toInstance(ReferenceHolder(reference))
+    }
 }
