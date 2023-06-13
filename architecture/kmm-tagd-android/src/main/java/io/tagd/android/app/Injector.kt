@@ -35,6 +35,7 @@ import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
+import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.infra.InfraService
@@ -64,7 +65,9 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
 
     open fun inject() {
         injectSynchronously()
-        injectAsynchronously()
+        compute {
+            injectAsynchronously()
+        }
     }
 
     protected open fun injectSynchronously() {
