@@ -47,6 +47,10 @@ open class LifeCycleAwarePresenter<V : PresentableView>(view: V) : Presenter<V> 
         //no op
     }
 
+    override fun onInject() {
+        //no op
+    }
+
     override fun onReady() {
         //no op
     }

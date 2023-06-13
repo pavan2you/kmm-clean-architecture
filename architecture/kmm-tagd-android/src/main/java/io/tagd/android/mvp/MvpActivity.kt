@@ -57,6 +57,11 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
         presenter?.onAwaiting()
     }
 
+    override fun onInject() {
+        super.onInject()
+        presenter?.onInject()
+    }
+
     override fun onReady() {
         super.onReady()
         presenter?.onReady()

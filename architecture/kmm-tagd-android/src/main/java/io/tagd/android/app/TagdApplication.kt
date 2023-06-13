@@ -306,7 +306,7 @@ open class TagdApplication : Application(), IApplication {
     protected open fun onReady() {
         lifecycleState = State.READY
         controller?.onReady()
-        appService<AwaitReadyLifeCycleEventsDispatcher>()?.dispatchOnReady()
+        appService<AwaitReadyLifeCycleEventsDispatcher>()?.dispatchReady()
     }
 
     @MainThread

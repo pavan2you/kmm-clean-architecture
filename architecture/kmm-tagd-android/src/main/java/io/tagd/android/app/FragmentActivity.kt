@@ -17,16 +17,25 @@
 
 package io.tagd.android.app
 
+import android.content.res.Configuration
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 
 abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
     AwaitReadyLifeCycleStatesOwner {
 
+    private var lifecycleFreeState: HeadLessFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleFreeState = getOrNewLifecycleFreeState()
         interceptOnCreate(savedInstanceState)
         onCreateView(savedInstanceState)
     }
+
+    private fun getOrNewLifecycleFreeState() =
+        supportFragmentManager.findFragmentByTag(HeadLessFragment.TAG) as? HeadLessFragment
+            ?: HeadLessFragment(this)
 
     protected open fun interceptOnCreate(savedInstanceState: Bundle?) {
         // no-op
@@ -38,6 +47,9 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
         super.onStart()
         interceptOnStart()
         if (awaitReadyLifeCycleEventsDispatcher().ready()) {
+            if (needInjection()) {
+                onInject()
+            }
             onReady()
         } else {
             awaitReadyLifeCycleEventsDispatcher().register(this)
@@ -57,6 +69,15 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
         // no-op
     }
 
+    override fun needInjection(): Boolean {
+        return lifecycleFreeState?.triggerInject ?: true
+    }
+
+    override fun onInject() {
+        assert(lifecycleFreeState?.triggerInject ?: true)
+        lifecycleFreeState?.triggerInject = false
+    }
+
     override fun onReady() {
         // no-op
     }
@@ -64,5 +85,38 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
     override fun onDestroy() {
         awaitReadyLifeCycleEventsDispatcher().unregister(this)
         super.onDestroy()
+    }
+
+    override fun onRestart() {
+        if (!suppressInjectionOnRestart()) {
+            lifecycleFreeState?.triggerInject = true
+        }
+        super.onRestart()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        lifecycleFreeState?.triggerInject = true
+        super.onConfigurationChanged(newConfig)
+    }
+
+    protected open fun suppressInjectionOnRestart(): Boolean {
+        return true
+    }
+}
+
+class HeadLessFragment(activity: FragmentActivity) : Fragment() {
+
+    var triggerInject: Boolean = true
+
+    init {
+        retainInstance = true //since this activity is not just for ViewModels then deprecation doesn't make sense
+        activity.supportFragmentManager.beginTransaction().add(
+            this,
+            TAG
+        ).commitNow()
+    }
+
+    companion object {
+        const val TAG = "head-less"
     }
 }

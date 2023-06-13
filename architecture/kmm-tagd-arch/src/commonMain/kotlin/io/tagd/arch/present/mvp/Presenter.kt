@@ -31,6 +31,8 @@ interface Presenter<V : PresentableView> : Releasable {
 
     fun onAwaiting()
 
+    fun onInject()
+
     fun onReady()
 
     fun onPause()
@@ -42,4 +44,5 @@ interface Presenter<V : PresentableView> : Releasable {
     fun onBackPressed()
 
     fun canHandleBackPress(): Boolean
+
 }

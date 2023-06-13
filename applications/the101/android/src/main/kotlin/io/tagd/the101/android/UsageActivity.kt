@@ -48,10 +48,17 @@ class UsageActivity : MvpActivity<UsageView, UsagePresenter>(), UsageView {
 
     override fun onAwaiting() {
         super.onAwaiting()
+        println("Sample : onAwaiting")
+    }
+
+    override fun onInject() {
+        super.onInject()
+        println("Sample : onInject")
     }
 
     override fun onReady() {
         super.onReady()
+        println("Sample : onReady")
         setContentView(R.layout.usage_view)
 
         val injector = AppInjector()

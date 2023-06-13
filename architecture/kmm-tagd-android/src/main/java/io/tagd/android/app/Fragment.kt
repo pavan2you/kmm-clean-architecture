@@ -22,6 +22,8 @@ import android.os.Bundle
 abstract class Fragment : androidx.fragment.app.Fragment(),
     AwaitReadyLifeCycleStatesOwner {
 
+    private var triggerInject = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         interceptOnCreate(savedInstanceState)
@@ -35,6 +37,9 @@ abstract class Fragment : androidx.fragment.app.Fragment(),
         super.onStart()
         interceptOnStart()
         if (awaitReadyLifeCycleEventsDispatcher().ready()) {
+            if (needInjection()) {
+                onInject()
+            }
             onReady()
         } else {
             awaitReadyLifeCycleEventsDispatcher().register(this)
@@ -52,6 +57,15 @@ abstract class Fragment : androidx.fragment.app.Fragment(),
 
     override fun onAwaiting() {
         // no-op
+    }
+
+    override fun needInjection(): Boolean {
+        return triggerInject
+    }
+
+    override fun onInject() {
+        assert(triggerInject)
+        triggerInject = false
     }
 
     override fun onReady() {

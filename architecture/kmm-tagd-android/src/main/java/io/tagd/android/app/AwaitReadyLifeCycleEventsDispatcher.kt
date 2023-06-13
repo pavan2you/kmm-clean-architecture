@@ -20,6 +20,7 @@ package io.tagd.android.app
 import java.lang.ref.WeakReference
 import java.util.*
 
+//todo - ExtendedLifeCycleEventDispatcher
 class AwaitReadyLifeCycleEventsDispatcher : AppService {
 
     private var queue : Queue<WeakReference<AwaitReadyLifeCycleStatesOwner>>? = ArrayDeque()
@@ -37,12 +38,27 @@ class AwaitReadyLifeCycleEventsDispatcher : AppService {
         }
     }
 
-    fun dispatchOnReady() {
+    fun dispatchReady() {
         ready = true
+        dispatchOnInject()
+        dispatchOnReady()
+        clearRegistry()
+    }
+
+    private fun dispatchOnInject() {
+        queue?.forEach { weakOwner ->
+            weakOwner?.get()?.let { owner ->
+                if (owner.needInjection()) {
+                    owner.onInject()
+                }
+            }
+        }
+    }
+
+    private fun dispatchOnReady() {
         queue?.forEach {
             it?.get()?.onReady()
         }
-        clearRegistry()
     }
 
     fun ready() : Boolean {

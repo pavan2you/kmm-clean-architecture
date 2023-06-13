@@ -17,11 +17,16 @@
 
 package io.tagd.android.app
 
+//todo - ExtendedLifeCycleOwner
 interface AwaitReadyLifeCycleStatesOwner {
 
     fun awaitReadyLifeCycleEventsDispatcher() : AwaitReadyLifeCycleEventsDispatcher?
 
+    fun needInjection(): Boolean
+
     fun onAwaiting()
+
+    fun onInject()
 
     fun onReady()
 }
