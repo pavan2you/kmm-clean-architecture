@@ -39,6 +39,12 @@ typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
 
 interface Module : Factory, Scopable {
 
+    val outerScope
+        get() = scope
+
+    val outerScopeName
+        get() = scope.name
+
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 
         protected var parent: Scope = Global

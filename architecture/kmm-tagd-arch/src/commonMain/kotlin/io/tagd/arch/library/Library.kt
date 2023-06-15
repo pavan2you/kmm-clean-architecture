@@ -39,9 +39,15 @@ typealias BidirectionalLibraryDependentInjector = (context: Library) -> Unit
 
 interface Library : Factory, Scopable {
 
+    val outerScope
+        get() = scope
+
+    val outerScopeName
+        get() = scope.name
+
     abstract class Builder<T : Library> : Factory.Builder<T>() {
 
-        protected var parent: Scope = Global
+        protected var parent: Scope = Global //todo - rename to outer
         private var injectionInvoker: InjectionInvoker? = null
         private var bidirectionalInjector: BidirectionalLibraryDependentInjector? = null
 
