@@ -23,11 +23,12 @@ import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.Scope.Companion.GLOBAL_SCOPE
 import io.tagd.langx.IllegalAccessException
+import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
 open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasable {
 
     private var mutableLocator: Locator? = LayerLocator()
-    private var scopes: MutableMap<String, Scope>? = mutableMapOf()
+    private var scopes: ConcurrentHashMap<String, Scope>? = ConcurrentHashMap()
     private var mutableState: State? = State()
 
     private var dependsOnHandler: DependsOnHandler? = DependsOnHandler()

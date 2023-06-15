@@ -20,6 +20,7 @@ package io.tagd.di
 import io.tagd.core.Releasable
 import io.tagd.core.Service
 import io.tagd.core.State
+import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 interface Locator : Releasable {
@@ -33,7 +34,7 @@ interface Locator : Releasable {
 
 class LayerLocator : Locator {
 
-    private var layers: MutableMap<KClass<*>, Layer<*>?>? = mutableMapOf()
+    private var layers: ConcurrentHashMap<KClass<*>, Layer<*>?>? = ConcurrentHashMap()
 
     override fun layers(): Map<KClass<*>, Layer<*>?>? = layers
 

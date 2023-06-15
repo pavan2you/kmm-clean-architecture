@@ -21,11 +21,12 @@ import io.tagd.core.Releasable
 import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.langx.IllegalAccessException
+import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 class Layer<T : Service> : Releasable {
 
-    private var services: MutableMap<Key<out T>, Value<T>>? = mutableMapOf()
+    private var services: ConcurrentHashMap<Key<out T>, Value<T>>? = ConcurrentHashMap()
 
     inline fun <reified S : T> bind(key: Key<S>? = null): Binding<T, S> {
         return Binding(this, key ?: Key(S::class))
