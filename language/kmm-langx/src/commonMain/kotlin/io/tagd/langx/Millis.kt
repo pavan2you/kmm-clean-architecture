@@ -26,3 +26,7 @@ fun Millis?.isNullOrLessThanZero(): Boolean {
 fun Millis?.isNullOrLessThanEqualZero(): Boolean {
     return this.isNull() || this!!.millis!!.isNullOrLessThanEqualZero()
 }
+
+fun Long.Millis(): Millis {
+    return Millis(this)
+}

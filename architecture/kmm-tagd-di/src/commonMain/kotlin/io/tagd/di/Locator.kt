@@ -50,6 +50,10 @@ class LayerLocator : Locator {
         return layer as? Layer<T>?
     }
 
+    override fun toString(): String {
+        return "layers - $layers"
+    }
+
     override fun release() {
         layers?.values?.forEach {
             it?.release()

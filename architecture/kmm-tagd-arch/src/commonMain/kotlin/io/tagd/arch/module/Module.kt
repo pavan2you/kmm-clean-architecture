@@ -47,7 +47,7 @@ interface Module : Factory, Scopable {
 
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 
-        protected var parent: Scope = Global
+        protected var outerScope: Scope = Global
         private var bidirectionalInjector: BidirectionalModuleDependentInjector? = null
         private var injectionInvoker: InjectionInvoker? = null
 
@@ -56,13 +56,13 @@ interface Module : Factory, Scopable {
             return this
         }
 
-        open fun scope(parent: Scope? = Global): Builder<T> {
-            this.parent = parent ?: Global
+        open fun scope(outer: Scope? = Global): Builder<T> {
+            this.outerScope = outer ?: Global
             return this
         }
 
         open fun inject(bindings: Scope.() -> Unit): Builder<T> {
-            this.injectionInvoker = InjectionInvoker(parent, bindings)
+            this.injectionInvoker = InjectionInvoker(outerScope, bindings)
             return this
         }
 

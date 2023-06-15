@@ -36,6 +36,10 @@ class Key<T : Service>(val key: Any) {
     override fun hashCode(): Int {
         return key.hashCode()
     }
+
+    override fun toString(): String {
+        return "key - $key"
+    }
 }
 
 class TypedClass<T : Service>(
@@ -59,6 +63,10 @@ class TypedClass<T : Service>(
         var result = clazz.hashCode()
         result = 31 * result + typeClasses.contentHashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "clazz - $clazz, typeClasses - ${typeClasses.contentToString()}"
     }
 }
 

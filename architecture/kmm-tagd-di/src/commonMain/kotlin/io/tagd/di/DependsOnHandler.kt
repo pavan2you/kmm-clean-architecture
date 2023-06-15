@@ -46,6 +46,10 @@ internal class DependsOnHandler : Releasable {
         finishCallback?.invoke()
     }
 
+    override fun toString(): String {
+        return "dependsOn - $dependencyDag, callback - $finishCallback"
+    }
+
     override fun release() {
         dependencyDag.clear()
         finishCallback = null

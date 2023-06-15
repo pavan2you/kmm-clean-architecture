@@ -1,7 +1,7 @@
 package io.tagd.the101.android
 
 import io.tagd.android.app.AppLoadingStateHandler
-import io.tagd.android.app.Injector
+import io.tagd.android.app.ApplicationInjector
 import io.tagd.android.app.TagdApplication
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.compute
@@ -12,7 +12,8 @@ import io.tagd.di.Global
 import io.tagd.di.key
 import io.tagd.di.layer
 
-class SampleAppInjector(application: TagdApplication) : Injector(application), AsyncContext {
+class SampleAppInjector(application: TagdApplication) : ApplicationInjector(application),
+    AsyncContext {
 
     override fun inject() {
         super.inject()

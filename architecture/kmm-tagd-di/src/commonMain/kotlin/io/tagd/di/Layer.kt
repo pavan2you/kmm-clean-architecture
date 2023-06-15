@@ -71,6 +71,10 @@ class Layer<T : Service> : Releasable {
         return values
     }
 
+    override fun toString(): String {
+        return "layer - $services"
+    }
+
     override fun release() {
         services?.clear()
         services = null

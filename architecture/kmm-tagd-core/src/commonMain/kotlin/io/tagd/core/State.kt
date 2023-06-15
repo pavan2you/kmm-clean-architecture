@@ -80,7 +80,7 @@ open class State : Releasable {
     }
 
     override fun toString(): String {
-        return "State(map=$map)"
+        return "state - $map"
     }
 }
 

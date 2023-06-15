@@ -48,7 +48,28 @@ import io.tagd.kotlinx.coroutines.DaoIO
 import io.tagd.kotlinx.coroutines.Dispatchers
 import java.lang.ref.WeakReference
 
-open class Injector(application: TagdApplication) : AppService, AsyncContext {
+interface Injector : AppService, AsyncContext {
+
+    fun setup()
+
+    fun inject()
+
+    fun injectSynchronously()
+
+    fun injectAsynchronously()
+
+    companion object {
+        fun setInjector(injector: Injector) {
+            with(Global) {
+                layer<InfraService> {
+                    bind<Injector>().toInstance(injector)
+                }
+            }
+        }
+    }
+}
+
+open class ApplicationInjector(application: TagdApplication) : Injector {
 
     protected var appReference: WeakReference<TagdApplication>? = WeakReference(application)
 
@@ -59,18 +80,18 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
      * Must be used for only synchronous injection, and must not be called this beyond application
      * setup flow
      */
-    open fun setup() {
+    override fun setup() {
         //no-op
     }
 
-    open fun inject() {
+    override fun inject() {
         injectSynchronously()
         compute {
             injectAsynchronously()
         }
     }
 
-    protected open fun injectSynchronously() {
+    override fun injectSynchronously() {
         app?.let { application ->
             with(Global) {
                 injectInfraLayer(application)
@@ -136,7 +157,7 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
         }
     }
 
-    protected open fun injectAsynchronously() {
+    override fun injectAsynchronously() {
         //no-op
     }
 
@@ -150,16 +171,6 @@ open class Injector(application: TagdApplication) : AppService, AsyncContext {
         cancelAsync()
         appReference?.clear()
         appReference = null
-    }
-
-    companion object {
-        fun setInjector(injector: Injector) {
-            with(Global) {
-                layer<InfraService> {
-                    bind<Injector>().toInstance(injector)
-                }
-            }
-        }
     }
 }
 

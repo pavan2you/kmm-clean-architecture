@@ -119,6 +119,15 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
         dependsOnHandler?.notifyDependents(key, instance)
     }
 
+
+    override fun toString(): String {
+        return "scope - name='$name', " +
+                "$mutableLocator, " +
+                "$mutableState, " +
+                "$dependsOnHandler, " +
+                "children - $scopes"
+    }
+
     override fun release() {
         releaseSubScopes()
         scopes = null

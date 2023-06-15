@@ -346,7 +346,7 @@ open class TagdApplication : Application(), IApplication {
         )
     }
 
-    protected open fun newInjector(): Injector = Injector(this)
+    protected open fun newInjector(): Injector = ApplicationInjector(this)
 
     protected open fun newVersionTracker(): VersionTracker {
         return VersionTracker(1, 1)

@@ -30,11 +30,19 @@ class GetValue<T : Service>(private var value: T): Value<T>() {
     override fun get(args: State?): T {
         return value
     }
+
+    override fun toString(): String {
+        return "value - $value"
+    }
 }
 
 class CreateValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
 
     override fun get(args: State?): T {
         return creator.invoke(args)
+    }
+
+    override fun toString(): String {
+        return "value - $creator"
     }
 }
