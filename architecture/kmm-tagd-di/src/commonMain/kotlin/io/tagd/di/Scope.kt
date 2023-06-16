@@ -60,7 +60,20 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
         if (scope.name == GLOBAL_SCOPE) {
             throw IllegalAccessException("global scope can not be a sub scope")
         }
+        if (scopes?.contains(scope.name) == true) {
+            throw IllegalAccessException("${this.name} already having ${scope.name}")
+        }
         scopes?.put(scope.name, scope)
+        return this
+    }
+
+    fun addSubScopeIfAbsent(scope: Scope): Scope {
+        if (scope.name == GLOBAL_SCOPE) {
+            throw IllegalAccessException("global scope can not be a sub scope")
+        }
+        if (scopes?.contains(scope.name) == false) {
+            scopes?.put(scope.name, scope)
+        }
         return this
     }
 

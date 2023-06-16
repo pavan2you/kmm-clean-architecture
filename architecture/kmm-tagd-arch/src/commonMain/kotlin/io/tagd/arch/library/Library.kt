@@ -76,6 +76,7 @@ interface Library : Factory, Scopable {
 
         override fun build(): T {
             return buildLibrary().also { library ->
+                outerScope.addSubScopeIfAbsent(Scope(library.name))
                 inject(context = library)
             }
         }

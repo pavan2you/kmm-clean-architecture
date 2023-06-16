@@ -76,6 +76,7 @@ interface Module : Factory, Scopable {
 
         override fun build(): T {
             return buildModule().also { module ->
+                outerScope.addSubScopeIfAbsent(Scope(module.name))
                 inject(context = module)
             }
         }
