@@ -76,7 +76,6 @@ interface Module : Factory, Scopable {
 
         override fun build(): T {
             return buildModule().also { module ->
-                outerScope.addSubScopeIfAbsent(Scope(module.name))
                 inject(context = module)
             }
         }
@@ -97,6 +96,14 @@ interface Module : Factory, Scopable {
                 return context.inject(parent, bindings)
             }
         }
+    }
+}
+
+abstract class AbstractModule(final override val name: String, final override val scope: Scope) :
+    Module {
+
+    init {
+        scope.addSubScopeIfAbsent(Scope(name))
     }
 }
 

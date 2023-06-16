@@ -76,7 +76,6 @@ interface Library : Factory, Scopable {
 
         override fun build(): T {
             return buildLibrary().also { library ->
-                outerScope.addSubScopeIfAbsent(Scope(library.name))
                 inject(context = library)
             }
         }
@@ -97,6 +96,14 @@ interface Library : Factory, Scopable {
                 return context.inject(parent, bindings)
             }
         }
+    }
+}
+
+abstract class AbstractLibrary(final override val name: String, final override val scope: Scope) :
+    Library {
+
+    init {
+        scope.addSubScopeIfAbsent(Scope(name))
     }
 }
 
