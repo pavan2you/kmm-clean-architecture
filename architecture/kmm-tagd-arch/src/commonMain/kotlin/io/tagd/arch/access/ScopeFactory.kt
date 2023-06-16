@@ -38,8 +38,8 @@ import io.tagd.di.get
 import io.tagd.di.key2
 import io.tagd.di.layer
 
-fun scope(name: String): Scope? {
-    return if (name == Global.name) Global else Global.subScope(name)
+fun scope(name: String, parent: Scope? = null): Scope? {
+    return if (name == Global.name) Global else (parent ?: Global).subScope(name)
 }
 
 /**
