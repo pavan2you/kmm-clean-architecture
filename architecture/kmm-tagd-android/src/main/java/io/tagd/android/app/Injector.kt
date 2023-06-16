@@ -69,11 +69,11 @@ interface Injector : AppService, AsyncContext {
     }
 }
 
-open class ApplicationInjector(application: TagdApplication) : Injector {
+open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
 
-    protected var appReference: WeakReference<TagdApplication>? = WeakReference(application)
+    protected var appReference: WeakReference<out T>? = WeakReference(application)
 
-    protected val app: TagdApplication?
+    protected val app: T?
         get() = appReference?.get()
 
     /**
