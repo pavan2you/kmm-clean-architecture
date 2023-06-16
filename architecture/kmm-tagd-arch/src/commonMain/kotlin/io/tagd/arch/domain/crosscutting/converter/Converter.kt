@@ -8,4 +8,6 @@ interface Converter<A, B> : CrossCutting {
 
     @Throws(ConvertException::class)
     fun convert(value: A) : B
+
+    override fun release() {}
 }
