@@ -64,7 +64,7 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
             throw IllegalAccessException("${this.name} already having ${scope.name}")
         }
         scopes?.put(scope.name, scope)
-        return this
+        return scope
     }
 
     fun addSubScopeIfAbsent(scope: Scope): Scope {
@@ -74,7 +74,7 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
         if (scopes?.contains(scope.name) == false) {
             scopes?.put(scope.name, scope)
         }
-        return this
+        return scope
     }
 
     fun subScopes(): Collection<Scope>? {
