@@ -81,17 +81,6 @@ open class ApplicationInjector(application: TagdApplication) : Injector {
      * setup flow
      */
     override fun setup() {
-        //no-op
-    }
-
-    override fun inject() {
-        injectSynchronously()
-        compute {
-            injectAsynchronously()
-        }
-    }
-
-    override fun injectSynchronously() {
         app?.let { application ->
             with(Global) {
                 injectInfraLayer(application)
@@ -155,6 +144,17 @@ open class ApplicationInjector(application: TagdApplication) : Injector {
 
             bind<CrossCutting, JsonCodec>(instance = GsonJsonCodec())
         }
+    }
+
+    override fun inject() {
+        injectSynchronously()
+        compute {
+            injectAsynchronously()
+        }
+    }
+
+    override fun injectSynchronously() {
+        //no-op
     }
 
     override fun injectAsynchronously() {
