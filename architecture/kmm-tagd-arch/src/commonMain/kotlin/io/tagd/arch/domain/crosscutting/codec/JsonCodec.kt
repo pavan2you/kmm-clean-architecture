@@ -38,5 +38,5 @@ expect annotation class SerializedName(
     /**
      * @return the alternative names of the field when it is deserialized
      */
-    val alternate: Array<String>
+    val alternate: Array<String> = []
 )
