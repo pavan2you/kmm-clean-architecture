@@ -12,7 +12,8 @@ import io.tagd.di.Global
 import io.tagd.di.key
 import io.tagd.di.layer
 
-class SampleAppInjector(application: TagdApplication) : ApplicationInjector(application),
+class SampleAppInjector(application: SampleApplication) :
+    ApplicationInjector<SampleApplication>(application),
     AsyncContext {
 
     override fun inject() {
