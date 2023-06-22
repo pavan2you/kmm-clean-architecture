@@ -20,4 +20,6 @@ package io.tagd.arch.domain
 import io.tagd.arch.data.DataObject
 import io.tagd.core.Identifiable
 
-abstract class DomainEntity<T> : DataObject(), Identifiable<T>
+abstract class DomainEntity : DataObject()
+
+abstract class IdentifiableDomainEntity<T> : DomainEntity(), Identifiable<T>

@@ -28,7 +28,7 @@ class DomainEntityTest {
 
     @Test
     fun `given a domain entity is created then verify it is not null`() {
-        val domainEntity = FakeDomainEntity("fake")
-        Assert.assertNotNull(domainEntity.identifier)
+        val domainEntity = FakeDomainEntity()
+        Assert.assertNotNull(domainEntity)
     }
 }
