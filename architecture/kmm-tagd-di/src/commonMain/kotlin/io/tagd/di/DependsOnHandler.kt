@@ -13,6 +13,8 @@ internal class DependsOnHandler : Releasable {
         influencers: List<Key<out Service>>
     ) {
 
+        val available = hashMapOf<Key<out Service>, Service>()
+
         influencers.forEach { influencer ->
             val found = Global.get(influencer)
             if (found == null) {
@@ -24,11 +26,17 @@ internal class DependsOnHandler : Releasable {
                 if (!dependents.contains(dependent)) {
                     dependents.add(dependent)
                 }
+            } else {
+                available[influencer] = found
             }
+        }
+
+        available.forEach {
+            notifyDependents(it.key, it.value)
         }
     }
 
-    fun <S : Service> notifyDependents(key: Key<S>, instance: S) {
+    fun notifyDependents(key: Key<out Service>, instance: Service) {
         if (dependencyDag.containsKey(key)) {
             val dependents = dependencyDag[key]
             dependents?.forEach {
