@@ -31,8 +31,14 @@ internal class DependsOnHandler : Releasable {
             }
         }
 
-        available.forEach {
-            notifyDependents(it.key, it.value)
+        if (available.isNotEmpty()) {
+            if (dependencyDag.isNotEmpty()) {
+                available.forEach {
+                    notifyDependents(it.key, it.value)
+                }
+            } else {
+                dispatchDagFinish()
+            }
         }
     }
 
