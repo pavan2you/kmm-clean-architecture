@@ -58,10 +58,9 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     }
 
     override fun onActivityStarted(activity: Activity) {
-        if (current?.get() === activity) {
-            return
+        if (current?.get() != activity) {
+            setPreviousAndCurrent(activity)
         }
-        setPreviousAndCurrent(activity)
         app?.appService<AppForegroundBackgroundObserver>()?.dispatchActivityStart()
     }
 
