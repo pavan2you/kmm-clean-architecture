@@ -13,31 +13,21 @@ internal class DependsOnHandler : Releasable {
         influencers: List<Key<out Service>>
     ) {
 
-        val available = hashMapOf<Key<out Service>, Service>()
+//        val available = hashMapOf<Key<out Service>, Service>()
 
         influencers.forEach { influencer ->
             val found = Global.get(influencer)
-            if (found == null) {
-                var dependents = dependencyDag[influencer]
-                if (dependents == null) {
-                    dependents = arrayListOf()
-                    dependencyDag[influencer] = dependents
-                }
-                if (!dependents.contains(dependent)) {
-                    dependents.add(dependent)
-                }
-            } else {
-                available[influencer] = found
+            var dependents = dependencyDag[influencer]
+            if (dependents == null) {
+                dependents = arrayListOf()
+                dependencyDag[influencer] = dependents
             }
-        }
+            if (!dependents.contains(dependent)) {
+                dependents.add(dependent)
+            }
 
-        if (available.isNotEmpty()) {
-            if (dependencyDag.isNotEmpty()) {
-                available.forEach {
-                    notifyDependents(it.key, it.value)
-                }
-            } else {
-                dispatchDagFinish()
+            if (found != null) {
+                notifyDependents(influencer, found)
             }
         }
     }
