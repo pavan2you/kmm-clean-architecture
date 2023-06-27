@@ -1,6 +1,6 @@
 [versions]
-androidGradlePlugin = "8.1.0-beta03"
-androidPlugin = "8.1.0-beta05"
+androidGradlePlugin = "8.1.0-rc01"
+androidPlugin = "8.1.0-rc01"
 androidMaterial = "1.9.0"
 androidxActivity = "1.7.2"
 androidxAppCompat = "1.6.1"
