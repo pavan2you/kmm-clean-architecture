@@ -75,7 +75,9 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     }
 
     override fun onActivityStopped(activity: Activity) {
-        app?.appService<AppForegroundBackgroundObserver>()?.dispatchActivityStop()
+        if (current?.get() === activity) {
+            app?.appService<AppForegroundBackgroundObserver>()?.dispatchActivityStop()
+        }
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
