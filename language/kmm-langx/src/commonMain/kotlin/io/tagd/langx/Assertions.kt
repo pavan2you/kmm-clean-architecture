@@ -1,4 +1,4 @@
-package io.tagd.core
+package io.tagd.langx
 
 fun assert(condition: Boolean, message: String? = null) {
     if (!condition) {

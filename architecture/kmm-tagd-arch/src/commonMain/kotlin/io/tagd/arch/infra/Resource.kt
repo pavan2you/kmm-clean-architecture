@@ -1,6 +1,6 @@
 package io.tagd.arch.infra
 
-import io.tagd.core.assert
+import io.tagd.langx.assert
 import io.tagd.langx.IllegalAccessException
 
 interface Resource

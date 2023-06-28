@@ -1,7 +1,7 @@
 package io.tagd.arch.test
 
 import io.tagd.arch.domain.usecase.Callback
-import io.tagd.core.assert
+import io.tagd.langx.assert
 
 /**
  * This class is used to mock a callback

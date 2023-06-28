@@ -1,5 +1,8 @@
 package io.tagd.langx
 
+/**
+ * Millis - 1/10^-3
+ */
 data class Millis(var millis: Long = 0L) {
 
     override fun toString(): String {
@@ -29,4 +32,12 @@ fun Millis?.isNullOrLessThanEqualZero(): Boolean {
 
 fun Long.Millis(): Millis {
     return Millis(this)
+}
+
+fun Micros.millis(): Millis {
+    return Millis(this.micros * 1000L)
+}
+
+fun Nanos.millis(): Millis {
+    return Millis(this.nanos * 1000 * 1000L)
 }
