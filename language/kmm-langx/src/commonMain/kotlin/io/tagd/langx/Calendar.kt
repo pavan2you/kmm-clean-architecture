@@ -16,6 +16,8 @@ expect class Calendar private constructor() {
 
     fun format(pattern: String): String
 
+    fun timezoneTime(): Time
+
     /**
      * ERA
      * YEAR

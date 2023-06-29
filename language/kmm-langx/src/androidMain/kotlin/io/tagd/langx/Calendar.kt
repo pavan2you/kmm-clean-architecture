@@ -44,6 +44,11 @@ actual class Calendar {
         return formatter.format(delegate.time)
     }
 
+    actual fun timezoneTime(): Time {
+        //todo must consider dst
+        return Time(time.value + timezone.rawOffset.toLong(), Time.Unit.MILLI_SECONDS)
+    }
+
     actual enum class Field(val value: Int) {
         ERA(java.util.Calendar.ERA),
 
