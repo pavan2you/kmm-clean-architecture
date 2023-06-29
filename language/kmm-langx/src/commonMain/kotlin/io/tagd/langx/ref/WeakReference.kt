@@ -6,3 +6,5 @@ expect class WeakReference<T>(value: T) {
 
     fun clear()
 }
+
+expect fun <T> T.weak(): WeakReference<T>

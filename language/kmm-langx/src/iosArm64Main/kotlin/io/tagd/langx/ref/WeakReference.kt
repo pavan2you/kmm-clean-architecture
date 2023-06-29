@@ -9,3 +9,7 @@ actual class WeakReference<T> actual constructor(value: T) {
     }
 
 }
+
+actual fun <T> T.weak(): WeakReference<T> {
+    return WeakReference(this)
+}
