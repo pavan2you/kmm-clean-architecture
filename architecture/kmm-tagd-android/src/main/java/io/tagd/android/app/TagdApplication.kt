@@ -160,6 +160,10 @@ open class TagdApplication : Application(), IApplication {
     /////////////////////////////////  Application's Life Cycle  ///////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    init {
+        controller = onCreateController()
+    }
+
     override fun onCreate() {
         super.onCreate()
         setupSelf()
@@ -204,7 +208,6 @@ open class TagdApplication : Application(), IApplication {
     /* ----------------------------------  Setup Controller  ------------------------------------ */
 
     private fun setupController() {
-        controller = onCreateController()
         controller?.onCreate()
     }
 

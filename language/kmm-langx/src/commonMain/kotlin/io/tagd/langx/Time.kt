@@ -35,8 +35,7 @@ data class Time(var value: Long = 0L, val unit: Unit) {
         minutesConverters[Unit.HOURS] = {
             assert(it.unit === Unit.HOURS)
 
-            val millis = it.value * 60 * 60 * 1000L
-            millsToMinutes(millis)
+            it
         }
 
         minutesConverters[Unit.MINUTES] = {
@@ -52,6 +51,28 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             val millis = it.value * 60 * 60 * 1000L
             millsToSeconds(millis)
         }
+
+        minutesConverters[Unit.MILLI_SECONDS] = {
+            assert(it.unit === Unit.HOURS)
+
+            val millis = it.value * 60 * 60 * 1000L
+            Time(millis, Unit.MILLI_SECONDS)
+        }
+
+        minutesConverters[Unit.MICRO_SECONDS] = {
+            assert(it.unit === Unit.HOURS)
+
+            val millis = it.value * 60 * 60 * 1000L
+            Time(millis * 1000L, Unit.MICRO_SECONDS)
+        }
+
+        minutesConverters[Unit.NANO_SECONDS] = {
+            assert(it.unit === Unit.HOURS)
+
+            val millis = it.value * 60 * 60 * 1000L
+            Time(millis * 1000 * 1000L, Unit.NANO_SECONDS)
+        }
+
         convertersMatrix[Unit.HOURS] = minutesConverters
     }
 
@@ -75,14 +96,13 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             assert(it.unit === Unit.MINUTES)
 
             val millis = it.value * 60 * 1000L
-            millsToMinutes(millis)
+            millsToHours(millis)
         }
 
         minutesConverters[Unit.MINUTES] = {
             assert(it.unit === Unit.MINUTES)
 
-            val millis = it.value * 60 * 1000L
-            millsToMinutes(millis)
+            it
         }
 
         minutesConverters[Unit.SECONDS] = {
@@ -91,6 +111,28 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             val millis = it.value * 60 * 1000L
             millsToSeconds(millis)
         }
+
+        minutesConverters[Unit.MILLI_SECONDS] = {
+            assert(it.unit === Unit.MINUTES)
+
+            val millis = it.value * 60 * 1000L
+            Time(millis, Unit.MILLI_SECONDS)
+        }
+
+        minutesConverters[Unit.MICRO_SECONDS] = {
+            assert(it.unit === Unit.MINUTES)
+
+            val millis = it.value * 60 * 1000L
+            Time(millis * 1000L, Unit.MICRO_SECONDS)
+        }
+
+        minutesConverters[Unit.NANO_SECONDS] = {
+            assert(it.unit === Unit.MINUTES)
+
+            val millis = it.value * 60 * 1000L
+            Time(millis * 1000 * 1000L, Unit.NANO_SECONDS)
+        }
+
         convertersMatrix[Unit.MINUTES] = minutesConverters
     }
 
@@ -114,7 +156,7 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             assert(it.unit === Unit.SECONDS)
 
             val millis = it.value * 1000L
-            millsToMinutes(millis)
+            millsToHours(millis)
         }
 
         secondsConverters[Unit.MINUTES] = {
@@ -127,9 +169,30 @@ data class Time(var value: Long = 0L, val unit: Unit) {
         secondsConverters[Unit.SECONDS] = {
             assert(it.unit === Unit.SECONDS)
 
-            val millis = it.value * 1000L
-            millsToSeconds(millis)
+            it
         }
+
+        secondsConverters[Unit.MILLI_SECONDS] = {
+            assert(it.unit === Unit.SECONDS)
+
+            val millis = it.value * 1000L
+            Time(millis, Unit.MILLI_SECONDS)
+        }
+
+        secondsConverters[Unit.MICRO_SECONDS] = {
+            assert(it.unit === Unit.SECONDS)
+
+            val millis = it.value * 1000L
+            Time(millis * 1000L, Unit.MICRO_SECONDS)
+        }
+
+        secondsConverters[Unit.NANO_SECONDS] = {
+            assert(it.unit === Unit.SECONDS)
+
+            val millis = it.value * 1000L
+            Time(millis * 1000 * 1000L, Unit.NANO_SECONDS)
+        }
+
         convertersMatrix[Unit.SECONDS] = secondsConverters
     }
 
@@ -169,6 +232,26 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             val millis = it.value
             millsToSeconds(millis)
         }
+        millisConverters[Unit.MILLI_SECONDS] = {
+            assert(it.unit === Unit.MILLI_SECONDS)
+
+            it
+        }
+
+        millisConverters[Unit.MICRO_SECONDS] = {
+            assert(it.unit === Unit.MILLI_SECONDS)
+
+            val micros = it.value * 1000L
+            Time(micros, Unit.MICRO_SECONDS)
+        }
+
+        millisConverters[Unit.NANO_SECONDS] = {
+            assert(it.unit === Unit.MILLI_SECONDS)
+
+            val nanos = it.value * 1000 * 1000L
+            Time(nanos, Unit.NANO_SECONDS)
+        }
+
         convertersMatrix[Unit.MILLI_SECONDS] = millisConverters
     }
 
@@ -208,6 +291,27 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             val millis = it.value / 1000L
             millsToSeconds(millis)
         }
+
+        microsConverters[Unit.MILLI_SECONDS] = {
+            assert(it.unit === Unit.MICRO_SECONDS)
+
+            val millis = it.value / 1000L
+            Time(millis, Unit.MILLI_SECONDS)
+        }
+
+        microsConverters[Unit.MICRO_SECONDS] = {
+            assert(it.unit === Unit.MICRO_SECONDS)
+
+            it
+        }
+
+        microsConverters[Unit.NANO_SECONDS] = {
+            assert(it.unit === Unit.MICRO_SECONDS)
+
+            val nanos = it.value * 1000L
+            Time(nanos, Unit.NANO_SECONDS)
+        }
+
         convertersMatrix[Unit.MICRO_SECONDS] = microsConverters
     }
 
@@ -247,6 +351,27 @@ data class Time(var value: Long = 0L, val unit: Unit) {
             val millis = it.value / 1000 * 1000L
             millsToSeconds(millis)
         }
+
+        nanosConverters[Unit.MILLI_SECONDS] = {
+            assert(it.unit === Unit.NANO_SECONDS)
+
+            val millis = it.value / 1000 * 1000L
+            Time(millis, Unit.MILLI_SECONDS)
+        }
+
+        nanosConverters[Unit.MICRO_SECONDS] = {
+            assert(it.unit === Unit.NANO_SECONDS)
+
+            val micros = it.value / 1000L
+            Time(micros, Unit.MICRO_SECONDS)
+        }
+
+        nanosConverters[Unit.NANO_SECONDS] = {
+            assert(it.unit === Unit.NANO_SECONDS)
+
+            it
+        }
+
         convertersMatrix[Unit.NANO_SECONDS] = nanosConverters
     }
 
