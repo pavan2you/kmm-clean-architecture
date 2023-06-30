@@ -1,7 +1,6 @@
 package io.tagd.langx
 
 import java.text.SimpleDateFormat
-import java.util.SimpleTimeZone
 
 actual class Calendar {
 
@@ -14,9 +13,9 @@ actual class Calendar {
         }
 
     actual var timezone: Timezone
-        get() = delegate.timeZone as SimpleTimeZone
+        get() = Timezone.wrap(delegate.timeZone)
         set(value) {
-            delegate.timeZone = value
+            delegate.timeZone = value.delegate
         }
 
     private var _locale: Locale = java.util.Locale.getDefault()
