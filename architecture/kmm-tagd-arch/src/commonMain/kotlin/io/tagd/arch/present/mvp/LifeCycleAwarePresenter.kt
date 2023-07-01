@@ -19,17 +19,31 @@ package io.tagd.arch.present.mvp
 
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
+import io.tagd.langx.assert
 import io.tagd.langx.ref.WeakReference
 
 open class LifeCycleAwarePresenter<V : PresentableView>(view: V) : Presenter<V> {
 
-    private var viewReference: WeakReference<V>? = WeakReference(view)
+    private var weakView: WeakReference<V>? = WeakReference(view)
 
     @VisibleForTesting(otherwise = Visibility.PROTECTED)
     var canHandleBackPress: Boolean? = true
 
     override val view: V?
-        get() = viewReference?.get()
+        get() = weakView?.get()
+
+    init {
+        attach(view)
+    }
+
+    override fun attach(view: V) {
+        weakView = WeakReference(view)
+    }
+
+    override fun detach(view: V) {
+        assert(weakView?.get() === view)
+        weakView?.clear()
+    }
 
     override fun onCreate() {
         //no op
@@ -76,8 +90,8 @@ open class LifeCycleAwarePresenter<V : PresentableView>(view: V) : Presenter<V> 
     }
 
     override fun release() {
-        viewReference?.clear()
-        viewReference = null
+        weakView?.clear()
+        weakView = null
         canHandleBackPress = null
     }
 }

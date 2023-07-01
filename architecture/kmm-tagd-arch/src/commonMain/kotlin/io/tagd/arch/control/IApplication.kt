@@ -22,6 +22,7 @@ import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.module.Module
 import io.tagd.arch.present.mvp.PresentableView
+import io.tagd.arch.present.mvp.PresenterFactory
 import io.tagd.di.key2
 import io.tagd.langx.ref.WeakReference
 
@@ -34,6 +35,8 @@ interface IApplication : Module, AsyncContext {
     fun previousView(): PresentableView?
 
     fun controller(): ApplicationController<*>?
+
+    fun presenterFactory(): PresenterFactory?
 }
 
 fun application(): IApplication? {

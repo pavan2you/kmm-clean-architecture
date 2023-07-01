@@ -23,6 +23,10 @@ interface Presenter<V : PresentableView> : Releasable {
 
     val view: V?
 
+    fun attach(view: V)
+
+    fun detach(view: V)
+
     fun onCreate()
 
     fun onStart()

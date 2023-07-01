@@ -19,6 +19,7 @@ package io.tagd.android.mvp
 
 import android.os.Bundle
 import io.tagd.android.app.FragmentActivity
+import io.tagd.android.app.TagdApplication
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.Presenter
@@ -33,7 +34,16 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
 
     override fun interceptOnCreate(savedInstanceState: Bundle?) {
         super.interceptOnCreate(savedInstanceState)
-        presenter = onCreatePresenter(savedInstanceState)
+
+        (application as TagdApplication).presenterFactory()?.let { presenterFactory ->
+            presenterFactory.getOrNew(this::class) {
+                presenter = onCreatePresenter(savedInstanceState)
+                presenter!!
+            }
+        } ?: kotlin.run {
+            presenter = onCreatePresenter(savedInstanceState)
+        }
+
         presenter?.onCreate()
     }
 
@@ -78,7 +88,12 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
     }
 
     override fun onDestroy() {
-        presenter?.onDestroy()
+        (application as TagdApplication).presenterFactory()?.let { presenterFactory ->
+            presenterFactory.get(this::class)?.detach(this)
+        } ?: kotlin.run {
+            presenter?.onDestroy()
+        }
+
         release()
         super.onDestroy()
     }

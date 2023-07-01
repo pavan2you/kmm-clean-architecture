@@ -22,6 +22,7 @@ import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.present.mvp.PresentableView
+import io.tagd.arch.present.mvp.PresenterFactory
 import io.tagd.di.Scope
 
 class FakeApplication : IApplication {
@@ -48,6 +49,10 @@ class FakeApplication : IApplication {
 
     override fun controller(): ApplicationController<*>? {
         return controller
+    }
+
+    override fun presenterFactory(): PresenterFactory {
+        return PresenterFactory("fake")
     }
 
     override fun release() {

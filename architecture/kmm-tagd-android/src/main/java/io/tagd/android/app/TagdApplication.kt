@@ -33,6 +33,7 @@ import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.arch.present.mvp.PresentableView
+import io.tagd.arch.present.mvp.PresenterFactory
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scope
@@ -106,6 +107,8 @@ open class TagdApplication : Application(), IApplication {
     final override val scope: Scope
         get() = applicationScope()
 
+    protected open var presenterFactory = PresenterFactory("presenter-factory")
+
     protected var lifecycleState: State = State.INITIALIZING
         private set
 
@@ -147,6 +150,10 @@ open class TagdApplication : Application(), IApplication {
     }
 
     override fun controller(): ApplicationController<*>? = controller
+
+    override fun presenterFactory(): PresenterFactory? {
+        return presenterFactory
+    }
 
     inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
         return Global.get<AppService, S>(key ?: io.tagd.di.key())
