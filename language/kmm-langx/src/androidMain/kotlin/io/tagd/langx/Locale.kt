@@ -5,7 +5,8 @@ import android.os.Build
 
 actual class Locale {
 
-    private lateinit var delegate: java.util.Locale
+    lateinit var delegate: java.util.Locale
+        private set
 
     @SuppressLint("ObsoleteSdkInt")
     actual fun asTwoLetterTag(): String {

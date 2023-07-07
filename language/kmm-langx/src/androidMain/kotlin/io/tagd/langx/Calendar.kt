@@ -18,7 +18,7 @@ actual class Calendar {
             delegate.timeZone = value.delegate
         }
 
-    private var _locale: Locale = java.util.Locale.getDefault()
+    private var _locale: Locale = Locale.default()
 
     actual var locale: Locale
         get() = _locale
@@ -39,7 +39,7 @@ actual class Calendar {
     }
 
     actual fun format(pattern: String): String {
-        val formatter = SimpleDateFormat(pattern, locale)
+        val formatter = SimpleDateFormat(pattern, locale.delegate)
         return formatter.format(delegate.time)
     }
 

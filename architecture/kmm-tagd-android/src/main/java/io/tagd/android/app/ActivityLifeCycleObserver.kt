@@ -29,8 +29,19 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     protected val app: TagdApplication?
         get() = appReference?.get()
 
-    private var previous: WeakReference<Activity>? = null
-    private var current: WeakReference<Activity>? = null
+    private var trace = arrayListOf<WeakReference<Activity>>()
+
+    private var isFirst = true
+
+    private val current: WeakReference<Activity>?
+        get() = trace.lastOrNull()
+
+    private val previous: WeakReference<Activity>?
+        get() = if (trace.size > 1) {
+            trace[trace.size - 2]
+        } else {
+            null
+        }
 
     override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
         super.onActivityPreCreated(activity, savedInstanceState)
@@ -42,19 +53,14 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     }
 
     private fun setupAppLauncher(activity: Activity, savedInstanceState: Bundle?) {
-        if (isFirst(activity)) {
+        if (isFirst) {
+            isFirst = false
             app?.resolveLauncher(activity, savedInstanceState)
         }
     }
 
-    private fun isFirst(activity: Activity): Boolean {
-        return ((previous == null && current == null) ||
-                (current != null && current?.get() === activity))
-    }
-
     private fun setPreviousAndCurrent(activity: Activity) {
-        previous = current
-        current = WeakReference(activity)
+        trace.add(WeakReference(activity))
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -93,17 +99,19 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
     private fun nullifyIfCurrentOrPrevious(activity: Activity) {
         if (current?.get() === activity) {
             current?.clear()
-            current = null
+            trace.removeAt(trace.size - 1)
         } else {
             if (previous?.get() === activity) {
                 previous?.clear()
-                previous = null
+                if (trace.size > 1) {
+                    trace.removeAt(trace.size - 2)
+                }
             }
         }
     }
 
     private fun isLast(activity: Activity): Boolean {
-        return (current?.get() === activity) && (previous == null || previous?.get() == null)
+        return trace.size == 1 && (current?.get() === activity)
     }
 
     fun currentActivity(): Activity? = current?.get()
@@ -114,8 +122,7 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
         appReference?.clear()
         previous?.clear()
         current?.clear()
+        trace.clear()
         appReference = null
-        previous = null
-        current = null
     }
 }
