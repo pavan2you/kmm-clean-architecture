@@ -1,5 +1,13 @@
 package io.tagd.langx
 
-expect class Locale
+expect class Locale {
 
-expect fun Locale.asTwoLetterTag(): String
+    fun asTwoLetterTag(): String
+
+    companion object {
+
+        fun get(languageTag: String): Locale
+
+        fun default(): Locale
+    }
+}
