@@ -36,10 +36,11 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
         super.interceptOnCreate(savedInstanceState)
 
         (application as TagdApplication).presenterFactory()?.let { presenterFactory ->
-            presenterFactory.getOrNew(this::class) {
+            presenter = presenterFactory.getOrNew(this::class) {
                 presenter = onCreatePresenter(savedInstanceState)
                 presenter!!
-            }
+            } as P
+            presenter!!.attach(this as V)
         } ?: kotlin.run {
             presenter = onCreatePresenter(savedInstanceState)
         }
