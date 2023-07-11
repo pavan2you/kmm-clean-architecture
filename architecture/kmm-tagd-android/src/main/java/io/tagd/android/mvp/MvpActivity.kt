@@ -44,11 +44,20 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
         } ?: kotlin.run {
             presenter = onCreatePresenter(savedInstanceState)
         }
-
-        presenter?.onCreate()
+        presenter?.let {
+            setupPresenter(it)
+            presenter?.onCreate()
+        }
     }
 
     protected abstract fun onCreatePresenter(savedInstanceState: Bundle?): P?
+
+    /**
+     * Call Presenter's initWith(...), if any additional arguments to be supplied
+     */
+    protected open fun setupPresenter(presenter: P) {
+        //no-op
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <V : PresentableView> presenter(): Presenter<V>? = presenter as? Presenter<V>
