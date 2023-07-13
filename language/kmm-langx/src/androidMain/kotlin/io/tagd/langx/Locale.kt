@@ -12,9 +12,9 @@ actual class Locale {
     actual fun asTwoLetterTag(): String {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                java.util.Locale.getDefault().toLanguageTag()         // ---> en-US
+                delegate.toLanguageTag()         // ---> en-US
             } else {
-                val locale = java.util.Locale.getDefault().toString() // ---> en_US
+                val locale = delegate.toString() // ---> en_US
                 locale.replace("_", "-")   // ---> en-US
             }
         } catch (e: Exception) {
