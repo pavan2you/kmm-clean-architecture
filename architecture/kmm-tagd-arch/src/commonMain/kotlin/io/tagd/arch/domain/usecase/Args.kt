@@ -39,6 +39,27 @@ fun argsOf(vararg pairs: Pair<String, Any?>): Args {
             ?: true,
         context = pairs.firstOrNull { contextPair -> contextPair.first == CONTEXT }?.second
     ).apply {
-        putAll(pairs)
+        val filtered = pairs.filter {
+            it.first != OBSERVE || it.first != CONTEXT
+        }.toTypedArray()
+
+        putAll(filtered)
+    }
+}
+
+fun argsOf(source: Args, vararg pairs: Pair<String, Any?> = arrayOf()): Args {
+    return Args(
+        observe = source.observe,
+        context = source.context
+    ).apply {
+        val filteredSource = source.getAll().filter {
+            it.key != OBSERVE || it.key != CONTEXT
+        }.toMap()
+        putAll(filteredSource)
+
+        val filtered = pairs.filter {
+            it.first != OBSERVE || it.first != CONTEXT
+        }.toTypedArray()
+        putAll(filtered)
     }
 }

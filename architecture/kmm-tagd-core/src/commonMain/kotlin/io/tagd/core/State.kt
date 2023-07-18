@@ -62,7 +62,7 @@ open class State : Releasable {
     /**
      * Copy from State.
      */
-    fun copy(state: State) {
+    open fun copy(state: State) {
         this.map.putAll(state.map)
     }
 
