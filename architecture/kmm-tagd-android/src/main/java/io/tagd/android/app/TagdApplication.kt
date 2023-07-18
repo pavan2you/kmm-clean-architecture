@@ -372,6 +372,14 @@ open class TagdApplication : Application(), IApplication {
         //no-op
     }
 
+    fun launcherDeepLink(): Uri? {
+        return if (launcher is DeepLinkLauncher) {
+            (launcher as DeepLinkLauncher).uri
+        } else {
+            null
+        }
+    }
+
     /* -----------------------------  Application's Exit Handler  ------------------------------- */
 
     override fun onTerminate() {
