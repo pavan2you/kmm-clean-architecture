@@ -49,10 +49,21 @@ open class State : Releasable {
     }
 
     /**
-     * Put all arguments key, value pairs in State.
+     * Put all arguments map in State.
      */
-    fun putAll(map: HashMap<String, Any?>) {
+    fun putAll(map: Map<String, Any?>) {
         this.map.putAll(map)
+    }
+
+    fun getAll(): Map<String, Any?> {
+        return map
+    }
+
+    /**
+     * Copy from State.
+     */
+    fun copy(state: State) {
+        this.map.putAll(state.map)
     }
 
     /**
