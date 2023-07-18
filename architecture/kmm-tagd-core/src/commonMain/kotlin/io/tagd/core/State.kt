@@ -49,6 +49,13 @@ open class State : Releasable {
     }
 
     /**
+     * Put all arguments key, value pairs in State.
+     */
+    fun putAll(map: HashMap<String, Any?>) {
+        this.map.putAll(map)
+    }
+
+    /**
      * find out whether the state is empty
      */
     fun isEmpty() = map.isEmpty()
