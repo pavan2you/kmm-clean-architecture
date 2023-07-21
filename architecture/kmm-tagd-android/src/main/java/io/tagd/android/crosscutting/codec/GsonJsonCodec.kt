@@ -33,4 +33,24 @@ class GsonJsonCodec : JsonCodec {
     override fun release() {
         mutableGson = null
     }
+
+    companion object {
+
+        fun new(builder: (GsonBuilder.() -> GsonBuilder)? = null): GsonJsonCodec {
+            return GsonJsonCodec().also {
+                it.mutableGson = GsonBuilder()
+                    .registerTypeAdapterFactory(GsonTypeInitializerFactory())
+                    .buildOrPass(builder)
+                    .create()
+            }
+        }
+    }
+}
+
+private fun <T> T.buildOrPass(builder: (T.() -> T)?): T {
+    return builder?.let {
+        this.it()
+    } ?: kotlin.run {
+        this
+    }
 }
