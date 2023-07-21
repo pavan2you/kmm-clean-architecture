@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.javaType
 
-class GsonJsonCodec : JsonCodec {
+class GsonJsonCodec private constructor(): JsonCodec {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var mutableGson: Gson? =

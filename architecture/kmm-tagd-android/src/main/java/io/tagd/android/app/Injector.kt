@@ -142,7 +142,7 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
             bind<DaoIOStrategy>().toInstance(CoroutineDaoIOStrategy())
             bind<CacheIOStrategy>().toInstance(CoroutineCacheIOStrategy())
 
-            bind<CrossCutting, JsonCodec>(instance = GsonJsonCodec())
+            bind<CrossCutting, JsonCodec>(instance = GsonJsonCodec.new())
         }
     }
 
