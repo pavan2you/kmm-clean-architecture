@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.javaType
 
-class GsonJsonCodec private constructor() : JsonCodec {
+class GsonJsonCodec private constructor() : JsonCodec<GsonBuilder> {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var mutableGsonBuilder: GsonBuilder =
@@ -33,11 +33,11 @@ class GsonJsonCodec private constructor() : JsonCodec {
         return gson.fromJson(json, type.javaType)
     }
 
-    fun builder(): GsonBuilder {
+    override fun builder(): GsonBuilder {
         return mutableGsonBuilder
     }
 
-    fun apply(builder: GsonBuilder = mutableGsonBuilder) {
+    override fun apply(builder: GsonBuilder) {
         mutableGson = builder.create()
     }
 

@@ -20,13 +20,17 @@ package io.tagd.arch.domain.crosscutting.codec
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
-interface JsonCodec : Codec {
+interface JsonCodec<BUILDER_TYPE : Any> : Codec {
 
     fun <T> toJson(obj: T): String
 
     fun <T : Any> fromJson(json: String, klass: KClass<T>): T
 
     fun <T> fromJson(json: String, type: KType): T
+
+    fun builder(): BUILDER_TYPE
+
+    fun apply(builder: BUILDER_TYPE)
 }
 
 expect annotation class SerializedName(
