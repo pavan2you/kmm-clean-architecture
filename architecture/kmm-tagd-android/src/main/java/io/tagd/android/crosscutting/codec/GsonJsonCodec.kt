@@ -8,11 +8,14 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.javaType
 
-class GsonJsonCodec private constructor(): JsonCodec {
+class GsonJsonCodec private constructor() : JsonCodec {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    var mutableGson: Gson? =
-        GsonBuilder().registerTypeAdapterFactory(GsonTypeInitializerFactory()).create()
+    var mutableGsonBuilder: GsonBuilder =
+        GsonBuilder().registerTypeAdapterFactory(GsonTypeInitializerFactory())
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var mutableGson: Gson? = mutableGsonBuilder.create()
 
     val gson
         get() = mutableGson!!
@@ -30,6 +33,14 @@ class GsonJsonCodec private constructor(): JsonCodec {
         return gson.fromJson(json, type.javaType)
     }
 
+    fun builder(): GsonBuilder {
+        return mutableGsonBuilder
+    }
+
+    fun apply(builder: GsonBuilder = mutableGsonBuilder) {
+        mutableGson = builder.create()
+    }
+
     override fun release() {
         mutableGson = null
     }
@@ -38,18 +49,19 @@ class GsonJsonCodec private constructor(): JsonCodec {
 
         fun new(builder: (GsonBuilder.() -> GsonBuilder)? = null): GsonJsonCodec {
             return GsonJsonCodec().also {
-                it.mutableGson = GsonBuilder()
+                it.mutableGsonBuilder = GsonBuilder()
                     .registerTypeAdapterFactory(GsonTypeInitializerFactory())
-                    .buildOrPass(builder)
-                    .create()
+                    .customize(builder)
+
+                it.apply(it.mutableGsonBuilder)
             }
         }
     }
 }
 
-private fun <T> T.buildOrPass(builder: (T.() -> T)?): T {
-    return builder?.let {
-        this.it()
+private fun GsonBuilder.customize(customizer: (GsonBuilder.() -> GsonBuilder)?): GsonBuilder {
+    return customizer?.let { _customizer ->
+        this._customizer()
     } ?: kotlin.run {
         this
     }
