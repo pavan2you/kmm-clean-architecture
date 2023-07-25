@@ -72,12 +72,12 @@ interface UnifiedResourceReader : NamedResourceReader, CompressedResourceReader 
 
 inline fun <reified T : Any> UnifiedResourceReader.readNamedJson(fileName: String): T? {
     return readNamed(NamedResource(nameWithOrWithoutRelativePath = fileName))?.let { json ->
-        crosscutting<JsonCodec>()?.fromJson(json, typeOf())
+        crosscutting<JsonCodec<*>>()?.fromJson(json, typeOf())
     }
 }
 
 inline fun <reified T : Any> UnifiedResourceReader.readCompressedJson(id: Int): T? {
     return readCompressed(CompressedResource(identifier = id))?.let { json ->
-        crosscutting<JsonCodec>()?.fromJson(json, typeOf())
+        crosscutting<JsonCodec<*>>()?.fromJson(json, typeOf())
     }
 }
