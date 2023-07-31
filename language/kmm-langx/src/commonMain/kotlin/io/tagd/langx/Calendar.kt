@@ -88,6 +88,8 @@ expect class Calendar private constructor() {
 
         fun instance(locale: Locale): Calendar
 
+        fun instance(dateLabel: String, pattern: String): Calendar?
+
         fun instance(timezone: Timezone, locale: Locale): Calendar
 
         fun instance(date: Date, timezone: Timezone, locale: Locale): Calendar

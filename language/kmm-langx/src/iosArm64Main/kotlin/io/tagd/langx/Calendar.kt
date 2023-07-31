@@ -129,6 +129,13 @@ actual class Calendar {
             TODO("Not yet implemented")
         }
 
+        actual fun instance(
+            dateLabel: String,
+            pattern: String
+        ): Calendar? {
+            TODO("Not yet implemented")
+        }
+
     }
 
     actual fun timezoneTime(): Time {

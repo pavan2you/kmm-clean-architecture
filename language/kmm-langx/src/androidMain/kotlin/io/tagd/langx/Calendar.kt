@@ -1,6 +1,9 @@
 package io.tagd.langx
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
 
 actual class Calendar {
 
@@ -147,6 +150,20 @@ actual class Calendar {
         actual fun instance(locale: Locale): Calendar {
             return Calendar().apply {
                 this.locale = locale
+            }
+        }
+
+        actual fun instance(dateLabel: String, pattern: String): Calendar? {
+            return try {
+                val sdf = SimpleDateFormat.getDateInstance()
+                val date = sdf.parse(dateLabel)
+                val timezone = sdf.timeZone
+                Calendar().apply {
+                    this.time = Time(date!!.time, Time.Unit.MILLI_SECONDS)
+                    this.timezone = Timezone.wrap(timezone)
+                }
+            } catch (e: Exception) {
+                null
             }
         }
 
