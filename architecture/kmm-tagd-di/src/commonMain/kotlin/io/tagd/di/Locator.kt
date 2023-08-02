@@ -25,6 +25,8 @@ import kotlin.reflect.KClass
 
 interface Locator : Releasable {
 
+    val scope: Scope?
+
     fun layers(): Map<KClass<*>, Layer<*>?>?
 
     fun <T : Service> bind(layer: Layer<T>, clazz: KClass<T>)
@@ -32,7 +34,7 @@ interface Locator : Releasable {
     fun <T : Service> locate(clazz: KClass<T>): Layer<T>?
 }
 
-class LayerLocator : Locator {
+class LayerLocator(override var scope: Scope?) : Locator {
 
     private var layers: ConcurrentHashMap<KClass<*>, Layer<*>?>? = ConcurrentHashMap()
 
@@ -55,6 +57,7 @@ class LayerLocator : Locator {
     }
 
     override fun release() {
+        scope = null
         layers?.values?.forEach {
             it?.release()
         }
@@ -64,7 +67,7 @@ class LayerLocator : Locator {
 }
 
 inline fun <reified T : Service> Locator.layer(bindings: Layer<T>.() -> Unit): Layer<T> {
-    return (locate(T::class) ?: Layer()).apply {
+    return (locate(T::class) ?: Layer(scope)).apply {
         bind(this, T::class)
         bindings()
     }

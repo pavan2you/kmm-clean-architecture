@@ -24,7 +24,7 @@ import io.tagd.langx.IllegalAccessException
 import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-class Layer<T : Service> : Releasable {
+class Layer<T : Service>(var scope: Scope?) : Releasable {
 
     private var services: ConcurrentHashMap<Key<out T>, Value<T>>? = ConcurrentHashMap()
 
@@ -34,6 +34,7 @@ class Layer<T : Service> : Releasable {
 
     fun <S : T> bind(service: Key<S>, instance: S) {
         services?.put(service, GetValue(instance))
+        scope?.notifyDependents(service, instance)
     }
 
     fun <S : T> bind(service: Key<S>, creator: (State?) -> S) {
@@ -76,6 +77,7 @@ class Layer<T : Service> : Releasable {
     }
 
     override fun release() {
+        scope = null
         services?.clear()
         services = null
     }

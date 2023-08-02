@@ -27,7 +27,7 @@ import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
 open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasable {
 
-    private var mutableLocator: Locator? = LayerLocator()
+    private var mutableLocator: Locator? = LayerLocator(this)
     private var scopes: ConcurrentHashMap<String, Scope>? = ConcurrentHashMap()
     private var mutableState: State? = State()
 
@@ -117,7 +117,7 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
     fun reset() {
         releaseSubScopes()
         dependsOnHandler?.release()
-        mutableLocator = LayerLocator()
+        mutableLocator = LayerLocator(this)
         mutableState = State()
     }
 
@@ -235,7 +235,6 @@ inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, 
     layer<T> {
         bind(service = keyDerived, instance = instance)
     }
-    notifyDependents(keyDerived, instance)
 }
 
 inline fun <reified T : Service, reified S : T> scopeOf(key: Key<S>? = null): Scope? {
