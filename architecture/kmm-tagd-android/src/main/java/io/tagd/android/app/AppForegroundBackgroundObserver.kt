@@ -59,14 +59,15 @@ open class AppForegroundBackgroundObserver(
     }
 
     private fun handleAppCameToForeground() {
-        if (backgroundSince == 0L ||
-            (backgroundSince > 0L &&
-                    System.currentTimeMillis() - backgroundSince > backgroundTimeMs)
-        ) {
+        val wasInBackground = backgroundSince >= 0L && System.currentTimeMillis() > backgroundSince
+        if (wasInBackground) {
+            val timeSpentInBackground = System.currentTimeMillis() - backgroundSince
 
+            if (timeSpentInBackground > backgroundTimeMs) {
+                app?.onForeground()
+            }
             removeWatcher()
             backgroundSince = -1L
-            app?.onForeground()
         }
     }
 
