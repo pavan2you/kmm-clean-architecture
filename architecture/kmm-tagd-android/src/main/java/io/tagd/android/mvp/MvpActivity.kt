@@ -18,6 +18,7 @@
 package io.tagd.android.mvp
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import io.tagd.android.app.FragmentActivity
 import io.tagd.android.app.TagdApplication
 import io.tagd.arch.control.IApplication
@@ -28,6 +29,8 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
     PresentableView {
 
     protected var presenter: P? = null
+
+    protected var onBackPressedCallback: OnBackPressedCallback? = null
 
     override val app: IApplication?
         get() = application as IApplication
@@ -48,6 +51,7 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
             setupPresenter(it)
             presenter?.onCreate()
         }
+        setUpBackPressDispatcher()
     }
 
     protected abstract fun onCreatePresenter(savedInstanceState: Bundle?): P?
@@ -108,16 +112,23 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
         super.onDestroy()
     }
 
-    override fun onBackPressed() {
-        if (presenter != null && presenter?.canHandleBackPress() == true) {
-            presenter?.onBackPressed()
-        } else {
-            super.onBackPressed()
+
+    protected open fun setUpBackPressDispatcher() {
+        onBackPressedCallback = object : OnBackPressedCallback(presenter?.canHandleBackPress() ?: false) {
+            override fun handleOnBackPressed() {
+                presenter?.onBackPressed()
+            }
         }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback!!)
+    }
+
+    override fun enableBackPressCallback(enable: Boolean) {
+        onBackPressedCallback?.isEnabled = enable
     }
 
     override fun release() {
         awaitReadyLifeCycleEventsDispatcher().unregister(this)
         presenter = null
+        onBackPressedCallback = null
     }
 }

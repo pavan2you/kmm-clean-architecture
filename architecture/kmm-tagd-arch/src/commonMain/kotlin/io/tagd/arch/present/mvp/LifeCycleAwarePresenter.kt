@@ -28,6 +28,13 @@ open class LifeCycleAwarePresenter<V : PresentableView>(view: V) : Presenter<V> 
 
     @VisibleForTesting(otherwise = Visibility.PROTECTED)
     var canHandleBackPress: Boolean? = true
+        set(value) {
+            field = value
+
+            value?.let {
+                view?.enableBackPressCallback(value)
+            }
+        }
 
     override val view: V?
         get() = weakView?.get()
