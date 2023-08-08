@@ -96,6 +96,12 @@ abstract class MvpFragment<V : PresentableView, P : Presenter<V>> : Fragment(), 
         (context?.applicationContext as? TagdApplication)?.presenterFactory()
             ?.let { presenterFactory ->
                 presenterFactory.get(this::class)?.detach(this)
+
+                activity?.let {
+                    if (!it.isChangingConfigurations) {
+                        presenterFactory.clear(this::class)
+                    }
+                }
             } ?: kotlin.run {
             presenter?.onDestroy()
         }

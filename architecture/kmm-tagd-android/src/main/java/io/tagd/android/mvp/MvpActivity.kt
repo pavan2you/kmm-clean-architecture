@@ -104,6 +104,10 @@ abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActi
     override fun onDestroy() {
         (application as TagdApplication).presenterFactory()?.let { presenterFactory ->
             presenterFactory.get(this::class)?.detach(this)
+
+            if (!isChangingConfigurations) {
+                presenterFactory.clear(this::class)
+            }
         } ?: kotlin.run {
             presenter?.onDestroy()
         }
