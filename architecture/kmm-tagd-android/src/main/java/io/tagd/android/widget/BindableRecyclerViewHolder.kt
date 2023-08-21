@@ -49,7 +49,7 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
         view: View
     ) : super(view) {
 
-        initialize()
+        //no-op
     }
 
     constructor(
@@ -58,7 +58,7 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
         parent: ViewGroup
     ) : this(inflater.inflate(layoutResId, parent, false)) {
 
-        initialize()
+        //no-op
     }
 
     constructor(
@@ -66,14 +66,10 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
         layoutResId: Int
     ) : this(View.inflate(parent.context, layoutResId, parent)) {
 
-        initialize()
+        //no-op
     }
 
-    private fun initialize() {
-        onCreate()
-    }
-
-    protected open fun onCreate() {
+    open fun onCreate() {
         binder = onCreateBinder()
         binder?.onCreate()
         onCreateView()

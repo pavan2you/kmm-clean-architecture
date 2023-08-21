@@ -155,7 +155,7 @@ actual class Calendar {
 
         actual fun instance(dateLabel: String, pattern: String): Calendar? {
             return try {
-                val sdf = SimpleDateFormat.getDateInstance()
+                val sdf = SimpleDateFormat(pattern, java.util.Locale.getDefault())
                 val date = sdf.parse(dateLabel)
                 val timezone = sdf.timeZone
                 Calendar().apply {
