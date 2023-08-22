@@ -141,4 +141,12 @@ actual class Calendar {
     actual fun timezoneTime(): Time {
         TODO("Not yet implemented")
     }
+
+    actual fun relative(accuracy: Calendar.RelativeAccuracy): String {
+        TODO("Not yet implemented")
+    }
+
+    actual enum class RelativeAccuracy {
+        SECONDS, MINUTES, HOURS, DAYS;
+    }
 }

@@ -18,6 +18,8 @@ expect class Calendar private constructor() {
 
     fun timezoneTime(): Time
 
+    fun relative(accuracy: RelativeAccuracy = RelativeAccuracy.SECONDS): String
+
     /**
      * ERA
      * YEAR
@@ -72,6 +74,13 @@ expect class Calendar private constructor() {
         val OCTOBER: Int
         val NOVEMBER: Int
         val DECEMBER: Int
+    }
+
+    enum class RelativeAccuracy {
+        SECONDS,
+        MINUTES,
+        HOURS,
+        DAYS;
     }
 
     companion object {

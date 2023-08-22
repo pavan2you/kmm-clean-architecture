@@ -1,9 +1,8 @@
 package io.tagd.langx
 
-import java.text.DateFormat
+import android.text.format.DateUtils
+import java.lang.System
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
 
 actual class Calendar {
 
@@ -49,6 +48,14 @@ actual class Calendar {
     actual fun timezoneTime(): Time {
         //todo must consider dst
         return Time(time.value + timezone.rawOffset.toLong(), Time.Unit.MILLI_SECONDS)
+    }
+
+    actual fun relative(accuracy: RelativeAccuracy): String {
+        return DateUtils.getRelativeTimeSpanString(
+            timezoneTime().value,
+            System.currentTimeMillis(),
+            DateUtils.SECOND_IN_MILLIS
+        ).toString()
     }
 
     actual enum class Field(val value: Int) {
@@ -115,6 +122,10 @@ actual class Calendar {
         actual val NOVEMBER: Int = java.util.Calendar.NOVEMBER
 
         actual val DECEMBER: Int = java.util.Calendar.DECEMBER
+    }
+
+    actual enum class RelativeAccuracy {
+        SECONDS, MINUTES, HOURS, DAYS;
     }
 
     actual companion object {
