@@ -107,15 +107,15 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
         }
     }
 
-    open fun attached() {
+    override fun attached() {
         //no op
     }
 
-    open fun detached() {
+    override fun detached() {
         //no op
     }
 
-    open fun recycled() {
+    override fun recycled() {
         //no op
     }
 

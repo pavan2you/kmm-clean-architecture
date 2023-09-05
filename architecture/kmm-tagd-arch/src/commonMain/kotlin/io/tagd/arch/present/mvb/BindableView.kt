@@ -18,10 +18,10 @@
 package io.tagd.arch.present.mvb
 
 import io.tagd.arch.data.DataObject
-import io.tagd.arch.present.View
 import io.tagd.arch.data.bind.Bindable
+import io.tagd.arch.present.View
 
-interface BindableView<T : DataObject> : View, Bindable<T> {
+interface BindableView<T : DataObject> : View, Bindable<T>, AdaptableView {
 
     var model: T?
 
