@@ -69,7 +69,7 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
         //no-op
     }
 
-    open fun onCreate() {
+    override fun onCreate() {
         binder = onCreateBinder()
         binder?.onCreate()
         onCreateView()
@@ -119,7 +119,7 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
         //no op
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
         release()
     }
 
