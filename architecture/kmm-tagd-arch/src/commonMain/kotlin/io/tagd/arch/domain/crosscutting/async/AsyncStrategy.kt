@@ -85,6 +85,10 @@ fun AsyncContext.cacheIO(context: AsyncContext? = this, delay: Long = 0, operati
     strategy?.execute(context, delay, operation)
 }
 
+typealias ObserveOn = (AsyncContext, Long, () -> Unit) -> Unit
+
+typealias ExecuteOn = (AsyncContext, Long, () -> Unit) -> Unit
+
 fun AsyncContext.cancelAsync(context: AsyncContext = this) {
     cancelPresentations(context)
     cancelComputations(context)
