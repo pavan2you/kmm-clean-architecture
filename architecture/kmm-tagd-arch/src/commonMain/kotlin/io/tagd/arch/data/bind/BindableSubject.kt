@@ -17,6 +17,9 @@
 
 package io.tagd.arch.data.bind
 
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.domain.crosscutting.async.ObserveOn
+import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.core.Initializable
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
@@ -25,7 +28,7 @@ import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
 import kotlin.jvm.Transient
 
-open class BindableSubject : Initializable, Serializable {
+open class BindableSubject : Initializable, Serializable, AsyncContext {
 
     @VisibleForTesting(otherwise = Visibility.PRIVATE)
     @Transient
@@ -70,6 +73,18 @@ open class BindableSubject : Initializable, Serializable {
         bindables.forEach {
             (it.get() as? Bindable<BindableSubject>)?.bindTo(this)
         }
+    }
+
+    protected fun ObserveOn?.notifyObservers(context: AsyncContext = this@BindableSubject) {
+        this?.invoke(context, 0) {
+            notifyBindables()
+        } ?: {
+            notifyBindables()
+        }
+    }
+
+    override fun release() {
+        cancelAsync()
     }
 
     companion object {
