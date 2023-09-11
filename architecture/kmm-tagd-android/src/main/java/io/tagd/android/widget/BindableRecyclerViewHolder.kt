@@ -125,8 +125,11 @@ abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B
 
     override fun release() {
         unbind()
+
         binder?.onDestroy()
         binder = null
+
+        model?.remove(this)
         model = null
     }
 }

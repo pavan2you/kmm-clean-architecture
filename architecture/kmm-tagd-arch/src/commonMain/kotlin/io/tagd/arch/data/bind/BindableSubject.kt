@@ -78,7 +78,7 @@ open class BindableSubject : Initializable, Serializable, AsyncContext {
     protected fun ObserveOn?.notifyObservers(context: AsyncContext = this@BindableSubject) {
         this?.invoke(context, 0) {
             notifyBindables()
-        } ?: {
+        } ?: kotlin.run {
             notifyBindables()
         }
     }
