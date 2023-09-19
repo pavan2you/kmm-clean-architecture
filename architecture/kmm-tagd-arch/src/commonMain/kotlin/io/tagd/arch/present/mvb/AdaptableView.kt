@@ -1,8 +1,10 @@
 package io.tagd.arch.present.mvb
 
-interface AdaptableView : Attachable, Detachable, Recyclable {
+interface AdaptableView<T : Any> : Adaptable {
 
-    fun onCreate()
+    var model: T?
 
-    fun onDestroy()
+    fun show()
+
+    fun hide()
 }

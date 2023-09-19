@@ -21,7 +21,7 @@ import io.tagd.arch.data.DataObject
 import io.tagd.arch.data.bind.Bindable
 import io.tagd.arch.present.View
 
-interface BindableView<T : DataObject> : View, Bindable<T>, AdaptableView {
+interface BindableView<T : DataObject> : View, Windowable, Bindable<T> {
 
     var model: T?
 

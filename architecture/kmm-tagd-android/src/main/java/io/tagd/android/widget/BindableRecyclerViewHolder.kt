@@ -23,11 +23,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.data.DataObject
+import io.tagd.arch.present.mvb.AdaptableBindableView
 import io.tagd.arch.present.mvb.BindableView
 import io.tagd.arch.present.mvb.Binder
 
-abstract class BindableRecyclerViewHolder<T : DataObject, V : BindableView<T>, B : Binder<T, V>> :
-    RecyclerView.ViewHolder, BindableView<T> {
+abstract class BindableRecyclerViewHolder<
+    T : DataObject,
+    V : AdaptableBindableView<T>,
+    B : Binder<T, V>
+> : RecyclerView.ViewHolder, AdaptableBindableView<T> {
 
     override val app: IApplication?
         get() = itemView.context?.applicationContext as? IApplication

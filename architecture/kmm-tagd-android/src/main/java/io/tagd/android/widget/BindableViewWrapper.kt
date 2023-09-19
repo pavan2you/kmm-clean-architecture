@@ -96,10 +96,6 @@ abstract class BindableViewWrapper<T : DataObject, V : BindableView<T>, B : Bind
         //no op
     }
 
-    override fun recycled() {
-        throw UnsupportedOperationException()
-    }
-
     override fun onDestroy() {
         release()
     }
