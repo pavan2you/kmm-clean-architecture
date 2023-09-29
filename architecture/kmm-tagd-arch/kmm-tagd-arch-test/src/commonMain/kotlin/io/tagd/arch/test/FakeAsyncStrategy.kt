@@ -22,13 +22,14 @@ import io.tagd.arch.domain.crosscutting.async.AsyncExceptionHandler
 import io.tagd.arch.domain.crosscutting.async.AsyncStrategy
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
+import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 
 open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationStrategy,
-    NetworkIOStrategy, DiskIOStrategy, DaoIOStrategy, CacheIOStrategy {
+    ComputeIOStrategy, NetworkIOStrategy, DiskIOStrategy, DaoIOStrategy, CacheIOStrategy {
 
     var released: Boolean = false
 

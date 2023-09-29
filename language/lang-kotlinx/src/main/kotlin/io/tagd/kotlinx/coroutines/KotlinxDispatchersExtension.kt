@@ -13,10 +13,14 @@ fun dispatcherWith(nameFormat: String): ExecutorCoroutineDispatcher {
 }
 
 private val defaultComputationDispatcher = dispatcherWith("compute-%d")
+private val defaultComputeIODispatcher = dispatcherWith("compute-io-%d")
 private val defaultDaoIODispatcher = dispatcherWith("dao-io-%d")
 
 val kotlinx.coroutines.Dispatchers.Computation: CoroutineDispatcher
     get() = defaultComputationDispatcher
+
+val kotlinx.coroutines.Dispatchers.ComputeIO: CoroutineDispatcher
+    get() = defaultComputeIODispatcher
 
 val kotlinx.coroutines.Dispatchers.DaoIO: CoroutineDispatcher
     get() = defaultDaoIODispatcher

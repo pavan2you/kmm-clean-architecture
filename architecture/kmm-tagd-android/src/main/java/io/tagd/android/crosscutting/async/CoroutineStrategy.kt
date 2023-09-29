@@ -126,6 +126,12 @@ class CoroutineComputationStrategy(exceptionHandler: AsyncExceptionHandler? = nu
         exceptionHandler = exceptionHandler
     ), ComputationStrategy
 
+class CoroutineComputeIOStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
+    CoroutineStrategy(
+        coroutineContext = Dispatchers.ComputeIO,
+        exceptionHandler = exceptionHandler
+    ), ComputeIOStrategy
+
 class CoroutineNetworkStrategy(exceptionHandler: AsyncExceptionHandler? = null) :
     CoroutineStrategy(
         coroutineContext = Dispatchers.IO,

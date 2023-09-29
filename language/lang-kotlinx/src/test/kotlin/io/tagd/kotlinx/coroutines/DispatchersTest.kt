@@ -103,6 +103,14 @@ class DispatchersTest {
     }
 
     @Test
+    fun `given provider is set compute IO then verify provider#daoIO returns the same`() {
+        val provider =
+            Dispatchers.Builder().ComputeIO(kotlinx.coroutines.Dispatchers.ComputeIO).build()
+
+        assert(kotlinx.coroutines.Dispatchers.ComputeIO == provider.ComputeIO)
+    }
+
+    @Test
     fun `given provider is set Unconfined then verify provider#Unconfined returns the same`() {
         val provider =
             Dispatchers.Builder().Unconfined(kotlinx.coroutines.Dispatchers.Unconfined).build()
@@ -126,6 +134,12 @@ class DispatchersTest {
     fun `given dao-io dispatcher is not set verify uninitialized exception thrown`() {
         val provider = Dispatchers.Builder().build()
         provider.DaoIO
+    }
+
+    @Test(expected = UninitializedPropertyAccessException::class)
+    fun `given compute-io dispatcher is not set verify uninitialized exception thrown`() {
+        val provider = Dispatchers.Builder().build()
+        provider.ComputeIO
     }
 
     @Test(expected = UninitializedPropertyAccessException::class)

@@ -43,6 +43,8 @@ interface PresentationStrategy : AsyncStrategy
 
 interface ComputationStrategy : AsyncStrategy
 
+interface ComputeIOStrategy : AsyncStrategy
+
 interface NetworkIOStrategy : AsyncStrategy
 
 interface DiskIOStrategy : AsyncStrategy
@@ -63,6 +65,11 @@ fun AsyncContext.present(context: AsyncContext? = this, delay: Long = 0, present
 
 fun AsyncContext.networkIO(context: AsyncContext? = this, delay: Long = 0, api: () -> Unit) {
     val strategy = crosscutting<NetworkIOStrategy>()
+    strategy?.execute(context, delay, api)
+}
+
+fun AsyncContext.computeIO(context: AsyncContext? = this, delay: Long = 0, api: () -> Unit) {
+    val strategy = crosscutting<ComputeIOStrategy>()
     strategy?.execute(context, delay, api)
 }
 
@@ -92,6 +99,7 @@ typealias ExecuteOn = (AsyncContext, Long, () -> Unit) -> Unit
 fun AsyncContext.cancelAsync(context: AsyncContext = this) {
     cancelPresentations(context)
     cancelComputations(context)
+    cancelComputeIO(context)
     cancelNetworkIO(context)
     cancelDiskIO(context)
     cancelDaoIO(context)
@@ -105,6 +113,11 @@ fun AsyncContext.cancelPresentations(context: AsyncContext = this) {
 
 fun AsyncContext.cancelComputations(context: AsyncContext = this) {
     val strategy = crosscutting<ComputationStrategy>()
+    strategy?.cancel(context)
+}
+
+fun AsyncContext.cancelComputeIO(context: AsyncContext = this) {
+    val strategy = crosscutting<ComputeIOStrategy>()
     strategy?.cancel(context)
 }
 

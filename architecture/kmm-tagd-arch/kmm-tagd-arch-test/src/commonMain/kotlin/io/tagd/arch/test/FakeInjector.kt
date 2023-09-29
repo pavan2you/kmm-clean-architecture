@@ -37,8 +37,9 @@ class FakeInjector : Releasable {
 
             //platform
             val testStrategy = FakeAsyncStrategy()
-            bind<ComputationStrategy>().toInstance(testStrategy)
             bind<PresentationStrategy>().toInstance(testStrategy)
+            bind<ComputationStrategy>().toInstance(testStrategy)
+            bind<ComputeIOStrategy>().toInstance(testStrategy)
             bind<NetworkIOStrategy>().toInstance(testStrategy)
             bind<DiskIOStrategy>().toInstance(testStrategy)
             bind<DaoIOStrategy>().toInstance(testStrategy)

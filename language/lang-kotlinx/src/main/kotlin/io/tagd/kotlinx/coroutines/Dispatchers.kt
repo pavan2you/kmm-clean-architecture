@@ -28,6 +28,9 @@ class Dispatchers private constructor() {
     lateinit var Computation: CoroutineDispatcher
         private set
 
+    lateinit var ComputeIO: CoroutineDispatcher
+        private set
+
     lateinit var IO: CoroutineDispatcher
         private set
 
@@ -53,6 +56,11 @@ class Dispatchers private constructor() {
 
         fun DaoIO(dispatcher: CoroutineDispatcher): Builder {
             cooking.DaoIO = dispatcher
+            return this
+        }
+
+        fun ComputeIO(dispatcher: CoroutineDispatcher): Builder {
+            cooking.ComputeIO = dispatcher
             return this
         }
 
@@ -97,6 +105,13 @@ class Dispatchers private constructor() {
                 get().Computation
             } catch (e: Exception) {
                 kotlinx.coroutines.Dispatchers.Computation
+            }
+
+        val ComputeIO
+            get() = try {
+                get().ComputeIO
+            } catch (e: Exception) {
+                kotlinx.coroutines.Dispatchers.ComputeIO
             }
 
         val IO

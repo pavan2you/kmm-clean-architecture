@@ -19,6 +19,7 @@ package io.tagd.android.app
 
 import io.tagd.android.crosscutting.async.CoroutineCacheIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineComputationStrategy
+import io.tagd.android.crosscutting.async.CoroutineComputeIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineDaoIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineDiskStrategy
 import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
@@ -30,6 +31,7 @@ import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
+import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
@@ -137,6 +139,7 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
         layer<CrossCutting> {
             bind<PresentationStrategy>().toInstance(CoroutinePresentationStrategy())
             bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy())
+            bind<ComputeIOStrategy>().toInstance(CoroutineComputeIOStrategy())
             bind<NetworkIOStrategy>().toInstance(CoroutineNetworkStrategy())
             bind<DiskIOStrategy>().toInstance(CoroutineDiskStrategy())
             bind<DaoIOStrategy>().toInstance(CoroutineDaoIOStrategy())
