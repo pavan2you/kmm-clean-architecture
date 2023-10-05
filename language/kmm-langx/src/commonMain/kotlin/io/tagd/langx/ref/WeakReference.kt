@@ -1,6 +1,6 @@
 package io.tagd.langx.ref
 
-expect class WeakReference<T>(value: T) {
+expect open class WeakReference<T>(value: T) {
 
     fun get(): T?
 

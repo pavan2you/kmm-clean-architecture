@@ -33,8 +33,8 @@ open class DataObject : BindableSubject(), Validatable, Copyable {
         crudOperation = CrudOperation.CREATE
     }
 
-    override fun validate() {
-        //no-op
+    override fun validate(): Boolean {
+        return true
     }
 }
 
