@@ -8,6 +8,10 @@ open class Interval(val start: UnixEpochInMillis, var end: UnixEpochInMillis) {
         return Interval(start = start, end = end)
     }
 
+    fun endNow() {
+        end = UnixEpochInMillis(Millis(System.millis()))
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -28,6 +32,14 @@ open class Interval(val start: UnixEpochInMillis, var end: UnixEpochInMillis) {
 
     override fun toString(): String {
         return "[start=$start, end=$end]"
+    }
+
+    companion object {
+
+        fun now(): Interval {
+            val now = UnixEpochInMillis(Millis(System.millis()))
+            return Interval(start = now, end = now)
+        }
     }
 }
 
