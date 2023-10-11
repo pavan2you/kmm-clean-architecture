@@ -5,7 +5,16 @@ import io.tagd.langx.IllegalAccessException
 interface Validatable {
 
     @Throws(ValidateException::class)
-    fun validate(): Boolean
+    fun validate()
+
+    fun valid(): Boolean {
+        return try {
+            validate()
+            true
+        } catch (e: ValidateException) {
+            false
+        }
+    }
 }
 
 class ValidateException(
@@ -17,14 +26,22 @@ class ValidateException(
 interface Validator : Service {
 
     @Throws(ValidateException::class)
-    fun validate(validatable: Validatable): Boolean {
+    fun validate(validatable: Validatable) {
         return validatable.validate()
+    }
+
+    fun valid(validatable: Validatable): Boolean {
+        return validatable.valid()
     }
 }
 
 open class ValidatableReference<T>(val reference: T) : Validatable {
 
-    override fun validate(): Boolean {
+    override fun validate() {
+        throw IllegalAccessException("Use Validator to validate")
+    }
+
+    override fun valid(): Boolean {
         throw IllegalAccessException("Use Validator to validate")
     }
 }
