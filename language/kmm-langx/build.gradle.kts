@@ -1,5 +1,6 @@
 plugins {
     id("io.tagd.kmm.library")
+    id("kotlin-parcelize")
 }
 
 kotlin {
