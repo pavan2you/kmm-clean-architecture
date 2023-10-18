@@ -25,6 +25,7 @@ import io.tagd.android.crosscutting.async.CoroutineDiskStrategy
 import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
 import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
 import io.tagd.android.crosscutting.codec.GsonJsonCodec
+import io.tagd.android.crosscutting.codec.UrlEncoderDecoder
 import io.tagd.arch.access.bind
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.domain.crosscutting.CrossCutting
@@ -40,6 +41,7 @@ import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
+import io.tagd.arch.domain.crosscutting.codec.UrlCodec
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.di.Global
@@ -146,6 +148,7 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
             bind<CacheIOStrategy>().toInstance(CoroutineCacheIOStrategy())
 
             bind<CrossCutting, JsonCodec<*>>(instance = GsonJsonCodec.new())
+            bind<CrossCutting, UrlCodec>(instance = UrlEncoderDecoder())
         }
     }
 
