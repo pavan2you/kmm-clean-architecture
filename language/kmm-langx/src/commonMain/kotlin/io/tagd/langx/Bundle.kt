@@ -2,6 +2,12 @@ package io.tagd.langx
 
 expect class Bundle {
 
+    constructor()
+
+    constructor(capacity: Int)
+
+    constructor(b: Bundle)
+
     fun clear()
 
     fun remove(key: String)

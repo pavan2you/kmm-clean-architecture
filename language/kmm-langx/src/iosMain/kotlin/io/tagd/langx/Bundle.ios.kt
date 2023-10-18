@@ -26,4 +26,15 @@ actual class Bundle {
     actual fun putCharSequence(key: String?, value: CharSequence?) {
     }
 
+    actual constructor(capacity: Int) {
+        TODO("Not yet implemented")
+    }
+
+    actual constructor(b: Bundle) {
+        TODO("Not yet implemented")
+    }
+
+    actual constructor() {
+        TODO("Not yet implemented")
+    }
 }
