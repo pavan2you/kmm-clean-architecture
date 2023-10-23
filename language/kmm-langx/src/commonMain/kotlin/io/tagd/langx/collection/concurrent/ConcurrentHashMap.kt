@@ -23,4 +23,16 @@ expect class ConcurrentHashMap<K, V> : MutableMap<K, V> {
     override val keys: MutableSet<K>
     override val values: MutableCollection<V>
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+
+    // From ConcurrentMap
+
+    fun getOrDefault(key: K, defaultValue: V): V
+
+    fun putIfAbsent(key: K, value: V): V?
+
+    fun remove(key: K, value: V): Boolean
+
+    fun replace(key: K, oldValue: V, newValue: V): Boolean
+
+    fun replace(key: K, value: V): V?
 }

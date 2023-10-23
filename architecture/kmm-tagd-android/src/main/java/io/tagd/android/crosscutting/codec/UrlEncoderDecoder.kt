@@ -6,12 +6,12 @@ import java.net.URLEncoder
 
 class UrlEncoderDecoder : UrlCodec {
 
-    override fun encode(data: String, charset: String) {
-        URLEncoder.encode(data, charset)
+    override fun encode(data: String, charset: String): String {
+        return URLEncoder.encode(data, charset)
     }
 
-    override fun decode(data: String, charset: String) {
-        URLDecoder.decode(data, charset)
+    override fun decode(data: String, charset: String): String {
+        return URLDecoder.decode(data, charset)
     }
 
     override fun release() {

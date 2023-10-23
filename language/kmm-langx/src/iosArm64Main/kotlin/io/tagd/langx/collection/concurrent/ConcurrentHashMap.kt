@@ -61,4 +61,24 @@ actual class ConcurrentHashMap<K, V> : MutableMap<K, V> {
     actual override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() = TODO("Not yet implemented")
 
+    actual fun remove(key: K, value: V): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    actual fun getOrDefault(key: K, defaultValue: V): V {
+        TODO("Not yet implemented")
+    }
+
+    actual fun putIfAbsent(key: K, value: V): V? {
+        TODO("Not yet implemented")
+    }
+
+    actual fun replace(key: K, oldValue: V, newValue: V): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    actual fun replace(key: K, value: V): V? {
+        TODO("Not yet implemented")
+    }
+
 }
