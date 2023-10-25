@@ -28,7 +28,9 @@ import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
 import kotlin.jvm.Transient
 
-open class BindableSubject : Initializable, Serializable, AsyncContext {
+interface BindableSubjectable : Initializable, Serializable, AsyncContext
+
+open class BindableSubject : BindableSubjectable {
 
     @VisibleForTesting(otherwise = Visibility.PRIVATE)
     @Transient

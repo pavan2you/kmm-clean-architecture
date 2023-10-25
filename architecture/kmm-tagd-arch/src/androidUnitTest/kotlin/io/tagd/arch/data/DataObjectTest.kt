@@ -36,7 +36,7 @@ class DataObjectTest {
     fun `given initialize is called then verify object is having default state`() {
         val dataObject = DataObject()
         dataObject.initialize()
-        assert(dataObject.crudOperation == DataObject.CrudOperation.CREATE)
+        assert(dataObject.crudOperation == DataObjectable.CrudOperation.CREATE)
         assert(dataObject.bindables.isEmpty())
     }
 }

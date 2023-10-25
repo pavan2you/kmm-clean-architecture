@@ -18,19 +18,25 @@
 package io.tagd.arch.data
 
 import io.tagd.arch.data.bind.BindableSubject
+import io.tagd.arch.data.bind.BindableSubjectable
 import io.tagd.core.Copyable
 import io.tagd.core.Validatable
 
-open class DataObject : BindableSubject(), Validatable, Copyable {
+interface DataObjectable : BindableSubjectable, Validatable, Copyable {
 
     enum class CrudOperation(val value: String) {
         CREATE("C"), UPDATE("U"), DELETE("D"), READ("R")
     }
 
-    var crudOperation: CrudOperation = CrudOperation.CREATE
+    var crudOperation: CrudOperation
+}
+
+open class DataObject : BindableSubject(), DataObjectable {
+
+    override var crudOperation: DataObjectable.CrudOperation = DataObjectable.CrudOperation.CREATE
 
     override fun initialize() {
-        crudOperation = CrudOperation.CREATE
+        crudOperation = DataObjectable.CrudOperation.CREATE
     }
 
     override fun validate() {
