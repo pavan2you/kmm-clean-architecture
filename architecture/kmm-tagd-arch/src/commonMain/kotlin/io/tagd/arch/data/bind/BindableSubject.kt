@@ -28,24 +28,39 @@ import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
 import kotlin.jvm.Transient
 
-interface BindableSubjectable : Initializable, Serializable, AsyncContext
+interface BindableSubjectable : Initializable, Serializable, AsyncContext {
+
+    var bindables: CopyOnWriteArraySet<WeakReference<Bindable<out BindableSubjectable>>>
+
+    fun add(bindable: Bindable<out BindableSubjectable>)
+
+    fun remove(bindable: Bindable<out BindableSubjectable>)
+
+    fun removeAllBindables()
+
+    fun addBindablesFrom(source: BindableSubjectable)
+
+    fun switchBindingsTo(other: BindableSubjectable)
+
+    fun notifyBindables()
+}
 
 open class BindableSubject : BindableSubjectable {
 
     @VisibleForTesting(otherwise = Visibility.PRIVATE)
     @Transient
-    var bindables = CopyOnWriteArraySet<WeakReference<Bindable<out BindableSubject>>>()
+    override var bindables = CopyOnWriteArraySet<WeakReference<Bindable<out BindableSubjectable>>>()
 
     override fun initialize() {
         bindables = CopyOnWriteArraySet()
     }
 
-    fun add(bindable: Bindable<out BindableSubject>) {
+    override fun add(bindable: Bindable<out BindableSubjectable>) {
         remove(bindable)
         bindables.add(WeakReference(bindable))
     }
 
-    fun remove(bindable: Bindable<out BindableSubject>) {
+    override fun remove(bindable: Bindable<out BindableSubjectable>) {
         bindables.firstOrNull {
             it.get() == bindable
         }?.let {
@@ -53,12 +68,12 @@ open class BindableSubject : BindableSubjectable {
         }
     }
 
-    fun removeAllBindables() {
+    override fun removeAllBindables() {
         bindables.clear()
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun addBindablesFrom(source: BindableSubject) {
+    override fun addBindablesFrom(source: BindableSubjectable) {
         source.bindables.forEach {
             it.get()?.let { bindable ->
                 add(bindable as Bindable<BindableSubject>)
@@ -66,12 +81,12 @@ open class BindableSubject : BindableSubjectable {
         }
     }
 
-    fun switchBindingsTo(other: BindableSubject) {
+    override fun switchBindingsTo(other: BindableSubjectable) {
         other.addBindablesFrom(this)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun notifyBindables() {
+    override fun notifyBindables() {
         bindables.forEach {
             (it.get() as? Bindable<BindableSubject>)?.bindTo(this)
         }

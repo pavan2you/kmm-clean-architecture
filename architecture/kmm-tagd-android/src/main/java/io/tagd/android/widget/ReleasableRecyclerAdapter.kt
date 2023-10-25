@@ -19,10 +19,12 @@ package io.tagd.android.widget
 
 import androidx.recyclerview.widget.RecyclerView
 import io.tagd.arch.data.DataObject
+import io.tagd.arch.data.DataObjectable
 import io.tagd.core.Releasable
 
-abstract class ReleasableRecyclerAdapter<T : DataObject, VH : BindableRecyclerViewHolder<T, *, *>> :
-    RecyclerView.Adapter<VH>(), Releasable {
+abstract class ReleasableRecyclerAdapter<
+    T : DataObjectable, VH : BindableRecyclerViewHolder<T, *, *>
+> : RecyclerView.Adapter<VH>(), Releasable {
 
     val items: MutableList<T> = mutableListOf()
     private var recyclerView: RecyclerView? = null

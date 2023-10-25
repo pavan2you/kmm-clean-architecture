@@ -18,6 +18,9 @@
 package io.tagd.arch.data.dto
 
 import io.tagd.arch.data.DataObject
+import io.tagd.arch.data.DataObjectable
 import io.tagd.core.Immutable
 
-open class DataTransferObject : DataObject(), Immutable
+interface DataTransferrable : DataObjectable, Immutable
+
+open class DataTransferObject : DataObject(), DataTransferrable

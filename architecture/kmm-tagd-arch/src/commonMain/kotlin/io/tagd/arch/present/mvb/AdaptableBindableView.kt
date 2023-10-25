@@ -1,5 +1,5 @@
 package io.tagd.arch.present.mvb
 
-import io.tagd.arch.data.DataObject
+import io.tagd.arch.data.DataObjectable
 
-interface AdaptableBindableView<T : DataObject> : Adaptable, BindableView<T>
+interface AdaptableBindableView<T : DataObjectable> : Adaptable, BindableView<T>
