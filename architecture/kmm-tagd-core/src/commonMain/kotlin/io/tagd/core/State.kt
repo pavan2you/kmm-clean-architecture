@@ -38,7 +38,7 @@ open class State : Releasable {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T> get(key: String): T? {
-        return map[key] as T?
+        return map[key] as? T?
     }
 
     /**

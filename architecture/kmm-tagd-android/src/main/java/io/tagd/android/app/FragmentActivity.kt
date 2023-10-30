@@ -35,7 +35,7 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
 
     private fun getOrNewLifecycleFreeState() =
         supportFragmentManager.findFragmentByTag(HeadLessFragment.TAG) as? HeadLessFragment
-            ?: HeadLessFragment(this)
+            ?: HeadLessFragment.new(this)
 
     protected open fun interceptOnCreate(savedInstanceState: Bundle?) {
         // no-op
@@ -84,6 +84,7 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
 
     override fun onDestroy() {
         awaitReadyLifeCycleEventsDispatcher().unregister(this)
+        lifecycleFreeState = null
         super.onDestroy()
     }
 
@@ -104,19 +105,26 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
     }
 }
 
-class HeadLessFragment(activity: FragmentActivity) : Fragment() {
+class HeadLessFragment : Fragment() {
 
     var triggerInject: Boolean = true
 
     init {
         retainInstance = true //since this activity is not just for ViewModels then deprecation doesn't make sense
-        activity.supportFragmentManager.beginTransaction().add(
-            this,
-            TAG
-        ).commitNow()
     }
 
     companion object {
         const val TAG = "head-less"
+
+        @JvmStatic
+        fun new(activity: FragmentActivity): HeadLessFragment {
+            val fragment = HeadLessFragment()
+            activity.supportFragmentManager
+                .beginTransaction()
+                .add(fragment, TAG)
+                .commitNow()
+
+            return fragment
+        }
     }
 }
