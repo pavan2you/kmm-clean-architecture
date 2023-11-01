@@ -17,9 +17,8 @@
 
 package io.tagd.arch.present.mvb
 
-import io.tagd.arch.data.DataObject
 import io.tagd.arch.data.bind.Bindable
-import io.tagd.core.Releasable
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
 
 /**
  * Represents Binder in Model-View-Binder(ViewModel).
@@ -30,7 +29,7 @@ import io.tagd.core.Releasable
  * To handle ui changes, the recommendation is to implement onChangeXXX(xxxValue) { ... }
  * Or having a template method onChange(elementId, elementValue) { ... }
  */
-interface Binder<T : Any, V : Bindable<T>> : Releasable {
+interface Binder<T : Any, V : Bindable<T>> : AsyncContext {
 
     val view: V?
 

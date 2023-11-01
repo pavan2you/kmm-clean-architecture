@@ -18,9 +18,9 @@
 package io.tagd.arch.present
 
 import io.tagd.arch.control.IApplication
-import io.tagd.core.Releasable
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
 
-interface View : Releasable {
+interface View : AsyncContext {
 
     val app: IApplication?
 }

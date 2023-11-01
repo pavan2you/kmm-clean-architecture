@@ -17,9 +17,9 @@
 
 package io.tagd.arch.present.mvp
 
-import io.tagd.core.Releasable
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
 
-interface Presenter<V : PresentableView> : Releasable {
+interface Presenter<V : PresentableView> : AsyncContext {
 
     val view: V?
 

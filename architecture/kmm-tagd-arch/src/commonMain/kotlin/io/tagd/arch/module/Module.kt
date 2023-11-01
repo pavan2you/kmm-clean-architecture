@@ -28,6 +28,7 @@ import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.Factory
 import io.tagd.core.Service
 import io.tagd.core.State
+import io.tagd.di.DependableService
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scopable
@@ -105,6 +106,19 @@ abstract class AbstractModule(final override val name: String, final override va
     init {
         scope.addSubScopeIfAbsent(Scope(name))
     }
+}
+
+abstract class AbstractDependableModule(
+    name: String,
+    scope: Scope
+) : AbstractModule(name, scope), DependableService {
+
+    override val dependencyAvailableCallbacks:
+            HashMap<Key<out Service>, (service: Service) -> Unit> = hashMapOf()
+
+    override val dependsOnServices: ArrayList<Key<out Service>> = arrayListOf()
+
+    override var state: DependableService.State = DependableService.State.INITIALIZING
 }
 
 fun Module.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
