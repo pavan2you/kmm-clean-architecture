@@ -1,7 +1,9 @@
 package io.tagd.arch.infra
 
-import io.tagd.langx.assert
+import io.tagd.arch.control.application
+import io.tagd.langx.Context
 import io.tagd.langx.IllegalAccessException
+import io.tagd.langx.assert
 
 interface Resource
 
@@ -81,7 +83,6 @@ open class CompressedResource(
     override fun toString(): String {
         return "$type/$identifier"
     }
-
 }
 
 data class UnifiedResource(
@@ -148,4 +149,69 @@ fun INamedResource.assertFileNameValidness(fileNameParts: List<String>) {
             "the resource name should not be empty"
         )
     }
+}
+
+fun dimensionOf(
+    nameWithOrWithoutRelativePath: String? = null,
+    identifier: Int = -1
+): UnifiedResource {
+
+    return UnifiedResource(
+        nameWithOrWithoutRelativePath = nameWithOrWithoutRelativePath,
+        identifier = identifier,
+        type = "dimension",
+        `package` = (application() as Context).getPackageName()
+    )
+}
+
+fun colorOf(
+    nameWithOrWithoutRelativePath: String? = null,
+    identifier: Int = -1
+): UnifiedResource {
+
+    return UnifiedResource(
+        nameWithOrWithoutRelativePath = nameWithOrWithoutRelativePath,
+        identifier = identifier,
+        type = "color",
+        `package` = (application() as Context).getPackageName()
+    )
+}
+
+fun stringOf(
+    nameWithOrWithoutRelativePath: String? = null,
+    identifier: Int = -1
+): UnifiedResource {
+
+    return UnifiedResource(
+        nameWithOrWithoutRelativePath = nameWithOrWithoutRelativePath,
+        identifier = identifier,
+        type = "string",
+        `package` = (application() as Context).getPackageName()
+    )
+}
+
+fun integerOf(
+    nameWithOrWithoutRelativePath: String? = null,
+    identifier: Int = -1
+): UnifiedResource {
+
+    return UnifiedResource(
+        nameWithOrWithoutRelativePath = nameWithOrWithoutRelativePath,
+        identifier = identifier,
+        type = "integer",
+        `package` = (application() as Context).getPackageName()
+    )
+}
+
+fun floatOf(
+    nameWithOrWithoutRelativePath: String? = null,
+    identifier: Int = -1
+): UnifiedResource {
+
+    return UnifiedResource(
+        nameWithOrWithoutRelativePath = nameWithOrWithoutRelativePath,
+        identifier = identifier,
+        type = "float",
+        `package` = (application() as Context).getPackageName()
+    )
 }

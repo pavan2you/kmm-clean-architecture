@@ -17,4 +17,6 @@
 
 package io.tagd.android.app
 
+import io.tagd.arch.control.AppService
+
 interface ComponentLifeCycleObserver<T> : AppService

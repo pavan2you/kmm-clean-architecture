@@ -18,6 +18,7 @@
 package io.tagd.android.app
 
 import io.tagd.android.crosscutting.async.IgnoredCoroutineException
+import io.tagd.arch.control.AppService
 import io.tagd.arch.domain.crosscutting.async.AsyncExceptionHandler
 import java.lang.ref.WeakReference
 

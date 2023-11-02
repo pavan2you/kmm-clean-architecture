@@ -19,6 +19,7 @@ package io.tagd.android.app
 
 import android.os.Handler
 import android.os.Looper
+import io.tagd.arch.control.AppService
 import java.lang.ref.WeakReference
 
 private const val DEFAULT_BG_TIME = 2000L

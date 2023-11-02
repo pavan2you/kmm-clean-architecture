@@ -1,3 +1,6 @@
 package io.tagd.langx
 
-expect class Context
+expect class Context {
+
+    fun getPackageName(): String?
+}

@@ -17,6 +17,7 @@
 
 package io.tagd.arch.control
 
+import io.tagd.langx.collection.WeakArrayList
 import io.tagd.langx.ref.WeakReference
 
 open class LifeCycleAwareApplicationController<A : IApplication>(application: A) :
@@ -26,6 +27,16 @@ open class LifeCycleAwareApplicationController<A : IApplication>(application: A)
 
     override val app: A?
         get() = applicationReference?.get()
+
+    private var lifeCycleListeners: WeakArrayList<ApplicationLifeCycleListener> = WeakArrayList()
+
+    fun addLifeCycleListener(listener: ApplicationLifeCycleListener) {
+        lifeCycleListeners.add(listener)
+    }
+
+    fun removeLifeCycleListener(listener: ApplicationLifeCycleListener) {
+        lifeCycleListeners.remove(listener)
+    }
 
     override fun onCreate() {
         //no op
@@ -48,11 +59,19 @@ open class LifeCycleAwareApplicationController<A : IApplication>(application: A)
     }
 
     override fun onForeground() {
-        //no op
+        app?.let { application ->
+            lifeCycleListeners.forEach { listener ->
+                listener.onForeground(application)
+            }
+        }
     }
 
     override fun onBackground() {
-        //no op
+        app?.let { application ->
+            lifeCycleListeners.forEach { listener ->
+                listener.onBackground(application)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -60,6 +79,7 @@ open class LifeCycleAwareApplicationController<A : IApplication>(application: A)
     }
 
     override fun release() {
+        lifeCycleListeners.clear()
         applicationReference = null
     }
 }

@@ -27,6 +27,7 @@ import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
 import io.tagd.android.crosscutting.codec.GsonJsonCodec
 import io.tagd.android.crosscutting.codec.UrlEncoderDecoder
 import io.tagd.arch.access.bind
+import io.tagd.arch.control.AppService
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
