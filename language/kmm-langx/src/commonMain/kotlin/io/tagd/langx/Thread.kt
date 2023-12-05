@@ -12,6 +12,8 @@ expect class Thread {
 
     fun getPriority(): Int
 
+    fun nativeThread(): Any
+
     companion object {
 
         fun currentThread(): Thread

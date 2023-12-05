@@ -22,6 +22,10 @@ actual class Thread {
         TODO("Not yet implemented")
     }
 
+    actual fun nativeThread(): Any {
+        TODO("Not yet implemented")
+    }
+
     actual companion object {
         actual fun currentThread(): Thread {
             TODO("Not yet implemented")

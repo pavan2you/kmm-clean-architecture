@@ -24,10 +24,15 @@ actual class Thread(private var jvmThread: java.lang.Thread) {
         return jvmThread.id
     }
 
+    actual fun nativeThread(): Any {
+        return jvmThread
+    }
+
     actual companion object {
 
         actual fun currentThread(): Thread {
             return Thread(java.lang.Thread.currentThread())
         }
     }
+
 }
