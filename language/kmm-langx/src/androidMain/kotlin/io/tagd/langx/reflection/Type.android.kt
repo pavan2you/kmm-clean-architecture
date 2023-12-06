@@ -5,10 +5,6 @@ import kotlin.reflect.KClass
 
 actual typealias Type = java.lang.reflect.Type
 
-actual fun <T> nativeTypeOf(): Type {
-    return object : TypeToken<T>() {}.type
-}
-
-actual fun <T : Any> KClass<T>.nativeType(): Type {
+actual inline fun <reified T: Any> nativeTypeOf(): Type {
     return object : TypeToken<T>() {}.type
 }
