@@ -10,6 +10,11 @@ kotlin {
                 api(project(":language:kmm-langx:kmm-langx-test"))
             }
         }
+        val androidMain by getting {
+            dependencies {
+                api(libs.gson)
+            }
+        }
     }
 }
 

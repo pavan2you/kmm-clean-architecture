@@ -17,6 +17,7 @@
 
 package io.tagd.arch.domain.crosscutting.codec
 
+import io.tagd.langx.reflection.Type
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
@@ -26,7 +27,7 @@ interface JsonCodec<BUILDER_TYPE : Any> : Codec {
 
     fun <T : Any> fromJson(json: String, klass: KClass<T>): T
 
-    fun <T> fromJson(json: String, type: KType): T
+    fun <T> fromJson(json: String, type: Type): T
 
     fun builder(): BUILDER_TYPE
 
@@ -39,6 +40,7 @@ expect annotation class SerializedName(
      * @return the desired name of the field when it is serialized or deserialized
      */
     val value: String,
+
     /**
      * @return the alternative names of the field when it is deserialized
      */

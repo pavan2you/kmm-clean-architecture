@@ -4,9 +4,8 @@ import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
+import io.tagd.langx.reflection.Type
 import kotlin.reflect.KClass
-import kotlin.reflect.KType
-import kotlin.reflect.javaType
 
 class GsonJsonCodec private constructor() : JsonCodec<GsonBuilder> {
 
@@ -28,9 +27,8 @@ class GsonJsonCodec private constructor() : JsonCodec<GsonBuilder> {
         return gson.fromJson(json, klass.java)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override fun <T> fromJson(json: String, type: KType): T {
-        return gson.fromJson(json, type.javaType)
+    override fun <T> fromJson(json: String, type: Type): T {
+        return gson.fromJson(json, type)
     }
 
     override fun builder(): GsonBuilder {
