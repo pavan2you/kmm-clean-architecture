@@ -19,13 +19,13 @@ package io.tagd.android.app
 
 import android.app.Activity
 import android.app.Application
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import java.lang.ref.WeakReference
 
 open class ActivityLifeCycleObserver(application: TagdApplication) :
     Application.ActivityLifecycleCallbacks, ComponentLifeCycleObserver<Activity> {
-
-    private var awaitingToLaunch: Boolean = true
 
     private var appReference: WeakReference<TagdApplication>? = WeakReference(application)
     protected val app: TagdApplication?
@@ -45,17 +45,17 @@ open class ActivityLifeCycleObserver(application: TagdApplication) :
             null
         }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onActivityPreCreated(activity: Activity, savedInstanceState: Bundle?) {
         super.onActivityPreCreated(activity, savedInstanceState)
-        awaitingToLaunch = false
+        setupAppLauncher(activity, savedInstanceState)
+    }
+
+    fun onActivityPreCreatedCompat(activity: Activity, savedInstanceState: Bundle?) {
         setupAppLauncher(activity, savedInstanceState)
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        if (awaitingToLaunch) {
-            awaitingToLaunch = false
-            setupAppLauncher(activity, savedInstanceState)
-        }
         setPreviousAndCurrent(activity)
     }
 

@@ -27,10 +27,17 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
     private var lifecycleFreeState: HeadLessFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        onPreCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
-        lifecycleFreeState = getOrNewLifecycleFreeState()
         interceptOnCreate(savedInstanceState)
         onCreateView(savedInstanceState)
+    }
+
+    open fun onPreCreate(savedInstanceState: Bundle?) {
+        (application as TagdApplication).dispatchOnActivityPreCreate(
+            this,
+            savedInstanceState
+        )
     }
 
     private fun getOrNewLifecycleFreeState() =
@@ -38,7 +45,7 @@ abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
             ?: HeadLessFragment.new(this)
 
     protected open fun interceptOnCreate(savedInstanceState: Bundle?) {
-        // no-op
+        lifecycleFreeState = getOrNewLifecycleFreeState()
     }
 
     protected abstract fun onCreateView(savedInstanceState: Bundle?)
