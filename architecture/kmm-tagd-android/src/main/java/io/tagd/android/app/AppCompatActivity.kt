@@ -21,7 +21,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 
-abstract class FragmentActivity : androidx.fragment.app.FragmentActivity(),
+abstract class AppCompatActivity : androidx.appcompat.app.AppCompatActivity(),
     AwaitReadyLifeCycleStatesOwner {
 
     private var lifecycleFreeState: HeadLessFragment? = null
@@ -124,7 +124,7 @@ class HeadLessFragment : Fragment() {
         const val TAG = "head-less"
 
         @JvmStatic
-        fun new(activity: FragmentActivity): HeadLessFragment {
+        fun new(activity: AppCompatActivity): HeadLessFragment {
             val fragment = HeadLessFragment()
             activity.supportFragmentManager
                 .beginTransaction()
