@@ -19,13 +19,13 @@ package io.tagd.android.mvp
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
-import io.tagd.android.app.FragmentActivity
+import io.tagd.android.app.AppCompatActivity
 import io.tagd.android.app.TagdApplication
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.Presenter
 
-abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : FragmentActivity(),
+abstract class MvpActivity<V : PresentableView, P : Presenter<V>> : AppCompatActivity(),
     PresentableView {
 
     protected var presenter: P? = null
