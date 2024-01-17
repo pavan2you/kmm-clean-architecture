@@ -12,7 +12,7 @@ internal object DependencyHandler : Service {
             dependsOnHandler?.finishCallback = value
         }
 
-    internal fun <T : DependableService> dependsOn(
+    internal fun <T : DependentService> dependsOn(
         dependent: T,
         influencers: List<Key<out Service>>
     ) {

@@ -8,7 +8,7 @@ internal class DependsOnHandler : Releasable {
     private val dependencyDag = DependencyDag()
     internal var finishCallback: (() -> Unit)? = null
 
-    internal fun <T : DependableService> dependsOn(
+    internal fun <T : DependentService> dependsOn(
         dependent: T,
         influencers: List<Key<out Service>>
     ) {
@@ -19,7 +19,7 @@ internal class DependsOnHandler : Releasable {
         }
     }
 
-    internal fun <T : DependableService> dependsOn(
+    internal fun <T : DependentService> dependsOn(
         dependent: T,
         scopedInfluencers: () -> List<Pair<String, Key<out Service>>>
     ) {

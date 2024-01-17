@@ -7,7 +7,7 @@ class DependencyDag {
 
     private val dag = ConcurrentHashMap<Key<out Service>, DependentsWithInfluencerScope>()
 
-    fun <T : DependableService> put(
+    fun <T : DependentService> put(
         influencer: Key<out Service>,
         influencerScope: String,
         dependent: T
@@ -57,20 +57,20 @@ class DependencyDag {
 
     class DependentsWithInfluencerScope {
 
-        private val map = ConcurrentHashMap<String, ArrayList<DependableService>>()
+        private val map = ConcurrentHashMap<String, ArrayList<DependentService>>()
 
         operator fun get(
             key: String
-        ): ArrayList<DependableService>? {
+        ): ArrayList<DependentService>? {
 
             return map[key]
         }
 
-        fun put(influencerScope: String, dependents: ArrayList<DependableService>) {
+        fun put(influencerScope: String, dependents: ArrayList<DependentService>) {
             map[influencerScope] = dependents
         }
 
-        inline operator fun set(influencerScope: String, dependents: ArrayList<DependableService>) {
+        inline operator fun set(influencerScope: String, dependents: ArrayList<DependentService>) {
             put(influencerScope, dependents)
         }
 

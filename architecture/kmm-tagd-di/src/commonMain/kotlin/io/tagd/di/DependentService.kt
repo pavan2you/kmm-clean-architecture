@@ -3,7 +3,7 @@ package io.tagd.di
 import io.tagd.core.Releasable
 import io.tagd.core.Service
 
-interface DependableService : Service, Releasable {
+interface DependentService : Service, Releasable {
 
     enum class State {
         INITIALIZING, AWAITING, READY, DIRTY

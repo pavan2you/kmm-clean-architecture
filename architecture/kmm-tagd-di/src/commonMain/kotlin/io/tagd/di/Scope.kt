@@ -262,7 +262,7 @@ inline fun <reified T : Service, reified S : T> scopeOf(key: Key<S>? = null): Sc
 
 object Global : Scope() {
 
-    fun <T : DependableService> dependsOn(
+    fun <T : DependentService> dependsOn(
         dependent: T,
         influencers: List<Key<out Service>>
     ) {
