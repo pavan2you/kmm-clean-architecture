@@ -34,7 +34,9 @@ class Layer<T : Service>(var scope: Scope?) : Releasable {
 
     fun <S : T> bind(service: Key<S>, instance: S) {
         services?.put(service, GetValue(instance))
-        scope?.notifyDependents(service, instance)
+        scope?.let { scope ->
+            DependencyHandler.notifyDependents(scope, service, instance)
+        }
     }
 
     fun <S : T> bind(service: Key<S>, creator: (State?) -> S) {

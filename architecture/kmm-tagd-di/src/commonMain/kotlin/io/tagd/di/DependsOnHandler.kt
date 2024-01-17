@@ -5,41 +5,51 @@ import io.tagd.core.Service
 
 internal class DependsOnHandler : Releasable {
 
-    private val dependencyDag = hashMapOf<Key<out Service>, ArrayList<DependableService>>()
+    private val dependencyDag = DependencyDag()
     internal var finishCallback: (() -> Unit)? = null
 
-    fun <T : DependableService> dependsOn(
+    internal fun <T : DependableService> dependsOn(
         dependent: T,
         influencers: List<Key<out Service>>
     ) {
 
-//        val available = hashMapOf<Key<out Service>, Service>()
-
         influencers.forEach { influencer ->
-            val found = Global.get(influencer)
-            var dependents = dependencyDag[influencer]
-            if (dependents == null) {
-                dependents = arrayListOf()
-                dependencyDag[influencer] = dependents
-            }
-            if (!dependents.contains(dependent)) {
-                dependents.add(dependent)
-            }
+            dependencyDag.put(influencer, Global.name, dependent)
+            notifyDependents(Global, influencer)
+        }
+    }
 
-            if (found != null) {
-                notifyDependents(influencer, found)
+    internal fun <T : DependableService> dependsOn(
+        dependent: T,
+        scopedInfluencers: () -> List<Pair<String, Key<out Service>>>
+    ) {
+
+        scopedInfluencers.invoke().forEach { influencerFromScope ->
+            val influencerScope = influencerFromScope.first
+            val influencer = influencerFromScope.second
+            dependencyDag.put(influencer, influencerScope, dependent)
+            val scope = Global.getSubScope(influencerScope)
+            scope?.let {
+                notifyDependents(scope, influencer)
             }
         }
     }
 
-    fun notifyDependents(key: Key<out Service>, instance: Service) {
+    private fun notifyDependents(scope: Scope, influencer: Key<out Service>) {
+        val foundWithScope = scope.getWithScope(influencer)
+        if (foundWithScope.second != null) {
+            notifyDependents(foundWithScope.first!!, influencer, foundWithScope.second!!)
+        }
+    }
+
+    internal fun notifyDependents(scope: Scope, key: Key<out Service>, instance: Service) {
         if (dependencyDag.containsKey(key)) {
-            val dependents = dependencyDag[key]
+            val dependents = dependencyDag[key]?.get(scope.name)
             dependents?.forEach {
-                it.onDependencyAvailable(key, instance)
+                it.onDependencyAvailable(scope, key, instance)
             }
             dependents?.clear()
-            dependencyDag.remove(key)
+            dependencyDag.remove(key, scope.name)
             if (dependencyDag.isEmpty()) {
                 dispatchDagFinish()
             }

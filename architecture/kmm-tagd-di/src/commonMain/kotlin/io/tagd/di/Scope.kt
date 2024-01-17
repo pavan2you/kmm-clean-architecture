@@ -25,18 +25,12 @@ import io.tagd.di.Scope.Companion.GLOBAL_SCOPE
 import io.tagd.langx.IllegalAccessException
 import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
-open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasable {
+open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable,
+    Releasable {
 
     private var mutableLocator: Locator? = LayerLocator(this)
     private var scopes: ConcurrentHashMap<String, Scope>? = ConcurrentHashMap()
     private var mutableState: State? = State()
-
-    private var dependsOnHandler: DependsOnHandler? = DependsOnHandler()
-    var dependsOnFinishCallback: (() -> Unit)? = null
-        set(value) {
-            field = value
-            dependsOnHandler?.finishCallback = value
-        }
 
     val locator: Locator
         get() = mutableLocator!!
@@ -114,40 +108,26 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
         return value
     }
 
-    fun reset() {
+    fun getSubScope(name: String): Scope? {
+        return scopes?.remove(name)
+    }
+
+    open fun reset() {
         releaseSubScopes()
-        dependsOnHandler?.release()
         mutableLocator = LayerLocator(this)
         mutableState = State()
     }
-
-    fun <T : DependableService> dependsOn(
-        dependent: T,
-        influencers: List<Key<out Service>>
-    ) {
-        dependsOnHandler?.dependsOn(dependent, influencers)
-    }
-
-    fun <S : Service> notifyDependents(key: Key<S>, instance: S) {
-        dependsOnHandler?.notifyDependents(key, instance)
-    }
-
 
     override fun toString(): String {
         return "scope - name='$name', " +
                 "$mutableLocator, " +
                 "$mutableState, " +
-                "$dependsOnHandler, " +
                 "children - $scopes"
     }
 
     override fun release() {
         releaseSubScopes()
         scopes = null
-
-        dependsOnFinishCallback = null
-        dependsOnHandler?.release()
-        dependsOnHandler = null
 
         mutableLocator?.release()
         mutableLocator = null
@@ -170,7 +150,7 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable, Releasabl
 
 fun scope(name: String, parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
     val scope = if (name == GLOBAL_SCOPE) {
-        if (parent == null || parent  == Global) {
+        if (parent == null || parent == Global) {
             Global
         } else {
             throw IllegalAccessException("global scope can not be a sub scope")
@@ -203,6 +183,26 @@ fun <T : Service, S : T> Scope.get(clazz: Key<S>): S? {
         }
     }
     return value
+}
+
+fun <T : Service, S : T> Scope.getWithScope(clazz: Key<S>): Pair<Scope?, S?> {
+    var value: S? = locator.get(clazz)
+    var foundScope: Scope? = this
+
+    if (value == null) {
+        val scopes = subScopes()
+        if (scopes != null) {
+            for (scope in scopes) {
+                val valueWithScope = scope.getWithScope(clazz)
+                if (valueWithScope.second != null) {
+                    foundScope = valueWithScope.first
+                    value = valueWithScope.second
+                    break
+                }
+            }
+        }
+    }
+    return Pair(foundScope, value)
 }
 
 fun <T : Service, S : T> Scope.create(key: Key<S>, args: State? = null): S {
@@ -260,7 +260,25 @@ inline fun <reified T : Service, reified S : T> scopeOf(key: Key<S>? = null): Sc
     return valueScope
 }
 
-object Global : Scope()
+object Global : Scope() {
+
+    fun <T : DependableService> dependsOn(
+        dependent: T,
+        influencers: List<Key<out Service>>
+    ) {
+        DependencyHandler.dependsOn(dependent, influencers)
+    }
+
+    override fun reset() {
+        super.reset()
+        DependencyHandler.reset()
+    }
+
+    override fun release() {
+        DependencyHandler.release()
+        super.release()
+    }
+}
 
 interface Scopable : Nameable {
 

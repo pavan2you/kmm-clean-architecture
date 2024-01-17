@@ -27,7 +27,7 @@ interface DependableService : Service, Releasable {
         checkIfReady()
     }
 
-    fun onDependencyAvailable(key: Key<out Service>, service: Service) {
+    fun onDependencyAvailable(scope: Scope, key: Key<out Service>, service: Service) {
         dependsOnServices.remove(key)
         dependencyAvailableCallbacks[key]?.invoke(service)
         checkIfReady()
