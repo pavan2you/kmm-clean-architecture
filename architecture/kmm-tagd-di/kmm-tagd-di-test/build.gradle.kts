@@ -4,16 +4,12 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":architecture:kmm-tagd-di"))
-                api(project(":architecture:kmm-tagd-core:kmm-tagd-core-test"))
-            }
+        commonMain.dependencies {
+            api(project(":architecture:kmm-tagd-di"))
+            api(project(":architecture:kmm-tagd-core:kmm-tagd-core-test"))
         }
-        val androidMain by getting {
-            dependencies {
-                api(libs.mockito.kotlin)
-            }
+        androidMain.dependencies {
+            api(libs.mockito.kotlin)
         }
     }
 }

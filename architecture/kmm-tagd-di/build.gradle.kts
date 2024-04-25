@@ -4,16 +4,12 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":architecture:kmm-tagd-core"))
-            }
+        commonMain.dependencies {
+            api(project(":architecture:kmm-tagd-core"))
         }
-        val commonTest by getting {
-            dependencies {
-                api(kotlin("test"))
-                api(project(":architecture:kmm-tagd-di:kmm-tagd-di-test"))
-            }
+        commonTest.dependencies {
+            api(kotlin("test"))
+            api(project(":architecture:kmm-tagd-di:kmm-tagd-di-test"))
         }
     }
 }

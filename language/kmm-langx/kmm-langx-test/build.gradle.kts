@@ -4,10 +4,8 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                api(project(":language:kmm-langx"))
-            }
+        commonMain.dependencies {
+            api(project(":language:kmm-langx"))
         }
     }
 }

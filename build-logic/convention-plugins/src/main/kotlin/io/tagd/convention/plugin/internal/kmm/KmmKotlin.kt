@@ -55,7 +55,6 @@ internal fun Project.configureKmmKotlinBlock(
 
             val androidInstrumentedTest by getting
             androidInstrumentedTest.dependencies {
-                /*dependsOn(commonTest)*/
                 implementation(libs.findLibrary("androidx.test.espresso.core").get())
                 implementation(libs.findLibrary("androidx.test.junit.ext").get())
             }
