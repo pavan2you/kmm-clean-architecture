@@ -59,4 +59,4 @@ SECONDS=0
 ./gradlew :architecture:kmm-tagd-android:publishToMavenLocal
 ./gradlew :architecture:kmm-tagd-android:kmm-tagd-android-test:publishToMavenLocal
 
-echo "total time taken $SECONDS"
+echo "total time taken $SECONDS sec"

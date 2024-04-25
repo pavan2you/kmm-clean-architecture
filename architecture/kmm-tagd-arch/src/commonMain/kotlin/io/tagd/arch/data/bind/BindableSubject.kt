@@ -23,7 +23,7 @@ import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.core.Initializable
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
-import io.tagd.langx.Serializable
+import io.tagd.langx.datatype.Serializable
 import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
 import kotlin.jvm.Transient

@@ -18,11 +18,9 @@
 package io.tagd.the101.android
 
 import android.content.Context
-import io.tagd.arch.access.bind
 import io.tagd.arch.access.reference
 import io.tagd.arch.access.referenceHolder
 import io.tagd.arch.access.repository
-import io.tagd.arch.data.gateway.Gateway
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.core.Releasable
 import io.tagd.di.Global
@@ -33,7 +31,7 @@ import io.tagd.di.key2
 import io.tagd.di.key3
 import io.tagd.di.layer
 import io.tagd.di.typeOf
-import io.tagd.langx.UnixEpochInMillis
+import io.tagd.langx.time.UnixEpochInMillis
 
 class Usage : Releasable {
 

@@ -62,7 +62,7 @@ inline fun <reified S : InfraService> infraService(key: Key<S>? = null): S? {
 }
 
 inline fun <reified S : InfraService> createInfra(key: Key<S>? = null, state: State? = null): S {
-    return Global.createInfra(key)
+    return Global.createInfra(key, state)
 }
 
 /**

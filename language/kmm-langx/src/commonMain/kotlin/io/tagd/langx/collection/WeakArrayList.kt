@@ -223,6 +223,6 @@ class WeakArrayList<E> : MutableList<E>, RandomAccess {
     }
 }
 
-inline fun <E> weakArrayListOf() : WeakArrayList<E> {
+inline fun <reified E> weakArrayListOf() : WeakArrayList<E> {
     return WeakArrayList()
 }

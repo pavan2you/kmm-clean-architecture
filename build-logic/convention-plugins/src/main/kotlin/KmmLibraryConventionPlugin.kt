@@ -1,6 +1,7 @@
 
 import com.android.build.api.dsl.LibraryExtension
 import io.tagd.convention.plugin.internal.kmm.configureKmmKotlinBlock
+import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -23,11 +24,14 @@ class KmmLibraryConventionPlugin : Plugin<Project> {
             }
 
             extensions.configure<LibraryExtension> {
-                compileSdk = 33
+                compileSdk = 34
                 defaultConfig {
                     minSdk = 21
-                    targetSdk = 33
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                }
+                compileOptions {
+                    sourceCompatibility = JavaVersion.VERSION_1_8
+                    targetCompatibility = JavaVersion.VERSION_1_8
                 }
             }
 
