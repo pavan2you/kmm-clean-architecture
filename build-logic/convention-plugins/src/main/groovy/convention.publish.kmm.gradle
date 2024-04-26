@@ -3,6 +3,6 @@ plugins {
 }
 
 ext {
-    enableIosTargets = false
+    enableIosTargets = true
 }
 

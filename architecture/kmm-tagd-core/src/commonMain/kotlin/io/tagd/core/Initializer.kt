@@ -2,7 +2,7 @@ package io.tagd.core
 
 interface Initializer<T> : Service {
 
-    fun new(dependencies: Dependencies = dependencies()): T
+    fun new(dependencies: Dependencies): T
 
     interface Builder<T, I : Initializer<T>> {
 
@@ -14,7 +14,7 @@ interface ConditionalInitializer<T> : Initializer<T> {
 
     fun canInitialize(): Boolean
 
-    fun conditionalNew(dependencies: Dependencies = dependencies()): T? {
+    fun conditionalNew(dependencies: Dependencies): T? {
         return if (canInitialize()) new(dependencies) else null
     }
 }
