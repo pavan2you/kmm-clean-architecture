@@ -31,6 +31,11 @@ class GsonJsonCodec private constructor() : JsonCodec<GsonBuilder> {
         return gson.fromJson(json, type)
     }
 
+    override fun <T : Any> fromMap(map: Map<String, Any?>?, klass: KClass<T>): T {
+        val json = toJson(map)
+        return fromJson(json, klass)
+    }
+
     override fun builder(): GsonBuilder {
         return mutableGsonBuilder
     }

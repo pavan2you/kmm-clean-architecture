@@ -21,7 +21,6 @@ package io.tagd.arch.domain.crosscutting.codec
 
 import io.tagd.langx.reflection.Type
 import kotlin.reflect.KClass
-import kotlin.reflect.KType
 
 interface JsonCodec<BUILDER_TYPE : Any> : Codec {
 
@@ -30,6 +29,8 @@ interface JsonCodec<BUILDER_TYPE : Any> : Codec {
     fun <T : Any> fromJson(json: String, klass: KClass<T>): T
 
     fun <T> fromJson(json: String, type: Type): T
+
+    fun <T : Any> fromMap(map: Map<String, Any?>?, klass: KClass<T>): T
 
     fun builder(): BUILDER_TYPE
 
