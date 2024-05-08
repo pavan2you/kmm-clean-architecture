@@ -23,6 +23,7 @@ import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
+import io.tagd.arch.module.AbstractModule
 import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.Factory
@@ -106,6 +107,10 @@ abstract class AbstractLibrary(final override val name: String, final override v
     init {
         scope.addSubScopeIfAbsent(Scope(name))
     }
+
+    override fun release() {
+        scope.removeSubScope(name)
+    }
 }
 
 abstract class AbstractDependentLibrary(
@@ -119,6 +124,11 @@ abstract class AbstractDependentLibrary(
     override val dependsOnServices: ArrayList<Key<out Service>> = arrayListOf()
 
     override var state: DependentService.State = DependentService.State.INITIALIZING
+
+    override fun release() {
+        super<DependentService>.release()
+        super<AbstractLibrary>.release()
+    }
 }
 
 fun Library.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {

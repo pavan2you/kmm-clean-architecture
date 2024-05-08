@@ -17,8 +17,8 @@
 
 package io.tagd.arch.data.dto
 
-import io.tagd.arch.data.DataObject
-import io.tagd.arch.data.DataObjectable
+import io.tagd.arch.datatype.DataObject
+import io.tagd.arch.datatype.DataObjectable
 import io.tagd.core.Immutable
 
 interface DataTransferrable : DataObjectable, Immutable

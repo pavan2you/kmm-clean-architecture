@@ -1,6 +1,6 @@
 package io.tagd.arch.control
 
-import io.tagd.arch.data.DataObject
+import io.tagd.arch.datatype.DataObject
 
 open class VersionTracker(val previousVersion: Int, val currentVersion: Int) : DataObject() {
 

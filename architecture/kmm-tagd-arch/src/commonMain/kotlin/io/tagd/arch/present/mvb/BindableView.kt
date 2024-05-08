@@ -17,8 +17,8 @@
 
 package io.tagd.arch.present.mvb
 
-import io.tagd.arch.data.DataObjectable
-import io.tagd.arch.data.bind.Bindable
+import io.tagd.arch.datatype.DataObjectable
+import io.tagd.arch.datatype.bind.Bindable
 import io.tagd.arch.present.View
 
 interface BindableView<T : DataObjectable> : View, Windowable, Bindable<T> {

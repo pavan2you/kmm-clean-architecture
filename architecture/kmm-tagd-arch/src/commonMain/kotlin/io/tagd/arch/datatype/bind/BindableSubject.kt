@@ -15,35 +15,16 @@
  *
  */
 
-package io.tagd.arch.data.bind
+package io.tagd.arch.datatype.bind
 
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.ObserveOn
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
-import io.tagd.core.Initializable
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
-import io.tagd.langx.datatype.Serializable
 import io.tagd.langx.collection.concurrent.CopyOnWriteArraySet
 import io.tagd.langx.ref.WeakReference
 import kotlin.jvm.Transient
-
-interface BindableSubjectable : Initializable, Serializable, AsyncContext {
-
-    var bindables: CopyOnWriteArraySet<WeakReference<Bindable<out BindableSubjectable>>>
-
-    fun add(bindable: Bindable<out BindableSubjectable>)
-
-    fun remove(bindable: Bindable<out BindableSubjectable>)
-
-    fun removeAllBindables()
-
-    fun addBindablesFrom(source: BindableSubjectable)
-
-    fun switchBindingsTo(other: BindableSubjectable)
-
-    fun notifyBindables()
-}
 
 open class BindableSubject : BindableSubjectable {
 

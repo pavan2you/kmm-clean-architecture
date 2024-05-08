@@ -15,17 +15,22 @@
  *
  */
 
-package io.tagd.arch.data.bind
+package io.tagd.arch.datatype
 
-import io.tagd.core.Releasable
+import io.tagd.arch.datatype.bind.BindableSubject
 
-/**
- * A bindable binds itself to the given Type T
- */
-interface Bindable<T : Any> : Releasable {
+open class DataObject : BindableSubject(), DataObjectable {
 
-    /**
-     * Typically the binding managers or binders or state changeable
-     */
-    fun bindTo(subject: T)
+    override var crudOperation: CrudOperation = CrudOperation.CREATE
+
+    override fun initialize() {
+        crudOperation = CrudOperation.CREATE
+    }
+
+    override fun validate() {
+        //no-op
+    }
 }
+
+
+

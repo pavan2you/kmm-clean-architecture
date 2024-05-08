@@ -17,7 +17,7 @@
 
 package io.tagd.arch.present.mvb
 
-import io.tagd.arch.data.DataObjectable
+import io.tagd.arch.datatype.DataObjectable
 import io.tagd.langx.ref.WeakReference
 
 abstract class LifeCycleAwareBinder<T: DataObjectable, V: BindableView<T>>(view: V) : Binder<T, V> {

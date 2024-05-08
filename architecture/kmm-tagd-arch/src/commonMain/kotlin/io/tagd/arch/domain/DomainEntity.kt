@@ -17,9 +17,6 @@
 
 package io.tagd.arch.domain
 
-import io.tagd.arch.data.DataObject
-import io.tagd.core.Identifiable
+import io.tagd.arch.datatype.Entity
 
-abstract class DomainEntity : DataObject()
-
-abstract class IdentifiableDomainEntity<T> : DomainEntity(), Identifiable<T>
+abstract class DomainEntity<T> : Entity<T>()

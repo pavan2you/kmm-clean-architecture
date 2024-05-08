@@ -21,6 +21,8 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
+import io.tagd.arch.datatype.bind.Bindable
+import io.tagd.arch.datatype.bind.BindableSubject
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -19,7 +19,7 @@ package io.tagd.arch.present.mvb
 
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
-import io.tagd.arch.data.DataObject
+import io.tagd.arch.datatype.DataObject
 import io.tagd.arch.test.FakeLifeCycleAwareBinder
 import org.junit.Test
 import org.junit.runner.RunWith

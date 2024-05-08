@@ -15,20 +15,17 @@
  *
  */
 
-package io.tagd.arch.domain.usecase
+package io.tagd.arch.datatype.bind
 
-import io.tagd.arch.test.FakeDomainEntity
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import io.tagd.core.Releasable
 
-@RunWith(MockitoJUnitRunner::class)
-class DomainEntityTest {
+/**
+ * A bindable binds itself to the given Type T
+ */
+interface Bindable<T : Any> : Releasable {
 
-    @Test
-    fun `given a domain entity is created then verify it is not null`() {
-        val domainEntity = FakeDomainEntity()
-        Assert.assertNotNull(domainEntity)
-    }
+    /**
+     * Typically the binding managers or binders or state changeable
+     */
+    fun bindTo(subject: T)
 }

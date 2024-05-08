@@ -106,6 +106,10 @@ abstract class AbstractModule(final override val name: String, final override va
     init {
         scope.addSubScopeIfAbsent(Scope(name))
     }
+
+    override fun release() {
+        scope.removeSubScope(name)
+    }
 }
 
 abstract class AbstractDependentModule(
@@ -119,6 +123,11 @@ abstract class AbstractDependentModule(
     override val dependsOnServices: ArrayList<Key<out Service>> = arrayListOf()
 
     override var state: DependentService.State = DependentService.State.INITIALIZING
+
+    override fun release() {
+        super<DependentService>.release()
+        super<AbstractModule>.release()
+    }
 }
 
 fun Module.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {

@@ -17,6 +17,8 @@
 
 package io.tagd.arch.data
 
+import io.tagd.arch.datatype.CrudOperation
+import io.tagd.arch.datatype.DataObject
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +38,7 @@ class DataObjectTest {
     fun `given initialize is called then verify object is having default state`() {
         val dataObject = DataObject()
         dataObject.initialize()
-        assert(dataObject.crudOperation == DataObjectable.CrudOperation.CREATE)
+        assert(dataObject.crudOperation == CrudOperation.CREATE)
         assert(dataObject.bindables.isEmpty())
     }
 }

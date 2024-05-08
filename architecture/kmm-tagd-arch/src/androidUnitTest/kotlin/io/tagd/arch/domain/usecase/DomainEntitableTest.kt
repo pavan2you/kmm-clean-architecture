@@ -15,15 +15,20 @@
  *
  */
 
-package io.tagd.arch.test
+package io.tagd.arch.domain.usecase
 
-import io.tagd.arch.datatype.DataObject
-import io.tagd.arch.present.mvb.BindableView
-import io.tagd.arch.present.mvb.LifeCycleAwareBinder
+import io.tagd.arch.test.FakeDomainEntity
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
 
-class FakeLifeCycleAwareBinder<V : BindableView<DataObject>>(view: V) :
-    LifeCycleAwareBinder<DataObject, BindableView<DataObject>>(view) {
+@RunWith(MockitoJUnitRunner::class)
+class DomainEntitableTest {
 
-    override fun onBind(model: DataObject, vararg optionals: Any?) {
+    @Test
+    fun `given a domain entity is created then verify it is not null`() {
+        val domainEntity = FakeDomainEntity()
+        Assert.assertNotNull(domainEntity)
     }
 }

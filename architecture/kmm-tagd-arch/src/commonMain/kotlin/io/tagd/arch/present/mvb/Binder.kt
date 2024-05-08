@@ -17,7 +17,7 @@
 
 package io.tagd.arch.present.mvb
 
-import io.tagd.arch.data.bind.Bindable
+import io.tagd.arch.datatype.bind.Bindable
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
 
 /**

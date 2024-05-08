@@ -22,7 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.tagd.arch.control.IApplication
-import io.tagd.arch.data.DataObjectable
+import io.tagd.arch.datatype.DataObjectable
 import io.tagd.arch.present.mvb.AdaptableBindableView
 import io.tagd.arch.present.mvb.BindableView
 import io.tagd.arch.present.mvb.Binder

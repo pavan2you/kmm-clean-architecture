@@ -18,8 +18,7 @@
 package io.tagd.android.widget
 
 import androidx.recyclerview.widget.RecyclerView
-import io.tagd.arch.data.DataObject
-import io.tagd.arch.data.DataObjectable
+import io.tagd.arch.datatype.DataObjectable
 import io.tagd.core.Releasable
 
 abstract class ReleasableRecyclerAdapter<
