@@ -18,11 +18,11 @@
 package io.tagd.android.widget
 
 import androidx.recyclerview.widget.RecyclerView
-import io.tagd.arch.datatype.DataObjectable
+import io.tagd.arch.datatype.bind.BindableSubjectable
 import io.tagd.core.Releasable
 
 abstract class ReleasableRecyclerAdapter<
-    T : DataObjectable, VH : BindableRecyclerViewHolder<T, *, *>
+    T : BindableSubjectable, VH : BindableRecyclerViewHolder<T, *, *>
 > : RecyclerView.Adapter<VH>(), Releasable {
 
     val items: MutableList<T> = mutableListOf()

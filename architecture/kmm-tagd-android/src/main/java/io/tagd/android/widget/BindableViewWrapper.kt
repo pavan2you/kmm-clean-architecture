@@ -20,12 +20,13 @@ package io.tagd.android.widget
 import android.view.View
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.datatype.DataObjectable
+import io.tagd.arch.datatype.bind.BindableSubjectable
 import io.tagd.arch.present.mvb.BindableView
 import io.tagd.arch.present.mvb.Binder
 import io.tagd.langx.ref.weak
 import java.lang.ref.WeakReference
 
-abstract class BindableViewWrapper<T : DataObjectable, V : BindableView<T>, B : Binder<T, V>>(
+abstract class BindableViewWrapper<T : BindableSubjectable, V : BindableView<T>, B : Binder<T, V>>(
     view: View
 ) : BindableView<T> {
 

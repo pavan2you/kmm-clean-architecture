@@ -17,11 +17,11 @@
 
 package io.tagd.arch.present.mvb
 
-import io.tagd.arch.datatype.DataObjectable
 import io.tagd.arch.datatype.bind.Bindable
+import io.tagd.arch.datatype.bind.BindableSubjectable
 import io.tagd.arch.present.View
 
-interface BindableView<T : DataObjectable> : View, Windowable, Bindable<T> {
+interface BindableView<T : BindableSubjectable> : View, Windowable, Bindable<T> {
 
     var model: T?
 
