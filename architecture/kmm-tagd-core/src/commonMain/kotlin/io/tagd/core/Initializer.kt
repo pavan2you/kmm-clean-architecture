@@ -8,6 +8,10 @@ interface Initializer<T> : Service {
 
         fun build() : I
     }
+
+    override fun release() {
+        //no-op
+    }
 }
 
 interface ConditionalInitializer<T> : Initializer<T> {
