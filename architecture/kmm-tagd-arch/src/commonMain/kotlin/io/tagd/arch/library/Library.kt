@@ -23,7 +23,6 @@ import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
-import io.tagd.arch.module.AbstractModule
 import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.Factory
@@ -34,22 +33,23 @@ import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scopable
 import io.tagd.di.Scope
+import io.tagd.di.bind
 import io.tagd.di.layer
 import io.tagd.di.scope
 
 typealias BidirectionalLibraryDependentInjector = (context: Library) -> Unit
 
 interface Library : Factory, Scopable {
-
-    val outerScope
-        get() = scope
-
+    
     val outerScopeName
-        get() = scope.name
+        get() = outerScope.name
+    
+    val thisScopeName
+        get() = thisScope.name
 
     abstract class Builder<T : Library> : Factory.Builder<T>() {
 
-        protected var outerScope: Scope = Global
+        protected open var outerScope: Scope = Global
         private var injectionInvoker: InjectionInvoker? = null
         private var bidirectionalInjector: BidirectionalLibraryDependentInjector? = null
 
@@ -64,7 +64,7 @@ interface Library : Factory, Scopable {
         }
 
         open fun inject(bindings: Scope.() -> Unit): Builder<T> {
-            this.injectionInvoker = InjectionInvoker(outerScope, bindings)
+            this.injectionInvoker = InjectionInvoker(bindings)
             return this
         }
 
@@ -90,33 +90,36 @@ interface Library : Factory, Scopable {
         }
 
         protected open class InjectionInvoker(
-            private val parent: Scope? = Global,
             private val bindings: Scope.() -> Unit
         ) {
 
             open operator fun invoke(context: Library): Scope {
-                return context.inject(parent, bindings)
+                return context.inject(bindings)
             }
         }
     }
 }
 
-abstract class AbstractLibrary(final override val name: String, final override val scope: Scope) :
-    Library {
+abstract class AbstractLibrary(
+    final override val name: String,
+    final override val outerScope: Scope
+) : Library {
+
+    final override val thisScope: Scope = Scope(name)
 
     init {
-        scope.addSubScopeIfAbsent(Scope(name))
+        outerScope.addSubScopeIfAbsent(thisScope)
     }
 
     override fun release() {
-        scope.removeSubScope(name)
+        outerScope.removeSubScope(name)
     }
 }
 
 abstract class AbstractDependentLibrary(
     name: String,
-    scope: Scope
-) : AbstractLibrary(name, scope), DependentService {
+    outerScope: Scope
+) : AbstractLibrary(name, outerScope), DependentService {
 
     override val dependencyAvailableCallbacks:
             HashMap<Key<out Service>, (service: Service) -> Unit> = hashMapOf()
@@ -131,32 +134,32 @@ abstract class AbstractDependentLibrary(
     }
 }
 
-fun Library.inject(parent: Scope? = Global, bindings: Scope.() -> Unit): Scope {
-    return scope(name, parent, bindings)
+fun Library.inject(bindings: Scope.() -> Unit): Scope {
+    return scope(name, outerScope, bindings)
 }
 
 inline fun <reified T : Service, reified S : T> Library.bind(key: Key<S>? = null, instance: S) {
-    scope(name, outerScope)?.layer<T> {
+    scope(name, thisScope)?.layer<T> {
         bind(service = key ?: io.tagd.di.key(), instance = instance)
     }
 }
 
 inline fun <reified S : Module> Library.module(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.module(key)
+    return scope(name, thisScope)?.module(key)
 }
 
 /**
  * Library Access
  */
 inline fun <reified S : Library> Library.library(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.library(key)
+    return scope(name, thisScope)?.library(key)
 }
 
 /**
  * Infra Access
  */
 inline fun <reified S : InfraService> Library.infraService(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.infraService(key)
+    return scope(name, thisScope)?.infraService(key)
 }
 
 inline fun <reified S : InfraService> Library.createInfra(
@@ -164,68 +167,68 @@ inline fun <reified S : InfraService> Library.createInfra(
     state: State? = null
 ): S? {
 
-    return scope(name, outerScope)?.createInfra(key, state)
+    return scope(name, thisScope)?.createInfra(key, state)
 }
 
 /**
  * Presentation Access
  */
 inline fun <reified S : PresentationService> Library.presentationService(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.presentationService(key)
+    return scope(name, thisScope)?.presentationService(key)
 }
 
 /**
  * Domain - Usecases Access
  */
 inline fun <reified S : Command<*, *>> Library.usecase(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.usecase(key)
+    return scope(name, thisScope)?.usecase(key)
 }
 
 /**
  * Domain - Services Access
  */
 inline fun <reified S : DomainService> Library.domainService(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.domainService(key)
+    return scope(name, thisScope)?.domainService(key)
 }
 
 /**
  * Data - Repositories Access
  */
 inline fun <reified S : Repository> Library.repository(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.repository(key)
+    return scope(name, thisScope)?.repository(key)
 }
 
 /**
  * Data - Gateways Access
  */
 inline fun <reified S : Gateway> Library.gateway(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.gateway(key)
+    return scope(name, thisScope)?.gateway(key)
 }
 
 /**
  * Data - Daos Access
  */
 inline fun <reified S : DataAccessObject> Library.dao(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.dao(key)
+    return scope(name, thisScope)?.dao(key)
 }
 
 /**
  * Data - Cache Access
  */
 inline fun <reified S : Cache<*>> Library.cache(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.cache(key)
+    return scope(name, thisScope)?.cache(key)
 }
 
 /**
  * Vertical - CrossCutting Access
  */
 inline fun <reified S : CrossCutting> Library.crosscutting(key: Key<S>? = null): S? {
-    return scope(name, outerScope)?.crosscutting(key)
+    return scope(name, thisScope)?.crosscutting(key)
 }
 
 /**
  * Vertical - Reference Access
  */
 inline fun <T, reified S : ReferenceHolder<T>> Library.reference(key: Key<S>? = null): T? {
-    return scope(name, outerScope)?.reference(key)
+    return scope(name, thisScope)?.reference(key)
 }

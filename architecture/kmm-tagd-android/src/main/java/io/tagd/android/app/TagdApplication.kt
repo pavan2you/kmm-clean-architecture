@@ -107,7 +107,10 @@ open class TagdApplication : Application(), IApplication {
     final override val name: String
         get() = applicationModuleName()
 
-    final override val scope: Scope
+    final override val outerScope: Scope
+        get() = Global
+
+    final override val thisScope: Scope
         get() = applicationScope()
 
     protected open var presenterFactory = PresenterFactory("presenter-factory")

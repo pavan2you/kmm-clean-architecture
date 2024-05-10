@@ -7,7 +7,8 @@ import io.tagd.arch.library.Library
 import io.tagd.di.Global
 import io.tagd.di.Scope
 
-class SampleLibrary private constructor(name: String, scope: Scope) : AbstractLibrary(name, scope) {
+class SampleLibrary private constructor(name: String, outerScope: Scope) :
+    AbstractLibrary(name, outerScope) {
 
     class Builder : Library.Builder<SampleLibrary>() {
 

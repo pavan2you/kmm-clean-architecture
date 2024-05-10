@@ -62,11 +62,18 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable,
     }
 
     fun addSubScopeIfAbsent(scope: Scope): Scope {
-        if (scope.name == GLOBAL_SCOPE) {
+        return addSubScopeIfAbsent(scope.name)
+    }
+
+    fun addSubScopeIfAbsent(scopeName: String): Scope {
+        if (scopeName == GLOBAL_SCOPE) {
             throw IllegalAccessException("global scope can not be a sub scope")
         }
-        if (scopes?.contains(scope.name) == false) {
-            scopes?.put(scope.name, scope)
+
+        var scope: Scope? = scopes?.get(scopeName)
+        if (scope == null) {
+            scope = Scope(scopeName)
+            scopes?.put(scopeName, scope)
         }
         return scope
     }
@@ -156,9 +163,7 @@ fun scope(name: String, parent: Scope? = Global, bindings: Scope.() -> Unit): Sc
             throw IllegalAccessException("global scope can not be a sub scope")
         }
     } else {
-        val scope = Scope(name)
-        (parent ?: Global).addSubScope(scope)
-        scope
+        (parent ?: Global).addSubScopeIfAbsent(name)
     }
     return scope.apply {
         bindings()
@@ -282,5 +287,7 @@ object Global : Scope() {
 
 interface Scopable : Nameable {
 
-    val scope: Scope
+    val outerScope: Scope
+
+    val thisScope: Scope
 }
