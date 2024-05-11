@@ -38,7 +38,13 @@ class Key<T : Service>(val key: Any) {
     }
 
     override fun toString(): String {
-        return "key - $key"
+        val keyName = if (key is KClass<*>) {
+            key.simpleName.toString()
+        } else {
+            key.toString()
+        }
+
+        return keyName
     }
 }
 
@@ -66,7 +72,10 @@ class TypedClass<T : Service>(
     }
 
     override fun toString(): String {
-        return "clazz - $clazz, typeClasses - ${typeClasses.contentToString()}"
+        val typeNames = typeClasses.joinToString(", ") {
+            it.simpleName.toString()
+        }
+        return "${clazz.simpleName}<$typeNames>"
     }
 }
 

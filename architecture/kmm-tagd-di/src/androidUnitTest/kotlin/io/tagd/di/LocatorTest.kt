@@ -35,7 +35,7 @@ class LocatorTest {
 
     @Test
     fun `given a new Layer then verify it is added successfully`() {
-        val addedLayer: Layer<FakeService> = Layer(scope)
+        val addedLayer: Layer<FakeService> = Layer(scope, "sample")
         locator.bind(addedLayer, typeOf())
 
         val contains = locator.layers()?.containsValue(addedLayer) ?: false
@@ -44,7 +44,7 @@ class LocatorTest {
 
     @Test
     fun `given a known Layer then verify LayerLocator#locate returns the same`() {
-        val addedLayer: Layer<FakeService> = Layer(scope)
+        val addedLayer: Layer<FakeService> = Layer(scope, "sample")
         locator.bind(addedLayer, typeOf())
 
         val returnedLayer = locator.locate(typeOf<FakeService>())
@@ -54,7 +54,7 @@ class LocatorTest {
 
     @Test
     fun `given an unknown Layer then verify LayerLocator#locate returns null`() {
-        val addedLayer: Layer<Service> = Layer(scope)
+        val addedLayer: Layer<Service> = Layer(scope, "sample")
         locator.bind(addedLayer, typeOf())
 
         val returnedLayer = locator.locate(typeOf<FakeService>())
@@ -116,7 +116,7 @@ class LocatorTest {
 
     @Test
     fun `given release is called then verify locator state is nullified`() {
-        val layer: Layer<Service> = Layer(scope)
+        val layer: Layer<Service> = Layer(scope, "sample")
         locator.bind(layer, typeOf())
 
         locator.release()

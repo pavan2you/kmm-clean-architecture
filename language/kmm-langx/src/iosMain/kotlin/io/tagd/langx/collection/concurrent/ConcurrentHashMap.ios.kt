@@ -2,7 +2,7 @@
 
 package io.tagd.langx.collection.concurrent
 
-actual class ConcurrentHashMap<K, V> : MutableMap<K, V> {
+actual open class ConcurrentHashMap<K, V> : MutableMap<K, V> {
 
     // From Map
 

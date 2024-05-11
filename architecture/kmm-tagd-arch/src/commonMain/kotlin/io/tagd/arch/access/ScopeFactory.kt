@@ -32,6 +32,7 @@ import io.tagd.arch.present.service.PresentationService
 import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
+import io.tagd.di.Scopable
 import io.tagd.di.Scope
 import io.tagd.di.create
 import io.tagd.di.get
@@ -40,6 +41,13 @@ import io.tagd.di.layer
 
 fun scope(name: String, parent: Scope? = null): Scope? {
     return if (name == Global.name) Global else (parent ?: Global).subScope(name)
+}
+
+/**
+ * Scopable Access
+ */
+inline fun <reified S : Scopable> Scope.scopable(key: Key<S>? = null): S? {
+    return this.get<Scopable, S>(key ?: io.tagd.di.key())
 }
 
 /**

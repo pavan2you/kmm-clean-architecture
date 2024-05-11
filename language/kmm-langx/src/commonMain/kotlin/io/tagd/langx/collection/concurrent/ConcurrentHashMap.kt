@@ -2,7 +2,7 @@
 
 package io.tagd.langx.collection.concurrent
 
-expect class ConcurrentHashMap<K, V> : MutableMap<K, V> {
+expect open class ConcurrentHashMap<K, V> : MutableMap<K, V> {
     constructor()
     constructor(initialCapacity: Int)
     constructor(initialCapacity: Int, loadFactor: Float)

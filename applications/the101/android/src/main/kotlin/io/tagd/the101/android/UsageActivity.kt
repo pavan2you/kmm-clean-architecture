@@ -18,12 +18,12 @@
 package io.tagd.the101.android
 
 import android.os.Bundle
-import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
-import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.android.mvp.MvpActivity
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.async.present
+import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
+import io.tagd.arch.present.mvp.PresentableView
 
 interface UsageView : PresentableView, AsyncContext {
 

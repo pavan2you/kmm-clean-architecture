@@ -32,7 +32,7 @@ class GetValue<T : Service>(private var value: T): Value<T>() {
     }
 
     override fun toString(): String {
-        return "value - $value"
+        return "$value"
     }
 }
 
@@ -43,6 +43,6 @@ class CreateValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
     }
 
     override fun toString(): String {
-        return "value - $creator"
+        return "$creator"
     }
 }

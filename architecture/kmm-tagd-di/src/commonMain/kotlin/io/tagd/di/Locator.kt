@@ -27,33 +27,54 @@ interface Locator : Releasable {
 
     val scope: Scope?
 
-    fun layers(): Map<KClass<*>, Layer<*>?>?
+    fun layers(): Map<PrettyKClass<*>, Layer<*>?>?
 
     fun <T : Service> bind(layer: Layer<T>, clazz: KClass<T>)
 
     fun <T : Service> locate(clazz: KClass<T>): Layer<T>?
 }
 
+/**
+ * Optional Key introduced just for pretty printing otherwise using KClass would be enough
+ * instead of Kclass
+ */
+data class PrettyKClass<T : Any>(val key: KClass<*>) {
+
+    override fun toString(): String {
+        return key.simpleName.toString()
+    }
+}
+
 class LayerLocator(override var scope: Scope?) : Locator {
 
-    private var layers: ConcurrentHashMap<KClass<*>, Layer<*>?>? = ConcurrentHashMap()
+    private var layers: ConcurrentHashMap<PrettyKClass<*>, Layer<*>?>? = ConcurrentHashMap()
 
-    override fun layers(): Map<KClass<*>, Layer<*>?>? = layers
+    private val optionalPrettyKClasses = ConcurrentHashMap<KClass<*>, PrettyKClass<*>>()
+
+    override fun layers(): Map<PrettyKClass<*>, Layer<*>?>? = layers
 
     override fun <T : Service> bind(layer: Layer<T>, clazz: KClass<T>) {
-        layers?.put(clazz, layer)
+        val prettyKClass = optionalPrettyKClasses[clazz] ?: PrettyKClass<T>(clazz).also {
+            optionalPrettyKClasses[clazz] = it
+        }
+        layers?.put(prettyKClass, layer)
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Service> locate(clazz: KClass<T>): Layer<T>? {
-        val layer = layers?.get(clazz) ?: layers?.values?.firstOrNull {
+        val prettyKClass = optionalPrettyKClasses[clazz] ?: PrettyKClass<T>(clazz)
+
+        val layer = layers?.get(prettyKClass) ?: layers?.values?.firstOrNull {
             it?.contains(Key<T>(clazz)) ?: false
         }
         return layer as? Layer<T>?
     }
 
     override fun toString(): String {
-        return "layers - $layers"
+        val layerNames = layers?.keys?.map {
+            it.toString()
+        }
+        return "layers - $layerNames"
     }
 
     override fun release() {
@@ -67,10 +88,11 @@ class LayerLocator(override var scope: Scope?) : Locator {
 }
 
 inline fun <reified T : Service> Locator.layer(bindings: Layer<T>.() -> Unit): Layer<T> {
-    return (locate(T::class) ?: Layer(scope)).apply {
-        bind(this, T::class)
-        bindings()
-    }
+    return (locate(T::class) ?: Layer(scope, "${T::class.simpleName.toString()} Layer"))
+        .apply {
+            bind(this, T::class)
+            bindings()
+        }
 }
 
 fun <T : Service, S : T> Locator.get(clazz: Key<S>): S? {

@@ -27,4 +27,8 @@ open class ReferenceHolder<T>(value: T) : InfraService {
     override fun release() {
         mutableValue = null
     }
+
+    override fun toString(): String {
+        return "$value"
+    }
 }

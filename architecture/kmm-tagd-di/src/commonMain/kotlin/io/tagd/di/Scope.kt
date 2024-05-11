@@ -126,10 +126,7 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable,
     }
 
     override fun toString(): String {
-        return "scope - name='$name', " +
-                "$mutableLocator, " +
-                "$mutableState, " +
-                "children - $scopes"
+        return name
     }
 
     override fun release() {
@@ -285,7 +282,7 @@ object Global : Scope() {
     }
 }
 
-interface Scopable : Nameable {
+interface Scopable : Service, Nameable {
 
     val outerScope: Scope
 

@@ -17,8 +17,8 @@ class SampleLibrary private constructor(name: String, outerScope: Scope) :
         }
     }
 
-    override fun release() {
-        //no-op
+    override fun toString(): String {
+        return name
     }
 }
 

@@ -29,7 +29,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class LayerTest {
 
     private val scope = Global
-    private val layer = Layer<Service>(scope)
+    private val layer = Layer<Service>(scope, "sample")
     private val mockService: Service = mock()
     private val mockServiceCreator: (State?) -> Service = mock()
 
