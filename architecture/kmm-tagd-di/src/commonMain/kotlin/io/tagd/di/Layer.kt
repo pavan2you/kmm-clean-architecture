@@ -44,6 +44,10 @@ class Layer<T : Service>(var scope: Scope?, override val name: String) : Nameabl
         services?.put(service, CreateValue(creator))
     }
 
+    fun <S : T> bindLazy(service: Key<S>, creator: (State?) -> S) {
+        services?.put(service, LazyValue(creator))
+    }
+
     fun contains(service: Key<*>): Boolean? {
         var contains = services?.containsKey(service)
         if (contains == null || contains == false) {
@@ -63,6 +67,12 @@ class Layer<T : Service>(var scope: Scope?, override val name: String) : Nameabl
 
     @Suppress("UNCHECKED_CAST")
     fun <S : T> create(service: Key<S>, args: State? = null): S {
+        return services?.get(service)?.get(args) as? S
+            ?: throw IllegalAccessException("No creator available for $service")
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <S : T> getLazy(service: Key<S>, args: State? = null): S {
         return services?.get(service)?.get(args) as? S
             ?: throw IllegalAccessException("No creator available for $service")
     }
@@ -93,6 +103,10 @@ class Layer<T : Service>(var scope: Scope?, override val name: String) : Nameabl
 
         fun toCreator(creator: (State?) -> S) {
             layer.bind(key, creator)
+        }
+
+        fun toLazy(creator: (State?) -> S) {
+            layer.bindLazy(key, creator)
         }
     }
 }

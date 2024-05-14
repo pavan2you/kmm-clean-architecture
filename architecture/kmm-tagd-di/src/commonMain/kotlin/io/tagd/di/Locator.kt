@@ -122,3 +122,22 @@ fun <T : Service, S : T> Locator.create(key: Key<S>, args: State? = null): S {
 
     return s ?: throw exception!!
 }
+
+fun <T : Service, S : T> Locator.getLazy(key: Key<S>, args: State? = null): S {
+    var exception: Exception? = null
+    var s: S? = null
+
+    layers()
+        ?.values
+        ?.firstOrNull { it?.contains(key) ?: false }
+        ?.let {
+            @Suppress("UNCHECKED_CAST")
+            try {
+                s = (it as Layer<T>).getLazy(key, args)
+            } catch (e: Exception) {
+                exception = e
+            }
+        }
+
+    return s ?: throw exception!!
+}

@@ -232,6 +232,31 @@ fun <T : Service, S : T> Scope.create(key: Key<S>, args: State? = null): S {
     return value ?: throw exception!!
 }
 
+fun <T : Service, S : T> Scope.getLazy(key: Key<S>, args: State? = null): S {
+    var value: S? = null
+    var exception: Exception? = null
+
+    try {
+        value = locator.getLazy(key, args)
+    } catch (e: Exception) {
+        exception = e
+
+        val scopes = subScopes()
+        if (scopes != null) {
+            for (scope in scopes) {
+                try {
+                    value = scope.getLazy(key, args)
+                    break
+                } catch (e: Exception) {
+                    //ignore
+                }
+            }
+        }
+    }
+
+    return value ?: throw exception!!
+}
+
 inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, instance: S) {
     val keyDerived = key ?: key()
     layer<T> {

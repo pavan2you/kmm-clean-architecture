@@ -46,3 +46,23 @@ class CreateValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
         return "$creator"
     }
 }
+
+class LazyValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
+
+    private lateinit var value: T
+
+    override fun get(args: State?): T {
+        if (!this::value.isInitialized) {
+            value = creator.invoke(args)
+        }
+        return value
+    }
+
+    override fun toString(): String {
+        return if (!this::value.isInitialized) {
+            "$creator"
+        } else {
+            "$value"
+        }
+    }
+}
