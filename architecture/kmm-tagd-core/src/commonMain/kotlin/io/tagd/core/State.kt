@@ -55,6 +55,13 @@ open class State : Releasable {
         this.map.putAll(map)
     }
 
+    /**
+     * Put all arguments key, value pairs in State.
+     */
+    fun putAll(state: State) {
+        map.putAll(state.map)
+    }
+
     fun getAll(): Map<String, Any?> {
         return map
     }

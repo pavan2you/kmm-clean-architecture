@@ -1,38 +1,21 @@
 package io.tagd.the101.android
 
-import io.tagd.android.app.AppLoadingStateHandler
-import io.tagd.android.app.TagdApplication
+import io.tagd.android.app.loadingstate.AppLoadingStateHandler
+import io.tagd.android.app.loadingstate.AppLoadingStepDispatcher
 import io.tagd.arch.access.library
 import io.tagd.arch.access.usecase
 import io.tagd.arch.domain.crosscutting.async.compute
-import io.tagd.arch.domain.crosscutting.async.present
-import io.tagd.arch.library.usecase
+import io.tagd.arch.scopable.library.usecase
 
-class SampleAppLoadingStateHandler(application: TagdApplication) :
-    AppLoadingStateHandler(application) {
+class SampleAppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher) :
+    AppLoadingStateHandler(dispatcher) {
 
     override fun onRegisterStep() {
         super.onRegisterStep()
-        register(APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK)
+        register(APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK, this::doHeavyLongBackgroundWork)
     }
 
-    override fun onHandleStep(step: Int): Boolean {
-        var handled = super.onHandleStep(step)
-
-        if (!handled) {
-
-            when (stepLabel(step)) {
-                APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK -> {
-                    doHeavyLongBackgroundWork(step)
-                    handled = true
-                }
-            }
-        }
-
-        return handled
-    }
-
-    private fun doHeavyLongBackgroundWork(state: Int) {
+    private fun doHeavyLongBackgroundWork() {
         library<SampleLibrary>()?.let {
             val usecase = it.usecase<LibraryUsecase>()
             println("access usecase within library scope $usecase")
@@ -41,9 +24,7 @@ class SampleAppLoadingStateHandler(application: TagdApplication) :
         }
 
         compute (delay = 3000L) {
-            present {
-                onComplete(state)
-            }
+            onComplete(APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK)
         }
     }
 

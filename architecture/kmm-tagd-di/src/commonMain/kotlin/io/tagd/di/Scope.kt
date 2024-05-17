@@ -62,7 +62,17 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable,
     }
 
     fun addSubScopeIfAbsent(scope: Scope): Scope {
-        return addSubScopeIfAbsent(scope.name)
+        if (scope.name == GLOBAL_SCOPE) {
+            throw IllegalAccessException("global scope can not be a sub scope")
+        }
+
+        val foundScope: Scope? = scopes?.get(scope.name)
+        if (foundScope != null && foundScope !== scope) {
+            throw IllegalAccessException("${this.name} already having ${scope.name}")
+        } else {
+            scopes?.put(scope.name, scope)
+        }
+        return scope
     }
 
     fun addSubScopeIfAbsent(scopeName: String): Scope {
@@ -307,9 +317,3 @@ object Global : Scope() {
     }
 }
 
-interface Scopable : Service, Nameable {
-
-    val outerScope: Scope
-
-    val thisScope: Scope
-}

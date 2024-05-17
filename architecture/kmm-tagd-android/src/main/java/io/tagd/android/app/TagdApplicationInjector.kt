@@ -17,6 +17,7 @@
 
 package io.tagd.android.app
 
+import io.tagd.android.app.loadingstate.AppLoadingStateHandler
 import io.tagd.android.crosscutting.async.CoroutineCacheIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineComputationStrategy
 import io.tagd.android.crosscutting.async.CoroutineComputeIOStrategy
@@ -26,11 +27,9 @@ import io.tagd.android.crosscutting.async.CoroutineNetworkStrategy
 import io.tagd.android.crosscutting.async.CoroutinePresentationStrategy
 import io.tagd.android.crosscutting.codec.GsonJsonCodec
 import io.tagd.android.crosscutting.codec.UrlEncoderDecoder
-import io.tagd.arch.access.bind
-import io.tagd.arch.control.AppService
+import io.tagd.arch.control.ApplicationInjector
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.domain.crosscutting.CrossCutting
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
@@ -38,14 +37,13 @@ import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
-import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.arch.domain.crosscutting.async.compute
-import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.domain.crosscutting.codec.UrlCodec
-import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
-import io.tagd.di.Global
+import io.tagd.arch.scopable.Scopable
+import io.tagd.di.Scope
+import io.tagd.di.bind
 import io.tagd.di.key2
 import io.tagd.di.layer
 import io.tagd.kotlinx.coroutines.Computation
@@ -53,53 +51,40 @@ import io.tagd.kotlinx.coroutines.DaoIO
 import io.tagd.kotlinx.coroutines.Dispatchers
 import java.lang.ref.WeakReference
 
-interface Injector : AppService, AsyncContext {
+open class TagdApplicationInjector<T : TagdApplication>(
+    application: T,
+    loadingStateHandler: AppLoadingStateHandler
+) : ApplicationAware(application), ApplicationInjector<T> {
 
-    fun setup()
+    private var weakLoadingStateHandler: WeakReference<AppLoadingStateHandler>? =
+        WeakReference(loadingStateHandler)
 
-    fun inject()
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected val loadingStateHandler: AppLoadingStateHandler?
+        get() = weakLoadingStateHandler?.get()
 
-    fun injectSynchronously()
-
-    fun injectAsynchronously()
-
-    companion object {
-        fun setInjector(injector: Injector) {
-            with(Global) {
-                layer<InfraService> {
-                    bind<Injector>().toInstance(injector)
-                }
-            }
-        }
-    }
-}
-
-open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
-
-    protected var appReference: WeakReference<out T>? = WeakReference(application)
-
-    protected val app: T?
-        get() = appReference?.get()
+    override val scopable: Scopable?
+        get() = application
 
     /**
      * Must be used for only synchronous injection, and must not be called this beyond application
      * setup flow
      */
     override fun setup() {
-        app?.let { application ->
-            with(Global) {
+        application?.let { application ->
+            with(application.thisScope) {
                 injectInfraLayer(application)
             }
         }
     }
 
-    protected open fun Global.injectInfraLayer(application: TagdApplication) {
+    protected open fun Scope.injectInfraLayer(application: TagdApplication) {
         injectAppServicesLayer(application)
         injectAppReferencesLayer(application)
         injectCrossCuttings()
     }
 
-    protected open fun Global.injectAppServicesLayer(application: TagdApplication) {
+    protected open fun Scope.injectAppServicesLayer(application: TagdApplication) {
         layer {
             bind<AppForegroundBackgroundObserver>().toInstance(
                 AppForegroundBackgroundObserver(application)
@@ -110,7 +95,7 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
         }
     }
 
-    protected open fun Global.injectAppReferencesLayer(application: TagdApplication) {
+    protected open fun Scope.injectAppReferencesLayer(application: TagdApplication) {
         layer<ReferenceHolder<*>> {
             bind(
                 key2<ReferenceHolder<Dispatchers>, Dispatchers>(),
@@ -138,7 +123,7 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
         return Dispatchers.get()
     }
 
-    private fun Global.injectCrossCuttings() {
+    private fun Scope.injectCrossCuttings() {
         layer<CrossCutting> {
             bind<PresentationStrategy>().toInstance(CoroutinePresentationStrategy())
             bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy())
@@ -148,8 +133,10 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
             bind<DaoIOStrategy>().toInstance(CoroutineDaoIOStrategy())
             bind<CacheIOStrategy>().toInstance(CoroutineCacheIOStrategy())
 
-            bind<CrossCutting, JsonCodec<*>>(instance = GsonJsonCodec.new())
-            bind<CrossCutting, UrlCodec>(instance = UrlEncoderDecoder())
+            this@injectCrossCuttings.bind<CrossCutting, JsonCodec<*>>(
+                instance = GsonJsonCodec.new()
+            )
+            this@injectCrossCuttings.bind<CrossCutting, UrlCodec>(instance = UrlEncoderDecoder())
         }
     }
 
@@ -160,25 +147,29 @@ open class ApplicationInjector<T : TagdApplication>(application: T) : Injector {
         }
     }
 
-    override fun injectSynchronously() {
+    protected open fun injectSynchronously() {
         //no-op
     }
 
-    override fun injectAsynchronously() {
-        //no-op
-    }
-
-    protected open fun dispatchDone() {
-        present {
-            app?.dispatchLoadingStepDone(AppLoadingStateHandler.Steps.INJECTING)
+    /**
+     * The clients can change this behavior to rightly resolve when to trigger [dispatchDone]
+     */
+    protected open fun injectAsynchronously() {
+        application?.scopableManager?.inject {
+            dispatchDone()
         }
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun dispatchDone() {
+        loadingStateHandler?.dispatcher?.dispatchStepComplete(
+            AppLoadingStateHandler.Steps.INJECTING
+        )
+    }
+
     override fun release() {
-        cancelAsync()
-        appReference?.clear()
-        appReference = null
+        super.release()
+        weakLoadingStateHandler?.clear()
+        weakLoadingStateHandler = null
     }
 }
-
-

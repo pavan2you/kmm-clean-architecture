@@ -1,4 +1,4 @@
-package io.tagd.arch.module
+package io.tagd.arch.scopable.module
 
 import io.tagd.arch.present.mvnp.Navigatable
 import io.tagd.arch.present.mvnp.Navigator
