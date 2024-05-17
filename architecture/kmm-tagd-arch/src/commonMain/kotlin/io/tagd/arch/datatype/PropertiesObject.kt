@@ -2,11 +2,10 @@ package io.tagd.arch.datatype
 
 import io.tagd.core.Copyable
 import io.tagd.core.ValueProvider
-import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
 interface PropertiesObject : DataObjectable, Copyable {
 
-    var properties: ConcurrentHashMap<String, Any?>?
+    var properties: MutableMap<String, Any?>?
 
     fun <T> set(name: String, value: T): PropertiesObject
 
