@@ -8,6 +8,8 @@ expect class AtomicInteger(value: Int) {
 
     fun getAndIncrement(): Int
 
+    fun incrementAndGet(): Int
+
     fun set(value: Int)
 
     fun getAndSet(value: Int): Int

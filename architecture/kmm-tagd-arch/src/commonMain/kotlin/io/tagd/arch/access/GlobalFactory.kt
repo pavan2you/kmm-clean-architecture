@@ -26,15 +26,14 @@ import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
-import io.tagd.arch.library.Library
-import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
+import io.tagd.arch.scopable.library.Library
+import io.tagd.arch.scopable.module.Module
 import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.bind
-import io.tagd.di.key
 
 inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instance: S) {
     Global.bind<T, S>(key, instance)
@@ -43,91 +42,102 @@ inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instan
 /**
  * Module Access
  */
-inline fun <reified S : Module> module(key: Key<S>? = null): S? {
-    return Global.module(key)
+inline fun <reified S : Module> module(key: Key<S>? = null, args: State? = null): S? {
+    return Global.module(key, args)
 }
 
 /**
  * Library Access
  */
-inline fun <reified S : Library> library(key: Key<S>? = null): S? {
-    return Global.library(key)
+inline fun <reified S : Library> library(key: Key<S>? = null, args: State? = null): S? {
+    return Global.library(key, args)
 }
 
 /**
  * Infra Access
  */
-inline fun <reified S : InfraService> infraService(key: Key<S>? = null): S? {
-    return Global.infraService(key)
+inline fun <reified S : InfraService> infraService(key: Key<S>? = null, args: State? = null): S? {
+    return Global.infraService(key, args)
 }
 
-inline fun <reified S : InfraService> createInfra(key: Key<S>? = null, state: State? = null): S {
-    return Global.createInfra(key, state)
+inline fun <reified S : InfraService> createInfra(key: Key<S>? = null, args: State? = null): S {
+    return Global.createInfra(key, args)
 }
 
 /**
  * Presentation Access
  */
-inline fun <reified S : PresentationService> presentationService(key: Key<S>? = null): S? {
-    return Global.presentationService(key)
+inline fun <reified S : PresentationService> presentationService(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+    return Global.presentationService(key, args)
 }
 
 /**
  * Domain - Usecases Access
  */
-inline fun <reified S : Command<*, *>> usecase(key: Key<S>? = null): S? {
-    return Global.usecase(key)
+inline fun <reified S : Command<*, *>> usecase(key: Key<S>? = null, args: State? = null): S? {
+    return Global.usecase(key, args)
 }
 
 /**
  * Domain - Services Access
  */
-inline fun <reified S : DomainService> domainService(key: Key<S>? = null): S? {
-    return Global.domainService(key)
+inline fun <reified S : DomainService> domainService(key: Key<S>? = null, args: State? = null): S? {
+    return Global.domainService(key, args)
 }
 
 /**
  * Data - Repositories Access
  */
-inline fun <reified S : Repository> repository(key: Key<S>? = null): S? {
-    return Global.repository(key)
+inline fun <reified S : Repository> repository(key: Key<S>? = null, args: State? = null): S? {
+    return Global.repository(key, args)
 }
 
 /**
  * Data - Gateways Access
  */
-inline fun <reified S : Gateway> gateway(key: Key<S>? = null): S? {
-    return Global.gateway(key)
+inline fun <reified S : Gateway> gateway(key: Key<S>? = null, args: State? = null): S? {
+    return Global.gateway(key, args)
 }
 
 /**
  * Data - Daos Access
  */
-inline fun <reified S : DataAccessObject> dao(key: Key<S>? = null): S? {
-    return Global.dao(key)
+inline fun <reified S : DataAccessObject> dao(key: Key<S>? = null, args: State? = null): S? {
+    return Global.dao(key, args)
 }
 
 /**
  * Data - Cache Access
  */
-inline fun <reified S : Cache<*>> cache(key: Key<S>? = null): S? {
-    return Global.cache(key)
+inline fun <reified S : Cache<*>> cache(key: Key<S>? = null, args: State? = null): S? {
+    return Global.cache(key, args)
 }
 
 /**
  * Vertical - CrossCutting Access
  */
-inline fun <reified S : CrossCutting> crosscutting(key: Key<S>? = null): S? {
-    return Global.crosscutting(key)
+inline fun <reified S : CrossCutting> crosscutting(key: Key<S>? = null, args: State? = null): S? {
+    return Global.crosscutting(key, args)
 }
 
 /**
  * Vertical - Reference Access
  */
-inline fun <reified S : ReferenceHolder<*>> referenceHolder(key: Key<S>? = null): S? {
-    return Global.referenceHolder(key)
+inline fun <reified S : ReferenceHolder<*>> referenceHolder(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+    
+    return Global.referenceHolder(key, args)
 }
 
-inline fun <T, reified S : ReferenceHolder<T>> reference(key: Key<S>? = null): T? {
-    return referenceHolder(key)?.value
+inline fun <T, reified S : ReferenceHolder<T>> reference(
+    key: Key<S>? = null,
+    args: State? = null
+): T? {
+    
+    return referenceHolder(key, args)?.value
 }

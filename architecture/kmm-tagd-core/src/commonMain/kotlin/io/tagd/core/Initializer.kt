@@ -30,3 +30,9 @@ fun dependencies(vararg pairs: Pair<String, Any?>): Dependencies {
         putAll(pairs)
     }
 }
+
+fun State.asDependencies() : Dependencies {
+    return Dependencies().also {
+        it.putAll(this)
+    }
+}

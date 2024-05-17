@@ -26,16 +26,17 @@ import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
-import io.tagd.arch.library.Library
-import io.tagd.arch.module.Module
 import io.tagd.arch.present.service.PresentationService
+import io.tagd.arch.scopable.Scopable
+import io.tagd.arch.scopable.library.Library
+import io.tagd.arch.scopable.module.Module
 import io.tagd.core.State
 import io.tagd.di.Global
 import io.tagd.di.Key
-import io.tagd.di.Scopable
 import io.tagd.di.Scope
 import io.tagd.di.create
 import io.tagd.di.get
+import io.tagd.di.getLazy
 import io.tagd.di.key2
 import io.tagd.di.layer
 
@@ -46,103 +47,180 @@ fun scope(name: String, parent: Scope? = null): Scope? {
 /**
  * Scopable Access
  */
-inline fun <reified S : Scopable> Scope.scopable(key: Key<S>? = null): S? {
-    return this.get<Scopable, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Scopable> Scope.scopable(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Scopable, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Scopable, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Module Access
  */
-inline fun <reified S : Module> Scope.module(key: Key<S>? = null): S? {
-    return this.get<Module, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Module> Scope.module(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Module, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Module, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Library Access
  */
-inline fun <reified S : Library> Scope.library(key: Key<S>? = null): S? {
-    return this.get<Library, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Library> Scope.library(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Library, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Library, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Infra Access
  */
-inline fun <reified S : InfraService> Scope.infraService(key: Key<S>? = null): S? {
-    return this.get<InfraService, S>(key ?: io.tagd.di.key())
+inline fun <reified S : InfraService> Scope.infraService(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+
+    return if (args != null) {
+        this.getLazy<InfraService, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<InfraService, S>(key ?: io.tagd.di.key())
+    }
 }
 
 inline fun <reified S : InfraService> Scope.createInfra(
     key: Key<S>? = null,
-    state: State? = null
+    args: State? = null
 ): S {
-    return this.create(key ?: io.tagd.di.key(), state)
+
+    return this.create(key ?: io.tagd.di.key(), args)
 }
 
 /**
  * Presentation Access
  */
-inline fun <reified S : PresentationService> Scope.presentationService(key: Key<S>? = null): S? {
-    return this.get<PresentationService, S>(key ?: io.tagd.di.key())
+inline fun <reified S : PresentationService> Scope.presentationService(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+
+    return if (args != null) {
+        this.getLazy<PresentationService, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<PresentationService, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Domain - Usecases Access
  */
-inline fun <reified S : Command<*, *>> Scope.usecase(key: Key<S>? = null): S? {
-    return this.get<Command<*, *>, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Command<*, *>> Scope.usecase(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Command<*, *>, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Command<*, *>, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Domain - Services Access
  */
-inline fun <reified S : DomainService> Scope.domainService(key: Key<S>? = null): S? {
-    return this.get<DomainService, S>(key ?: io.tagd.di.key())
+inline fun <reified S : DomainService> Scope.domainService(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+
+    return if (args != null) {
+        this.getLazy<DomainService, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<DomainService, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Data - Repositories Access
  */
-inline fun <reified S : Repository> Scope.repository(key: Key<S>? = null): S? {
-    return this.get<Repository, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Repository> Scope.repository(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Repository, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Repository, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Data - Gateways Access
  */
-inline fun <reified S : Gateway> Scope.gateway(key: Key<S>? = null): S? {
-    return this.get<Gateway, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Gateway> Scope.gateway(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Gateway, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Gateway, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Data - Daos Access
  */
-inline fun <reified S : DataAccessObject> Scope.dao(key: Key<S>? = null): S? {
-    return this.get<DataAccessObject, S>(key ?: io.tagd.di.key())
+inline fun <reified S : DataAccessObject> Scope.dao(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<DataAccessObject, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<DataAccessObject, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Data - Cache Access
  */
-inline fun <reified S : Cache<*>> Scope.cache(key: Key<S>? = null): S? {
-    return this.get<Cache<*>, S>(key ?: io.tagd.di.key())
+inline fun <reified S : Cache<*>> Scope.cache(key: Key<S>? = null, args: State? = null): S? {
+    return if (args != null) {
+        this.getLazy<Cache<*>, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<Cache<*>, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Vertical - CrossCutting Access
  */
-inline fun <reified S : CrossCutting> Scope.crosscutting(key: Key<S>? = null): S? {
-    return this.get<CrossCutting, S>(key ?: io.tagd.di.key())
+inline fun <reified S : CrossCutting> Scope.crosscutting(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+
+    return if (args != null) {
+        this.getLazy<CrossCutting, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<CrossCutting, S>(key ?: io.tagd.di.key())
+    }
 }
 
 /**
  * Vertical - Reference Access
  */
-inline fun <reified S : ReferenceHolder<*>> Scope.referenceHolder(key: Key<S>? = null): S? {
-    return this.get<ReferenceHolder<*>, S>(key ?: io.tagd.di.key())
+inline fun <reified S : ReferenceHolder<*>> Scope.referenceHolder(
+    key: Key<S>? = null,
+    args: State? = null
+): S? {
+
+    return if (args != null) {
+        this.getLazy<ReferenceHolder<*>, S>(key ?: io.tagd.di.key(), args)
+    } else {
+        this.get<ReferenceHolder<*>, S>(key ?: io.tagd.di.key())
+    }
 }
 
-inline fun <T, reified S : ReferenceHolder<T>> Scope.reference(key: Key<S>? = null): T? {
-    return referenceHolder(key)?.value
+inline fun <T, reified S : ReferenceHolder<T>> Scope.reference(
+    key: Key<S>? = null,
+    args: State? = null
+): T? {
+
+    return referenceHolder(key, args)?.value
 }
 
 inline fun <reified T : Any> Scope.bindReference(reference: T) {

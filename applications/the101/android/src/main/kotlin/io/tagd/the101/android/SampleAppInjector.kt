@@ -1,20 +1,17 @@
 package io.tagd.the101.android
 
-import io.tagd.android.app.AppLoadingStateHandler
-import io.tagd.android.app.ApplicationInjector
-import io.tagd.android.app.TagdApplication
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
-import io.tagd.arch.domain.crosscutting.async.compute
-import io.tagd.arch.domain.crosscutting.async.present
+import io.tagd.android.app.TagdApplicationInjector
+import io.tagd.android.app.loadingstate.AppLoadingStateHandler
 import io.tagd.arch.domain.usecase.Command
-import io.tagd.arch.library.Library
+import io.tagd.arch.scopable.library.Library
 import io.tagd.di.Global
 import io.tagd.di.key
 import io.tagd.di.layer
 
-class SampleAppInjector(application: SampleApplication) :
-    ApplicationInjector<SampleApplication>(application),
-    AsyncContext {
+class SampleAppInjector(
+    application: SampleApplication,
+    handler: AppLoadingStateHandler
+) : TagdApplicationInjector<SampleApplication>(application, handler) {
 
     override fun inject() {
         super.inject()
@@ -23,13 +20,12 @@ class SampleAppInjector(application: SampleApplication) :
                 bind(key(), initSampleLibrary())
             }
         }
-        injectAsync()
     }
 
     private fun initSampleLibrary(): SampleLibrary {
         return SampleLibrary.Builder()
-            .name("sample").
-            inject {
+            .name("sample")
+            .inject {
                 println("inside library specific injection")
                 layer<Command<*, *>> {
                     bind(key(), LibraryUsecase())
@@ -38,13 +34,5 @@ class SampleAppInjector(application: SampleApplication) :
                 println("inside bidirectional dependents")
             }
             .build()
-    }
-
-    private fun injectAsync() {
-        compute(delay = 1000L) {
-            present {
-                app?.dispatchLoadingStepDone(AppLoadingStateHandler.Steps.INJECTING)
-            }
-        }
     }
 }

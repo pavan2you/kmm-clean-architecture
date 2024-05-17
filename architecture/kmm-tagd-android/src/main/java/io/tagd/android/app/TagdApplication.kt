@@ -22,21 +22,24 @@ import android.app.Application
 import android.app.Notification
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
+import io.tagd.android.app.loadingstate.AppLoadingStateHandler
+import io.tagd.android.app.loadingstate.AppLoadingStepDispatcher
 import io.tagd.arch.control.AppService
 import io.tagd.arch.control.ApplicationController
+import io.tagd.arch.control.ApplicationInjector
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LifeCycleAwareApplicationController
 import io.tagd.arch.control.VersionTracker
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
+import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.PresenterFactory
+import io.tagd.arch.scopable.ScopableManager
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scope
@@ -100,40 +103,49 @@ open class TagdApplication : Application(), IApplication {
         RELEASED
     }
 
-    /**
-     * Recommended to use [applicationModuleName] if child classes wants to customize the
-     * default application module name
-     */
-    final override val name: String
-        get() = applicationModuleName()
-
     final override val outerScope: Scope
         get() = Global
 
-    final override val thisScope: Scope
-        get() = applicationScope()
+    /**
+     * Note - if the client overrides [name], then they must override [thisScope] as well
+     */
+    override val name: String = "application"
 
-    protected open var presenterFactory = PresenterFactory("presenter-factory")
+    @Suppress("LeakingThis")
+    override val thisScope: Scope = Scope(name).also {
+        Global.addSubScope(it)
+    }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected var lifecycleState: State = State.INITIALIZING
         private set
 
     private lateinit var loadingStateHandler: AppLoadingStateHandler
 
+    private lateinit var loadingStepDispatcher: AppLoadingStepDispatcher
+
     private lateinit var launcherResolver: LauncherResolver
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected lateinit var launcher: Launcher<*>
         private set
 
-    protected var controller: ApplicationController<*>? = null
+    protected open var controller: ApplicationController<*>? = null
 
     private lateinit var versionTracker: VersionTracker
 
-    protected var activityLifecycleObserver: ActivityLifeCycleObserver? = null
+    private var hasVersionChange: Boolean = false
 
+    var scopableManager: ScopableManager? = null
+        private set
+
+    protected open var activityLifecycleObserver: ActivityLifeCycleObserver? = null
+
+    @Suppress("MemberVisibilityCanBePrivate")
     val currentActivity
         get() = activityLifecycleObserver?.currentActivity()
 
+    @Suppress("MemberVisibilityCanBePrivate")
     val previousActivity
         get() = activityLifecycleObserver?.previousActivity()
 
@@ -157,30 +169,29 @@ open class TagdApplication : Application(), IApplication {
 
     override fun controller(): ApplicationController<*>? = controller
 
+    protected open var presenterFactory = PresenterFactory("presenter-factory")
+
     override fun presenterFactory(): PresenterFactory? {
         return presenterFactory
     }
 
     inline fun <reified S : AppService> appService(key: Key<S>? = null): S? {
-        return Global.get<AppService, S>(key ?: io.tagd.di.key())
+        return thisScope.get<AppService, S>(key ?: io.tagd.di.key())
     }
-
-    protected open fun applicationModuleName() = Global.name
-
-    protected open fun applicationScope(): Scope = Global
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////  Application's Life Cycle  ///////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     init {
+        @Suppress("LeakingThis")
         controller = onCreateController()
     }
 
     override fun onCreate() {
-        super.onCreate()
         setupSelf()
         setupController()
+        super.onCreate()
         dispatchLoading()
     }
 
@@ -188,6 +199,7 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun setupSelf() {
         setupActivityLifeCycleObserver()
+        setupScopableManager()
         setupLoadingStateHandler()
         setupLauncherResolver()
         setupExceptionHandler()
@@ -207,8 +219,17 @@ open class TagdApplication : Application(), IApplication {
         }
     }
 
+    private fun setupScopableManager() {
+        scopableManager = newScopableManager()
+    }
+
+    protected open fun newScopableManager(): ScopableManager {
+        return AppScopableManager()
+    }
+
     private fun setupLoadingStateHandler() {
-        loadingStateHandler = newLoadingStateHandler()
+        loadingStepDispatcher = newLoadingStepDispatcher()
+        loadingStateHandler = newLoadingStateHandler(loadingStepDispatcher)
     }
 
     private fun setupLauncherResolver() {
@@ -220,8 +241,8 @@ open class TagdApplication : Application(), IApplication {
     }
 
     private fun setupInjector() {
-        newInjector().also { injector ->
-            Injector.setInjector(injector)
+        newInjector(loadingStateHandler).also { injector ->
+            ApplicationInjector.setInjector(injector)
             injector.setup()
         }
     }
@@ -244,6 +265,7 @@ open class TagdApplication : Application(), IApplication {
         controller?.onLoading()
     }
 
+    @WorkerThread
     internal fun dispatchInject() {
         onInject()
     }
@@ -251,45 +273,31 @@ open class TagdApplication : Application(), IApplication {
     private fun dispatchLaunch() {
         this.onLaunch()
         controller?.onLaunch()
-        dispatchLoadingStepDone(AppLoadingStateHandler.Steps.LAUNCHING)
+        loadingStepDispatcher.dispatchStepComplete(
+            AppLoadingStateHandler.Steps.LAUNCHING
+        )
     }
 
+    @WorkerThread
     internal fun dispatchUpgrade() {
         onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
         controller?.onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
     }
 
-    /**
-     * The [step] value must be one of [AppLoadingStateHandler.Steps] or the derived
-     * [AppLoadingStateHandler]'s steps.
-     */
     @MainThread
-    fun dispatchLoadingStepDone(step: Int) {
-        if (step == AppLoadingStateHandler.Steps.INJECTING) {
-            setupVersionTracker()
-        }
-        loadingStateHandler.onComplete(step)
-    }
-
     internal fun dispatchReady() {
         onReady()
     }
 
     /* ------------------------------  Life Cycle State Handler  -------------------------------- */
 
-    protected open fun onInject() {
-        appService<Injector>()?.inject()
-    }
-
     /**
      * The applications must override this to load any long running launch time dependencies
      * like system libraries, database setup etc
      */
+    @MainThread
     protected open fun onLoading() {
         loadingStateHandler.start()
-/*        Handler(Looper.getMainLooper()).postDelayed({
-            dispatchOnLoadingComplete()
-        }, 1L)*/
     }
 
     fun resolveLauncher(activity: Activity, savedInstanceState: Bundle?) {
@@ -311,19 +319,25 @@ open class TagdApplication : Application(), IApplication {
         //no-op
     }
 
+    protected open fun onInject() {
+        appService<ApplicationInjector<TagdApplication>>()?.inject()
+    }
+
     /**
      * This must be called after [onInject], the reason being [newVersionTracker] may need
      * IO dependencies to read versions. Example - reading version information from
      * SharedPreferences.
      */
-    protected open fun setupVersionTracker() {
+    internal fun setupVersionTracker() {
         versionTracker = newVersionTracker()
     }
 
     open fun onUpgrade(oldVersion: Int, currentVersion: Int) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            dispatchLoadingStepDone(AppLoadingStateHandler.Steps.UPGRADING)
-        }, 1L)
+        present(delay = 1L) {
+            loadingStepDispatcher.dispatchStepComplete(
+                AppLoadingStateHandler.Steps.UPGRADING
+            )
+        }
     }
 
     @MainThread
@@ -353,8 +367,15 @@ open class TagdApplication : Application(), IApplication {
         }
     }
 
-    protected open fun newLoadingStateHandler(): AppLoadingStateHandler {
-        return AppLoadingStateHandler(this)
+    protected open fun newLoadingStateHandler(
+        dispatcher: AppLoadingStepDispatcher
+    ): AppLoadingStateHandler {
+
+        return AppLoadingStateHandler(dispatcher)
+    }
+
+    protected open fun newLoadingStepDispatcher(): AppLoadingStepDispatcher {
+        return AppLoadingStepDispatcher(this)
     }
 
     protected open fun newLauncherResolver(): LauncherResolver =
@@ -370,7 +391,12 @@ open class TagdApplication : Application(), IApplication {
         )
     }
 
-    protected open fun newInjector(): Injector = ApplicationInjector(this)
+    protected open fun newInjector(
+        handler: AppLoadingStateHandler
+    ): ApplicationInjector<out TagdApplication> {
+
+        return TagdApplicationInjector(this, handler)
+    }
 
     protected open fun newVersionTracker(): VersionTracker {
         return VersionTracker(1, 1)
@@ -409,6 +435,9 @@ open class TagdApplication : Application(), IApplication {
     override fun release() {
         lifecycleState = State.RELEASED
         cancelAsync(this)
+        loadingStepDispatcher.release()
+        loadingStateHandler.release()
+        scopableManager?.release()
         controller?.onDestroy()
         controller = null
     }

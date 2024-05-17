@@ -2,8 +2,8 @@ package io.tagd.the101.android
 
 import io.tagd.arch.domain.usecase.Args
 import io.tagd.arch.domain.usecase.LiveUseCase
-import io.tagd.arch.library.AbstractLibrary
-import io.tagd.arch.library.Library
+import io.tagd.arch.scopable.library.AbstractLibrary
+import io.tagd.arch.scopable.library.Library
 import io.tagd.di.Global
 import io.tagd.di.Scope
 

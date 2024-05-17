@@ -21,4 +21,8 @@ actual class AtomicInteger actual constructor(value: Int) {
     actual fun getAndIncrement(): Int {
         TODO("Not yet implemented")
     }
+
+    actual fun incrementAndGet(): Int {
+        TODO("Not yet implemented")
+    }
 }

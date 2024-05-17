@@ -3,6 +3,7 @@
 package io.tagd.langx
 
 expect open class IllegalAccessException : Exception {
+
     constructor()
 
     constructor(message: String?)
