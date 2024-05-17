@@ -104,11 +104,8 @@ abstract class AbstractModule(
     final override val outerScope: Scope
 ) : Module {
 
-    final override val thisScope: Scope = Scope(name)
+    final override val thisScope: Scope = outerScope.addSubScopeIfAbsent(name)
 
-    init {
-        outerScope.addSubScopeIfAbsent(thisScope)
-    }
 
     override fun release() {
         outerScope.removeSubScope(name)
@@ -138,95 +135,95 @@ fun Module.inject(bindings: Scope.() -> Unit): Scope {
 }
 
 inline fun <reified T : Service, reified S : T> Module.bind(key: Key<S>? = null, instance: S) {
-    scope(name, thisScope)?.layer<T> {
+    thisScope.layer<T> {
         bind(service = key ?: io.tagd.di.key(), instance = instance)
     }
 }
 
 inline fun <reified S : Module> Module.module(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.module(key)
+    return thisScope.module(key)
 }
 
 /**
  * Library Access
  */
 inline fun <reified S : Library> Module.library(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.library(key)
+    return thisScope.library(key)
 }
 
 /**
  * Infra Access
  */
 inline fun <reified S : InfraService> Module.infraService(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.infraService(key)
+    return thisScope.infraService(key)
 }
 
 inline fun <reified S : InfraService> Module.createInfra(
     key: Key<S>? = null,
     state: State? = null
 ): S? {
-    return scope(name, thisScope)?.createInfra(key, state)
+    return thisScope.createInfra(key, state)
 }
 
 /**
  * Presentation Access
  */
 inline fun <reified S : PresentationService> Module.presentationService(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.presentationService(key)
+    return thisScope.presentationService(key)
 }
 
 /**
  * Domain - Usecases Access
  */
 inline fun <reified S : Command<*, *>> Module.usecase(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.usecase(key)
+    return thisScope.usecase(key)
 }
 
 /**
  * Domain - Services Access
  */
 inline fun <reified S : DomainService> Module.domainService(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.domainService(key)
+    return thisScope.domainService(key)
 }
 
 /**
  * Data - Repositories Access
  */
 inline fun <reified S : Repository> Module.repository(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.repository(key)
+    return thisScope.repository(key)
 }
 
 /**
  * Data - Gateways Access
  */
 inline fun <reified S : Gateway> Module.gateway(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.gateway(key)
+    return thisScope.gateway(key)
 }
 
 /**
  * Data - Daos Access
  */
 inline fun <reified S : DataAccessObject> Module.dao(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.dao(key)
+    return thisScope.dao(key)
 }
 
 /**
  * Data - Cache Access
  */
 inline fun <reified S : Cache<*>> Module.cache(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.cache(key)
+    return thisScope.cache(key)
 }
 
 /**
  * Vertical - CrossCutting Access
  */
 inline fun <reified S : CrossCutting> Module.crosscutting(key: Key<S>? = null): S? {
-    return scope(name, thisScope)?.crosscutting(key)
+    return thisScope.crosscutting(key)
 }
 
 /**
  * Vertical - Reference Access
  */
 inline fun <T, reified S : ReferenceHolder<T>> Module.reference(key: Key<S>? = null): T? {
-    return scope(name, thisScope)?.reference(key)
+    return thisScope.reference(key)
 }
