@@ -3,9 +3,11 @@ package io.tagd.arch.datatype
 import io.tagd.core.ValueProvider
 import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
-open class InMemoryPropertiesObject : DataObject(), PropertiesObject {
+open class InMemoryPropertiesObject(
+    private val useConcurrentHashMap: Boolean = true
+) : DataObject(), PropertiesObject {
 
-    final override var properties: ConcurrentHashMap<String, Any?>? = null
+    final override var properties: MutableMap<String, Any?>? = null
 
     init {
         this.initialize()
@@ -13,7 +15,11 @@ open class InMemoryPropertiesObject : DataObject(), PropertiesObject {
 
     override fun initialize() {
         super.initialize()
-        properties = ConcurrentHashMap()
+        properties = if (useConcurrentHashMap) {
+            ConcurrentHashMap()
+        } else {
+            HashMap()
+        }
     }
 
     override fun <T> set(name: String, value: T): PropertiesObject {
