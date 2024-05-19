@@ -9,7 +9,7 @@ import io.tagd.arch.control.StepLooperSpec
 private typealias AppSteps = AppLoadingStateHandler.Steps
 private typealias AppDispatcher = AppLoadingStateHandler.Dispatcher
 
-open class AppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher) :
+open class AppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher<out TagdApplication>) :
     StepLooper<AppSteps, AppDispatcher>(Steps, dispatcher),
     AppLoadingStateHandlerSpec<AppSteps, AppDispatcher> {
 

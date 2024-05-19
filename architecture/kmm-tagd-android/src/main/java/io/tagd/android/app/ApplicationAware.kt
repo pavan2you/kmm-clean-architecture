@@ -4,11 +4,11 @@ import io.tagd.arch.domain.crosscutting.async.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import java.lang.ref.WeakReference
 
-open class ApplicationAware(application : TagdApplication) : AsyncContext {
+open class ApplicationAware<T : TagdApplication>(application : T) : AsyncContext {
 
-    private var weakApplication: WeakReference<TagdApplication?>? = WeakReference(application)
+    private var weakApplication: WeakReference<T?>? = WeakReference(application)
 
-    val application: TagdApplication?
+    val application: T?
         get() = weakApplication?.get()
 
     override fun release() {

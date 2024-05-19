@@ -54,7 +54,7 @@ import java.lang.ref.WeakReference
 open class TagdApplicationInjector<T : TagdApplication>(
     application: T,
     loadingStateHandler: AppLoadingStateHandler
-) : ApplicationAware(application), ApplicationInjector<T> {
+) : ApplicationAware<T>(application), ApplicationInjector<T> {
 
     private var weakLoadingStateHandler: WeakReference<AppLoadingStateHandler>? =
         WeakReference(loadingStateHandler)
@@ -147,14 +147,17 @@ open class TagdApplicationInjector<T : TagdApplication>(
         }
     }
 
-    protected open fun injectSynchronously() {
+    @Deprecated("no need to expose")
+    override fun injectSynchronously() {
         //no-op
     }
 
     /**
      * The clients can change this behavior to rightly resolve when to trigger [dispatchDone]
      */
-    protected open fun injectAsynchronously() {
+    @Deprecated("no need to expose", ReplaceWith(""))
+    override fun injectAsynchronously() {
+
         application?.scopableManager?.inject {
             dispatchDone()
         }

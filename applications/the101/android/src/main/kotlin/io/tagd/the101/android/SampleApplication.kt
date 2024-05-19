@@ -29,7 +29,7 @@ class SampleApplication : TagdApplication() {
     }
 
     override fun newLoadingStateHandler(
-        dispatcher: AppLoadingStepDispatcher
+        dispatcher: AppLoadingStepDispatcher<out TagdApplication>
     ): AppLoadingStateHandler {
 
         return SampleAppLoadingStateHandler(dispatcher)
