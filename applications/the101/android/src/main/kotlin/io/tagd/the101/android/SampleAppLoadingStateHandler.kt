@@ -1,5 +1,6 @@
 package io.tagd.the101.android
 
+import io.tagd.android.app.TagdApplication
 import io.tagd.android.app.loadingstate.AppLoadingStateHandler
 import io.tagd.android.app.loadingstate.AppLoadingStepDispatcher
 import io.tagd.arch.access.library
@@ -7,7 +8,7 @@ import io.tagd.arch.access.usecase
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.scopable.library.usecase
 
-class SampleAppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher) :
+class SampleAppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher<out TagdApplication>) :
     AppLoadingStateHandler(dispatcher) {
 
     override fun onRegisterStep() {

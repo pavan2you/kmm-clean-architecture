@@ -103,11 +103,7 @@ abstract class AbstractModule(
     final override val outerScope: Scope
 ) : Module {
 
-    final override val thisScope: Scope = Scope(name)
-
-    init {
-        outerScope.addSubScopeIfAbsent(thisScope)
-    }
+    final override val thisScope: Scope = outerScope.addSubScopeIfAbsent(name)
 
     override fun release() {
         outerScope.removeSubScope(name)

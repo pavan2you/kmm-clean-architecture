@@ -5,5 +5,13 @@ import io.tagd.core.Service
 
 interface Injector : Service, AsyncContext {
 
+    fun setup()
+
     fun inject()
+
+    @Deprecated("no need to expose")
+    fun injectSynchronously()
+
+    @Deprecated("no need to expose")
+    fun injectAsynchronously()
 }

@@ -6,8 +6,8 @@ import io.tagd.arch.control.StepLooperSpec
 import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.kotlinx.let
 
-open class AppLoadingStepDispatcher(application: TagdApplication) :
-    ApplicationAware(application), AppLoadingStateHandler.Dispatcher {
+open class AppLoadingStepDispatcher<T : TagdApplication>(application: T) :
+    ApplicationAware<T>(application), AppLoadingStateHandler.Dispatcher {
 
     override var looper: StepLooperSpec<*, *>? = null
 

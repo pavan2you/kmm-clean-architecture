@@ -120,9 +120,10 @@ open class TagdApplication : Application(), IApplication {
     protected var lifecycleState: State = State.INITIALIZING
         private set
 
-    private lateinit var loadingStateHandler: AppLoadingStateHandler
+    protected lateinit var loadingStateHandler: AppLoadingStateHandler
+        private set
 
-    private lateinit var loadingStepDispatcher: AppLoadingStepDispatcher
+    private lateinit var loadingStepDispatcher: AppLoadingStepDispatcher<out TagdApplication>
 
     private lateinit var launcherResolver: LauncherResolver
 
@@ -368,13 +369,13 @@ open class TagdApplication : Application(), IApplication {
     }
 
     protected open fun newLoadingStateHandler(
-        dispatcher: AppLoadingStepDispatcher
+        dispatcher: AppLoadingStepDispatcher<out TagdApplication>
     ): AppLoadingStateHandler {
 
         return AppLoadingStateHandler(dispatcher)
     }
 
-    protected open fun newLoadingStepDispatcher(): AppLoadingStepDispatcher {
+    protected open fun newLoadingStepDispatcher(): AppLoadingStepDispatcher<out TagdApplication> {
         return AppLoadingStepDispatcher(this)
     }
 
