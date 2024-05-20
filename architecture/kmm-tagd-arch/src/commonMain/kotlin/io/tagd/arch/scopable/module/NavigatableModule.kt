@@ -19,16 +19,8 @@ interface NavigatableModule : Module, Navigatable {
             return this
         }
 
-        override fun inject(bindings: Scope.() -> Unit): Builder<T> {
+        override fun inject(bindings: Scope.(T) -> Unit): Builder<T> {
             super.inject(bindings)
-            return this
-        }
-
-        override fun injectBidirectionalDependents(
-            injector: BidirectionalModuleDependentInjector?
-        ): Builder<T> {
-
-            super.injectBidirectionalDependents(injector)
             return this
         }
     }

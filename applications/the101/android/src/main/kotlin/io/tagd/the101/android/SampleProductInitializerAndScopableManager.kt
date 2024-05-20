@@ -1,7 +1,7 @@
 package io.tagd.the101.android
 
 import io.tagd.arch.control.LoadingStateHandler
-import io.tagd.arch.domain.usecase.Callback
+import io.tagd.langx.Callback
 import io.tagd.arch.scopable.Scopable
 import io.tagd.arch.scopable.ScopableInitializer
 import io.tagd.arch.scopable.ScopableManager

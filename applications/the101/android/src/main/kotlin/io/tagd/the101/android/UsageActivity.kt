@@ -20,7 +20,11 @@ package io.tagd.the101.android
 import android.os.Bundle
 import io.tagd.android.mvp.MvpActivity
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.domain.crosscutting.async.cacheIO
 import io.tagd.arch.domain.crosscutting.async.compute
+import io.tagd.arch.domain.crosscutting.async.computeIO
+import io.tagd.arch.domain.crosscutting.async.diskIO
+import io.tagd.arch.domain.crosscutting.async.networkIO
 import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
 import io.tagd.arch.present.mvp.PresentableView
@@ -67,12 +71,58 @@ class UsageActivity : MvpActivity<UsageView, UsagePresenter>(), UsageView {
         usage.use()
         usage.release()
 
+        asyncStrategyTest()
+    }
+
+    private fun asyncStrategyTest() {
         present {
-            println("from present async block")
+            println("from present async block " + Thread.currentThread().name + " and $it")
         }
 
         compute {
-            println("from compute async block")
+            println("from compute async block " + Thread.currentThread().name + " and $it")
+        }
+
+        computeIO {
+            println("from compute-io async block " + Thread.currentThread().name + " and $it")
+        }
+
+        diskIO {
+            println("from disk-io-1 async block " + Thread.currentThread().name + " and $it")
+        }
+
+        diskIO {
+            println("from disk-io-2 async block " + Thread.currentThread().name + " and $it")
+        }
+
+        networkIO {
+            println("from network-io-1 async block " + Thread.currentThread().name + " and $it")
+        }
+
+        networkIO {
+            println("from network-io-2 async block " + Thread.currentThread().name + " and $it")
+        }
+
+        networkIO {
+            println("from network-io-3 async block " + Thread.currentThread().name + " and $it")
+            val callback = {
+                println("hello call back of network-io-3")
+            }
+            it.notify {
+                callback.invoke()
+            }
+        }
+
+        cacheIO {
+            println("from cache-io-1 async block " + Thread.currentThread().name + " and $it")
+        }
+
+        cacheIO {
+            println("from cache-io-2 async block " + Thread.currentThread().name + " and $it")
+        }
+
+        cacheIO {
+            println("from cache-io-3 async block " + Thread.currentThread().name + " and $it")
         }
     }
 

@@ -19,6 +19,7 @@ package io.tagd.arch.domain.usecase
 
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
+import io.tagd.langx.Callback
 
 @VisibleForTesting(otherwise = Visibility.PACKAGE_PRIVATE)
 open class ResultObserver<T>(

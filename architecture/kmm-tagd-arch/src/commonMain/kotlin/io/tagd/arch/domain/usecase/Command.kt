@@ -19,8 +19,7 @@ package io.tagd.arch.domain.usecase
 
 import io.tagd.core.Cancellable
 import io.tagd.core.Service
-
-typealias Callback<T> = (T) -> Unit
+import io.tagd.langx.Callback
 
 interface Command<EXECUTE, T> : Cancellable, Service {
 

@@ -5,15 +5,11 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonTest by getting {
-            dependencies {
-                api(project(":language:kmm-langx:kmm-langx-test"))
-            }
+        commonTest.dependencies {
+            api(project(":language:kmm-langx:kmm-langx-test"))
         }
-        val androidMain by getting {
-            dependencies {
-                api(libs.gson)
-            }
+        androidMain.dependencies {
+            api(libs.gson)
         }
     }
 }

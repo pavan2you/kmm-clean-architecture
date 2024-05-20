@@ -18,7 +18,7 @@
 package io.tagd.arch.test
 
 import io.tagd.arch.domain.usecase.Args
-import io.tagd.arch.domain.usecase.Callback
+import io.tagd.langx.Callback
 
 class FakeUseCaseCaller<T>(val args: Args? = Args()) {
 

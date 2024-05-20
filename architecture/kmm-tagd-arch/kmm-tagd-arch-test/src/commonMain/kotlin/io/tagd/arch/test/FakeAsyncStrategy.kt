@@ -25,8 +25,10 @@ import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
+import io.tagd.arch.domain.crosscutting.async.ExecutionContext
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
+import io.tagd.langx.ref.weak
 
 open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationStrategy,
     ComputeIOStrategy, NetworkIOStrategy, DiskIOStrategy, DaoIOStrategy, CacheIOStrategy {
@@ -36,8 +38,8 @@ open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationS
     override val exceptionHandler: AsyncExceptionHandler?
         get() = FakeAsyncExceptionHandler()
 
-    override fun execute(context: AsyncContext?, delay: Long, work: () -> Unit) {
-        work.invoke()
+    override fun execute(context: AsyncContext?, delay: Long, work: (ExecutionContext) -> Unit) {
+        work.invoke(ExecutionContext(callerContext = context?.weak(), caller = this))
     }
 
     override fun release() {
@@ -47,4 +49,7 @@ open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationS
     override fun cancel(context: Any?): Boolean {
         return true
     }
+
+    override val name: String
+        get() = "main"
 }

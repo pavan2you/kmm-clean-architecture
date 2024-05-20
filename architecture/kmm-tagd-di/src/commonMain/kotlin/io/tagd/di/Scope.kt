@@ -177,6 +177,11 @@ fun scope(name: String, parent: Scope? = Global, bindings: Scope.() -> Unit): Sc
     }
 }
 
+fun Scope.inject(bindings: Scope.() -> Unit): Scope {
+    bindings()
+    return this
+}
+
 inline fun <reified T : Service> Scope.layer(bindings: Layer<T>.() -> Unit): Layer<T> {
     return locator.layer(bindings)
 }

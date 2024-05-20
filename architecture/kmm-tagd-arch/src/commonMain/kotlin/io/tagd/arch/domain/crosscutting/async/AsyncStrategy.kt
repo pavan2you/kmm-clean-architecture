@@ -20,7 +20,10 @@ package io.tagd.arch.domain.crosscutting.async
 import io.tagd.arch.access.crosscutting
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.core.Cancellable
+import io.tagd.core.Nameable
 import io.tagd.core.Releasable
+import io.tagd.langx.ref.WeakReference
+import kotlin.jvm.JvmName
 
 interface AsyncExceptionHandler {
 
@@ -32,11 +35,26 @@ interface AsyncExceptionHandler {
  */
 interface AsyncContext : Releasable
 
-interface AsyncStrategy : CrossCutting, Cancellable {
+data class ExecutionContext(
+    val callerContext: WeakReference<AsyncContext?>?,
+    val caller: AsyncStrategy
+) {
+
+    @JvmName("notifyCaller")
+    fun notify(work: (ExecutionContext) -> Unit) {
+        caller.execute(context = callerContext?.get(), work = work)
+    }
+
+    override fun toString(): String {
+        return "[callerContext=${callerContext?.get()}, caller=$caller]"
+    }
+}
+
+interface AsyncStrategy : CrossCutting, Cancellable, Nameable {
 
     val exceptionHandler: AsyncExceptionHandler?
 
-    fun execute(context: AsyncContext? = null, delay: Long = 0, work: () -> Unit)
+    fun execute(context: AsyncContext? = null, delay: Long = 0, work: (ExecutionContext) -> Unit)
 }
 
 interface PresentationStrategy : AsyncStrategy
@@ -53,27 +71,52 @@ interface DaoIOStrategy : AsyncStrategy
 
 interface CacheIOStrategy : AsyncStrategy
 
-fun AsyncContext.compute(context: AsyncContext? = this, delay: Long = 0, computation: () -> Unit) {
+fun AsyncContext.compute(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    computation: (ExecutionContext) -> Unit
+) {
+
     val strategy = crosscutting<ComputationStrategy>()
     strategy?.execute(context, delay, computation)
 }
 
-fun AsyncContext.present(context: AsyncContext? = this, delay: Long = 0, presentation: () -> Unit) {
+fun AsyncContext.present(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    presentation: (ExecutionContext) -> Unit
+) {
+
     val strategy = crosscutting<PresentationStrategy>()
     strategy?.execute(context, delay, presentation)
 }
 
-fun AsyncContext.networkIO(context: AsyncContext? = this, delay: Long = 0, api: () -> Unit) {
+fun AsyncContext.networkIO(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    api: (ExecutionContext) -> Unit
+) {
+
     val strategy = crosscutting<NetworkIOStrategy>()
     strategy?.execute(context, delay, api)
 }
 
-fun AsyncContext.computeIO(context: AsyncContext? = this, delay: Long = 0, api: () -> Unit) {
+fun AsyncContext.computeIO(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    api: (ExecutionContext) -> Unit
+) {
+
     val strategy = crosscutting<ComputeIOStrategy>()
     strategy?.execute(context, delay, api)
 }
 
-fun AsyncContext.diskIO(context: AsyncContext? = this, delay: Long = 0, operation: () -> Unit) {
+fun AsyncContext.diskIO(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    operation: (ExecutionContext) -> Unit
+) {
+
     val strategy = crosscutting<DiskIOStrategy>()
     strategy?.execute(context, delay, operation)
 }
@@ -81,13 +124,19 @@ fun AsyncContext.diskIO(context: AsyncContext? = this, delay: Long = 0, operatio
 fun AsyncContext.daoIO(
     context: AsyncContext? = this,
     delay: Long = 0,
-    crudOperation: () -> Unit
+    crudOperation: (ExecutionContext) -> Unit
 ) {
+
     val strategy = crosscutting<DaoIOStrategy>()
     strategy?.execute(context, delay, crudOperation)
 }
 
-fun AsyncContext.cacheIO(context: AsyncContext? = this, delay: Long = 0, operation: () -> Unit) {
+fun AsyncContext.cacheIO(
+    context: AsyncContext? = this,
+    delay: Long = 0,
+    operation: (ExecutionContext) -> Unit
+) {
+
     val strategy = crosscutting<CacheIOStrategy>()
     strategy?.execute(context, delay, operation)
 }

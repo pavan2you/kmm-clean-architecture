@@ -1,0 +1,21 @@
+package io.tagd.arch.domain.crosscutting.async
+
+import io.tagd.langx.Thread
+
+object CurrentStrategyResolver {
+
+    private val map = hashMapOf<String, AsyncStrategy>()
+
+    fun include(strategy: AsyncStrategy): CurrentStrategyResolver {
+        map[strategy.name] = strategy
+        return this
+    }
+
+    fun resolve(): AsyncStrategy {
+        val threadName = Thread.currentThread().getName()
+        val key = map.keys.first {
+            threadName.contains(it)
+        }
+        return map[key]!!
+    }
+}

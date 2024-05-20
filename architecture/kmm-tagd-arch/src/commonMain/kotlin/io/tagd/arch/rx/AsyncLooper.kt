@@ -1,12 +1,43 @@
 package io.tagd.arch.rx
 
-import io.tagd.arch.domain.usecase.Callback
+import io.tagd.arch.access.crosscutting
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.domain.crosscutting.async.AsyncStrategy
+import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
+import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
+import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
+import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
+import io.tagd.arch.domain.crosscutting.async.ExecutionContext
+import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
+import io.tagd.langx.Callback
 import io.tagd.langx.ref.concurrent.atomic.AtomicInteger
+import io.tagd.langx.ref.weak
 import kotlin.jvm.JvmName
 
-class AsyncLooper<T>(private val iterable: Iterable<T>, private val callback: Callback<Unit>) {
+open class AsyncLooper<T>(
+    callerContext: AsyncContext,
+    private val executor: AsyncStrategy,
+    private val iterable: Iterable<T>,
+    private val callback: Callback<Unit>
+) {
 
-    fun forEach(item: (T, Callback<Unit>) -> Unit) {
+    private var weakContext = callerContext.weak()
+
+    private val context
+        get() = weakContext.get()
+
+    open fun forEach(item: (T, Callback<Unit>) -> Unit) {
+        val callerContext = weakContext.get()
+        if (callerContext == null) {
+            callback.invoke(Unit)
+        } else {
+            executor.execute(callerContext) {
+                forEachAsync(it, item)
+            }
+        }
+    }
+
+    private fun forEachAsync(context: ExecutionContext, item: (T, Callback<Unit>) -> Unit) {
         val size = iterable.count()
         if (size > 0) {
             val counter = AtomicInteger(0)
@@ -15,74 +46,115 @@ class AsyncLooper<T>(private val iterable: Iterable<T>, private val callback: Ca
                 item.invoke(it) {
                     val completed = counter.incrementAndGet()
                     if (completed == size) {
-                        callback.invoke(Unit)
+                        context.notify {
+                            callback.invoke(Unit)
+                        }
                     }
                 }
             }
         } else {
-            callback.invoke(Unit)
+            context.notify {
+                callback.invoke(Unit)
+            }
         }
     }
 }
 
-fun <T> asyncLooper(
+fun <T> AsyncContext.asyncLooper(
     iterable: Iterable<T>,
     callback: Callback<Unit>
 ): AsyncLooper<T> {
 
-    return AsyncLooper(iterable, callback)
+    return AsyncLooper(this, crosscutting<ComputationStrategy>()!!, iterable, callback)
 }
 
+fun <T> AsyncContext.asyncLooper(
+    iterable: Iterable<T>,
+    executor: AsyncStrategy,
+    callback: Callback<Unit>
+): AsyncLooper<T> {
 
-fun <T> asyncForEach(
+    return AsyncLooper(this, executor, iterable, callback)
+}
+
+fun <T> AsyncContext.asyncForEach(
     iterable: Iterable<T>,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
 
-    AsyncLooper(iterable, callback).forEach(item)
+    asyncForEach(crosscutting<ComputationStrategy>()!!, iterable, callback, item)
 }
 
-//todo revisit all async implementations
-@JvmName("asyncForEachIterableItem")
-fun <T> Iterable<T>.asyncForEach(
+fun <T> AsyncContext.asyncForEach(
+    executor: AsyncStrategy,
+    iterable: Iterable<T>,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
-    asyncForEach(this, callback, item)
+
+    AsyncLooper(this, executor, iterable, callback).forEach(item)
+}
+
+@JvmName("asyncForEachIterableItem")
+fun <T> Iterable<T>.asyncForEach(
+    context: AsyncContext,
+    callback: Callback<Unit>,
+    item: (T, Callback<Unit>) -> Unit
+) {
+
+    context.asyncForEach(this, callback, item)
 }
 
 fun <T> Iterable<T>.computeForEach(
+    context: AsyncContext,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
-    asyncForEach(this, callback, item)
+
+    context.asyncForEach(this, callback, item)
 }
 
 fun <T> Iterable<T>.ioForEach(
+    context: AsyncContext,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
-    asyncForEach(this, callback, item)
+
+    context.asyncForEach(crosscutting<NetworkIOStrategy>()!!, this, callback, item)
 }
 
 fun <T> Iterable<T>.computeIOForEach(
+    context: AsyncContext,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
-    asyncForEach(this, callback, item)
+
+    context.asyncForEach(crosscutting<ComputeIOStrategy>()!!, this, callback, item)
+}
+
+fun <T> Iterable<T>.diskIOForEach(
+    context: AsyncContext,
+    callback: Callback<Unit>,
+    item: (T, Callback<Unit>) -> Unit
+) {
+
+    context.asyncForEach(crosscutting<DiskIOStrategy>()!!, this, callback, item)
 }
 
 fun <T> Iterable<T>.daoForEach(
+    context: AsyncContext,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
-    asyncForEach(this, callback, item)
+
+    context.asyncForEach(crosscutting<DaoIOStrategy>()!!, this, callback, item)
 }
 
 fun <T> Iterable<T>.nwForEach(
+    context: AsyncContext,
     callback: Callback<Unit>,
     item: (T, Callback<Unit>) -> Unit
 ) {
-    asyncForEach(this, callback, item)
+    context.asyncForEach(crosscutting<NetworkIOStrategy>()!!, this, callback, item)
 }

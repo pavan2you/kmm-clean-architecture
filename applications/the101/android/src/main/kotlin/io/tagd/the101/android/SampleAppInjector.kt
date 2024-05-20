@@ -1,12 +1,13 @@
 package io.tagd.the101.android
 
 import io.tagd.android.app.TagdApplicationInjector
-import io.tagd.arch.domain.usecase.Callback
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.scopable.library.Library
 import io.tagd.di.Global
+import io.tagd.di.bind
 import io.tagd.di.key
 import io.tagd.di.layer
+import io.tagd.langx.Callback
 
 class SampleAppInjector(
     application: SampleApplication
@@ -29,9 +30,6 @@ class SampleAppInjector(
                 layer<Command<*, *>> {
                     bind(key(), LibraryUsecase())
                 }
-            }.injectBidirectionalDependents {
-                println("inside bidirectional dependents")
-            }
-            .build()
+            }.build()
     }
 }

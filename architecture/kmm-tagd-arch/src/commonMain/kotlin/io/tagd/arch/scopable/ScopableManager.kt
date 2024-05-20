@@ -1,7 +1,7 @@
 package io.tagd.arch.scopable
 
 import io.tagd.arch.control.LoadingStateHandler
-import io.tagd.arch.domain.usecase.Callback
+import io.tagd.langx.Callback
 import io.tagd.arch.rx.asyncForEach
 
 abstract class ScopableManager : ScopableManagementSpec {
@@ -15,7 +15,7 @@ abstract class ScopableManager : ScopableManagementSpec {
         this.outer = outer
 
         loadScopableInitializers(initializers)
-        initializers.asyncForEach(callback) { initializer, itemCallback ->
+        initializers.asyncForEach(this, callback) { initializer, itemCallback ->
             initializer.initialize(outer, itemCallback)
         }
     }
@@ -28,7 +28,7 @@ abstract class ScopableManager : ScopableManagementSpec {
     ) {
 
         if (canRegisterLoadingSteps(handler)) {
-            initializers.asyncForEach(callback) { initializer, itemCallback ->
+            initializers.asyncForEach(this, callback) { initializer, itemCallback ->
                 initializer.registerLoadingSteps(handler, itemCallback)
             }
         } else {

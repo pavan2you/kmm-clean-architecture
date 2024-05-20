@@ -39,7 +39,6 @@ import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.domain.crosscutting.codec.UrlCodec
-import io.tagd.arch.domain.usecase.Callback
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.scopable.Scopable
 import io.tagd.di.Scope
@@ -47,8 +46,10 @@ import io.tagd.di.bind
 import io.tagd.di.key2
 import io.tagd.di.layer
 import io.tagd.kotlinx.coroutines.Computation
+import io.tagd.kotlinx.coroutines.ComputeIO
 import io.tagd.kotlinx.coroutines.DaoIO
 import io.tagd.kotlinx.coroutines.Dispatchers
+import io.tagd.langx.Callback
 import java.lang.ref.WeakReference
 
 open class TagdApplicationInjector<T : TagdApplication>(
@@ -108,6 +109,7 @@ open class TagdApplicationInjector<T : TagdApplication>(
                 .Main(kotlinx.coroutines.Dispatchers.Main.immediate)
                 .Computation(kotlinx.coroutines.Dispatchers.Computation)
                 .IO(kotlinx.coroutines.Dispatchers.IO)
+                .ComputeIO(kotlinx.coroutines.Dispatchers.ComputeIO)
                 .DaoIO(kotlinx.coroutines.Dispatchers.DaoIO)
                 .Unconfined(kotlinx.coroutines.Dispatchers.Unconfined)
                 .build()
@@ -116,6 +118,8 @@ open class TagdApplicationInjector<T : TagdApplication>(
     }
 
     private fun Scope.injectCrossCuttings() {
+        System.setProperty("kotlinx.coroutines.debug", "on" )
+
         layer<CrossCutting> {
             bind<PresentationStrategy>().toInstance(CoroutinePresentationStrategy())
             bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy())

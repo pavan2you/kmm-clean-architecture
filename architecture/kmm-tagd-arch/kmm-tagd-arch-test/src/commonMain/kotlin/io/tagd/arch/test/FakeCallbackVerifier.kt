@@ -1,6 +1,6 @@
 package io.tagd.arch.test
 
-import io.tagd.arch.domain.usecase.Callback
+import io.tagd.langx.Callback
 import io.tagd.langx.assert
 
 /**

@@ -27,6 +27,7 @@ import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.present.service.PresentationService
+import io.tagd.arch.scopable.Scopable
 import io.tagd.arch.scopable.library.Library
 import io.tagd.arch.scopable.module.Module
 import io.tagd.core.Service
@@ -37,6 +38,13 @@ import io.tagd.di.bind
 
 inline fun <reified T : Service, reified S : T> bind(key: Key<S>? = null, instance: S) {
     Global.bind<T, S>(key, instance)
+}
+
+/**
+ * Scopable Access
+ */
+inline fun <reified S : Scopable> scopable(key: Key<S>? = null, args: State? = null): S? {
+    return Global.scopable(key, args)
 }
 
 /**

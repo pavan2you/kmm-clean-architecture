@@ -18,24 +18,25 @@ import io.tagd.arch.data.dao.DataAccessObject
 import io.tagd.arch.data.gateway.Gateway
 import io.tagd.arch.data.repo.Repository
 import io.tagd.arch.domain.crosscutting.CrossCutting
+import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService
 import io.tagd.arch.infra.ReferenceHolder
-import io.tagd.arch.scopable.library.Library
 import io.tagd.arch.present.service.PresentationService
+import io.tagd.arch.scopable.Scopable
+import io.tagd.arch.scopable.library.Library
 import io.tagd.core.Factory
 import io.tagd.core.Service
 import io.tagd.core.State
 import io.tagd.di.DependentService
 import io.tagd.di.Global
 import io.tagd.di.Key
-import io.tagd.arch.scopable.Scopable
 import io.tagd.di.Scope
 import io.tagd.di.layer
 import io.tagd.di.scope
-
-typealias BidirectionalModuleDependentInjector = (context: Module) -> Unit
+import io.tagd.langx.Callback
 
 interface Module : Factory, Scopable {
 
@@ -48,8 +49,7 @@ interface Module : Factory, Scopable {
     abstract class Builder<T : Module> : Factory.Builder<T>() {
 
         protected open var outerScope: Scope = Global
-        private var bidirectionalInjector: BidirectionalModuleDependentInjector? = null
-        private var injectionInvoker: InjectionInvoker? = null
+        private var bindings: (Scope.(T) -> Unit)? = null
 
         override fun name(name: String?): Builder<T> {
             this.name = name
@@ -61,16 +61,8 @@ interface Module : Factory, Scopable {
             return this
         }
 
-        open fun inject(bindings: Scope.() -> Unit): Builder<T> {
-            this.injectionInvoker = InjectionInvoker(bindings)
-            return this
-        }
-
-        open fun injectBidirectionalDependents(
-            injector: BidirectionalModuleDependentInjector?
-        ): Builder<T> {
-
-            this.bidirectionalInjector = injector
+        open fun inject(bindings: Scope.(T) -> Unit): Builder<T> {
+            this.bindings = bindings
             return this
         }
 
@@ -80,20 +72,17 @@ interface Module : Factory, Scopable {
             }
         }
 
-        protected abstract fun buildModule(): T
-
-        protected open fun inject(context: Module) {
-            injectionInvoker?.invoke(context)
-            bidirectionalInjector?.invoke(context)
+        fun build(context: AsyncContext, callback: Callback<T>) {
+            context.compute {
+                val module = build()
+                callback.invoke(module)
+            }
         }
 
-        protected open class InjectionInvoker(
-            private val bindings: Scope.() -> Unit
-        ) {
+        protected abstract fun buildModule(): T
 
-            open operator fun invoke(context: Module): Scope {
-                return context.inject(bindings)
-            }
+        protected open fun inject(context: T) {
+            bindings?.invoke(context.thisScope, context)
         }
     }
 }

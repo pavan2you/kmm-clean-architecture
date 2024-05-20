@@ -1,7 +1,7 @@
 package io.tagd.arch.access
 
 import io.tagd.arch.domain.crosscutting.async.AsyncContext
-import io.tagd.arch.domain.usecase.Callback
+import io.tagd.langx.Callback
 import io.tagd.core.Service
 
 interface Injector : Service, AsyncContext {

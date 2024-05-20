@@ -20,6 +20,7 @@ package io.tagd.arch.domain.usecase
 import com.nhaarman.mockito_kotlin.reset
 import com.nhaarman.mockito_kotlin.spy
 import io.tagd.arch.test.FakeUseCaseCaller
+import io.tagd.langx.Callback
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
