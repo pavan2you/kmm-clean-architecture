@@ -17,7 +17,6 @@
 
 package io.tagd.android.app
 
-import io.tagd.android.app.loadingstate.AppLoadingStateHandler
 import io.tagd.android.crosscutting.async.CoroutineCacheIOStrategy
 import io.tagd.android.crosscutting.async.CoroutineComputationStrategy
 import io.tagd.android.crosscutting.async.CoroutineComputeIOStrategy
@@ -40,6 +39,7 @@ import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.domain.crosscutting.codec.UrlCodec
+import io.tagd.arch.domain.usecase.Callback
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.scopable.Scopable
 import io.tagd.di.Scope
@@ -52,16 +52,8 @@ import io.tagd.kotlinx.coroutines.Dispatchers
 import java.lang.ref.WeakReference
 
 open class TagdApplicationInjector<T : TagdApplication>(
-    application: T,
-    loadingStateHandler: AppLoadingStateHandler
+    application: T
 ) : ApplicationAware<T>(application), ApplicationInjector<T> {
-
-    private var weakLoadingStateHandler: WeakReference<AppLoadingStateHandler>? =
-        WeakReference(loadingStateHandler)
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected val loadingStateHandler: AppLoadingStateHandler?
-        get() = weakLoadingStateHandler?.get()
 
     override val scopable: Scopable?
         get() = application
@@ -140,39 +132,23 @@ open class TagdApplicationInjector<T : TagdApplication>(
         }
     }
 
-    override fun inject() {
+    override fun inject(callback: Callback<Unit>) {
         injectSynchronously()
         compute {
-            injectAsynchronously()
+            injectAsynchronously(callback)
         }
     }
 
-    @Deprecated("no need to expose")
     override fun injectSynchronously() {
         //no-op
     }
 
     /**
-     * The clients can change this behavior to rightly resolve when to trigger [dispatchDone]
+     * The clients can change this behavior to rightly resolve when to trigger [callback]
      */
-    @Deprecated("no need to expose", ReplaceWith(""))
-    override fun injectAsynchronously() {
-
+    override fun injectAsynchronously(callback: Callback<Unit>) {
         application?.scopableManager?.inject {
-            dispatchDone()
+            callback.invoke(Unit)
         }
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun dispatchDone() {
-        loadingStateHandler?.dispatcher?.dispatchStepComplete(
-            AppLoadingStateHandler.Steps.INJECTING
-        )
-    }
-
-    override fun release() {
-        super.release()
-        weakLoadingStateHandler?.clear()
-        weakLoadingStateHandler = null
     }
 }

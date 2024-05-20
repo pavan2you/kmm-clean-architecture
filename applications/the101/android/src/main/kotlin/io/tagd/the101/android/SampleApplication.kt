@@ -35,7 +35,7 @@ class SampleApplication : TagdApplication() {
         return SampleAppLoadingStateHandler(dispatcher)
     }
 
-    override fun newInjector(handler: AppLoadingStateHandler): SampleAppInjector {
-        return SampleAppInjector(this, handler)
+    override fun newInjector(): SampleAppInjector {
+        return SampleAppInjector(this)
     }
 }

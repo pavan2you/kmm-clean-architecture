@@ -112,14 +112,13 @@ open class TagdApplication : Application(), IApplication {
     override val name: String = "application"
 
     @Suppress("LeakingThis")
-    override val thisScope: Scope = Scope(name).also {
-        Global.addSubScope(it)
-    }
+    override val thisScope: Scope = outerScope.addSubScopeIfAbsent(name)
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected var lifecycleState: State = State.INITIALIZING
         private set
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected lateinit var loadingStateHandler: AppLoadingStateHandler
         private set
 
@@ -242,7 +241,7 @@ open class TagdApplication : Application(), IApplication {
     }
 
     private fun setupInjector() {
-        newInjector(loadingStateHandler).also { injector ->
+        newInjector().also { injector ->
             ApplicationInjector.setInjector(injector)
             injector.setup()
         }
@@ -321,7 +320,9 @@ open class TagdApplication : Application(), IApplication {
     }
 
     protected open fun onInject() {
-        appService<ApplicationInjector<TagdApplication>>()?.inject()
+        appService<ApplicationInjector<TagdApplication>>()?.inject {
+            loadingStepDispatcher.dispatchStepComplete(AppLoadingStateHandler.Steps.INJECTING)
+        }
     }
 
     /**
@@ -392,11 +393,8 @@ open class TagdApplication : Application(), IApplication {
         )
     }
 
-    protected open fun newInjector(
-        handler: AppLoadingStateHandler
-    ): ApplicationInjector<out TagdApplication> {
-
-        return TagdApplicationInjector(this, handler)
+    protected open fun newInjector(): ApplicationInjector<out TagdApplication> {
+        return TagdApplicationInjector(this)
     }
 
     protected open fun newVersionTracker(): VersionTracker {
