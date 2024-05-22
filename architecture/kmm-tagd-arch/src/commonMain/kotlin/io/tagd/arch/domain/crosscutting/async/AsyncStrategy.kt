@@ -141,9 +141,9 @@ fun AsyncContext.cacheIO(
     strategy?.execute(context, delay, operation)
 }
 
-typealias ObserveOn = (AsyncContext, Long, () -> Unit) -> Unit
+typealias ObserveOn = (AsyncContext, Long, (ExecutionContext) -> Unit) -> Unit
 
-typealias ExecuteOn = (AsyncContext, Long, () -> Unit) -> Unit
+typealias ExecuteOn = (AsyncContext, Long, (ExecutionContext) -> Unit) -> Unit
 
 fun AsyncContext.cancelAsync(context: AsyncContext = this) {
     cancelPresentations(context)
