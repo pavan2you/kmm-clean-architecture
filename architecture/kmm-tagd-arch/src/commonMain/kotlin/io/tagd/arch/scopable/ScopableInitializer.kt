@@ -23,11 +23,13 @@ abstract class AbstractScopableInitializer<S : Scopable> : ScopableInitializer<S
         callback: Callback<Unit>
     ) {
 
-        //no-op
+        //no-op just trigger callback
+        callback.invoke(Unit)
     }
 
     override fun inject(callback: Callback<Unit>) {
-        //no-op
+        //no-op just trigger callback
+        callback.invoke(Unit)
     }
 
     override fun release() {
