@@ -206,7 +206,7 @@ open class TagdApplication : Application(), IApplication {
         setupInjector()
     }
 
-    private fun setupActivityLifeCycleObserver() {
+    protected open fun setupActivityLifeCycleObserver() {
         registerActivityLifecycleCallbacks(newActivityLifeCycleObserver())
     }
 
@@ -219,7 +219,7 @@ open class TagdApplication : Application(), IApplication {
         }
     }
 
-    private fun setupScopableManager() {
+    protected open fun setupScopableManager() {
         scopableManager = newScopableManager()
     }
 
@@ -227,20 +227,20 @@ open class TagdApplication : Application(), IApplication {
         return AppScopableManager()
     }
 
-    private fun setupLoadingStateHandler() {
+    protected open fun setupLoadingStateHandler() {
         loadingStepDispatcher = newLoadingStepDispatcher()
         loadingStateHandler = newLoadingStateHandler(loadingStepDispatcher)
     }
 
-    private fun setupLauncherResolver() {
+    protected open fun setupLauncherResolver() {
         launcherResolver = newLauncherResolver()
     }
 
-    private fun setupExceptionHandler() {
+    protected open fun setupExceptionHandler() {
         Thread.setDefaultUncaughtExceptionHandler(newUncaughtExceptionHandler())
     }
 
-    private fun setupInjector() {
+    protected open fun setupInjector() {
         newInjector().also { injector ->
             ApplicationInjector.setInjector(injector)
             injector.setup()
