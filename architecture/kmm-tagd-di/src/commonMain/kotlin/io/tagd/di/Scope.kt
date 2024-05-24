@@ -279,6 +279,18 @@ inline fun <reified T : Service, reified S : T> Scope.bind(key: Key<S>? = null, 
     }
 }
 
+inline fun <reified T : Service, reified S : T> Scope.bindLazy(
+    key: Key<S>? = null,
+    noinline creator: (State?) -> S
+) {
+
+    val keyDerived = key ?: key()
+    layer<T> {
+        bindLazy(service = keyDerived, creator = creator)
+    }
+}
+
+
 inline fun <reified T : Service, reified S : T> scopeOf(key: Key<S>? = null): Scope? {
     val keyDerived = key ?: key()
 
