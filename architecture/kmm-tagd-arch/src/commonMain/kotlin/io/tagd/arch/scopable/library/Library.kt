@@ -75,7 +75,9 @@ interface Library : Factory, Scopable {
         fun build(context: AsyncContext, callback: Callback<T>) {
             context.compute {
                 val library = build()
-                callback.invoke(library)
+                it.notify {
+                    callback.invoke(library)
+                }
             }
         }
 

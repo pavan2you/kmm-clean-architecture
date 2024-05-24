@@ -75,7 +75,9 @@ interface Module : Factory, Scopable {
         fun build(context: AsyncContext, callback: Callback<T>) {
             context.compute {
                 val module = build()
-                callback.invoke(module)
+                it.notify {
+                    callback.invoke(module)
+                }
             }
         }
 
@@ -148,7 +150,7 @@ inline fun <reified S : InfraService> Module.infraService(key: Key<S>? = null): 
 inline fun <reified S : InfraService> Module.createInfra(
     key: Key<S>? = null,
     state: State? = null
-): S? {
+): S {
     return thisScope.createInfra(key, state)
 }
 
