@@ -2,14 +2,15 @@ package io.tagd.arch.scopable
 
 import io.tagd.arch.access.AsyncInitializer
 import io.tagd.arch.control.LoadingStateHandler
+import io.tagd.core.Dependencies
 import io.tagd.langx.Callback
 
-interface ScopableInitializer<S : Scopable> : AsyncInitializer<S>, ScopableManagementSpec {
+interface ScopableInitializer<S : Scopable?> : AsyncInitializer<S>, ScopableManagementSpec {
 
     interface Builder<S : Scopable, I : ScopableInitializer<S>> : AsyncInitializer.Builder<S, I>
 }
 
-abstract class AbstractScopableInitializer<S : Scopable> : ScopableInitializer<S> {
+abstract class AbstractScopableInitializer<S : Scopable?> : ScopableInitializer<S?> {
 
     override var outer: Scopable? = null
 

@@ -12,7 +12,7 @@ fun dispatcherWith(nameFormat: String): ExecutorCoroutineDispatcher {
     ).asCoroutineDispatcher()
 }
 
-private val defaultComputationDispatcher = dispatcherWith("compute-%d")
+private val defaultComputationDispatcher = dispatcherWith("computation-%d")
 private val defaultComputeIODispatcher = dispatcherWith("compute-io-%d")
 private val defaultDaoIODispatcher = dispatcherWith("dao-io-%d")
 
