@@ -1,8 +1,9 @@
 package io.tagd.arch.scopable
 
 import io.tagd.arch.control.LoadingStateHandler
-import io.tagd.langx.Callback
+import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.arch.rx.asyncForEach
+import io.tagd.langx.Callback
 
 abstract class ScopableManager : ScopableManagementSpec {
 
@@ -47,6 +48,7 @@ abstract class ScopableManager : ScopableManagementSpec {
     }
 
     override fun release() {
+        cancelAsync()
         initializers.clear()
         outer = null
     }

@@ -67,18 +67,29 @@ open class CoroutineStrategy(
         delayMs: Long,
         work: (ExecutionContext) -> Unit
     ) {
+
         val caller = CurrentStrategyResolver.resolve()
-        val job = scope.launch(CoroutineName("$name-${spannedJobs.size}")) {
-            try {
-                if (delayMs > 0) {
-                    delay(delayMs)
+        if (caller.name === name) { //leverage ongoing job
+            if (delayMs == 0L) {
+                try {
+                    work.invoke(ExecutionContext(callerContext = context?.weak(), caller = caller))
+                } catch (e: Exception) {
+                    handleCoroutineException(e)
                 }
-                work.invoke(ExecutionContext(callerContext = context?.weak(), caller = caller))
-            } catch (e: Exception) {
-                handleCoroutineException(e)
             }
+        } else { //create a new job
+            val job = scope.launch(CoroutineName("$name-${spannedJobs.size}")) {
+                try {
+                    if (delayMs > 0) {
+                        delay(delayMs)
+                    }
+                    work.invoke(ExecutionContext(callerContext = context?.weak(), caller = caller))
+                } catch (e: Exception) {
+                    handleCoroutineException(e)
+                }
+            }
+            monitorJob(context, job)
         }
-        monitorJob(context, job)
     }
 
     private fun handleCoroutineException(e: Exception) {
