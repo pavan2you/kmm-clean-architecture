@@ -36,7 +36,6 @@ import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
-import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.domain.crosscutting.codec.UrlCodec
 import io.tagd.arch.infra.ReferenceHolder
@@ -136,23 +135,10 @@ open class TagdApplicationInjector<T : TagdApplication>(
         }
     }
 
-    override fun inject(callback: Callback<Unit>) {
-        injectSynchronously()
-        compute {
-            injectAsynchronously(callback)
-        }
-    }
-
-    override fun injectSynchronously() {
-        //no-op
-    }
-
     /**
      * The clients can change this behavior to rightly resolve when to trigger [callback]
      */
-    override fun injectAsynchronously(callback: Callback<Unit>) {
-        application?.scopableManager?.inject {
-            callback.invoke(Unit)
-        }
+    override fun inject(callback: Callback<Unit>) {
+        application?.scopableManager?.inject(callback)
     }
 }

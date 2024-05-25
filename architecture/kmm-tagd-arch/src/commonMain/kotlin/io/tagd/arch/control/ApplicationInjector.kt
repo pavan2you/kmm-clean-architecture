@@ -23,6 +23,8 @@ import io.tagd.di.layer
 
 interface ApplicationInjector<A : IApplication> : AppService, WithinScopableInjector<A> {
 
+    fun setup()
+
     companion object {
 
         fun <A : IApplication> setInjector(injector: ApplicationInjector<A>) {

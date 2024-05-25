@@ -27,9 +27,9 @@ internal fun Project.configureKmmKotlinBlock(
 
         if (enableIosTargets) {
             listOf(
-                /*iosX64(),*/
+                iosX64(),
                 iosArm64(),
-                /*iosSimulatorArm64()*/
+                iosSimulatorArm64()
             ).forEach {
                 it.binaries.framework {
                     baseName = project.name
