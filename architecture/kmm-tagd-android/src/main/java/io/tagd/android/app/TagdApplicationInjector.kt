@@ -28,6 +28,7 @@ import io.tagd.android.crosscutting.codec.GsonJsonCodec
 import io.tagd.android.crosscutting.codec.UrlEncoderDecoder
 import io.tagd.arch.control.ApplicationInjector
 import io.tagd.arch.control.IApplication
+import io.tagd.arch.control.LoadingStateHandler
 import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
@@ -39,7 +40,9 @@ import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.domain.crosscutting.codec.UrlCodec
 import io.tagd.arch.infra.ReferenceHolder
+import io.tagd.arch.scopable.AbstractWithinScopableInjector
 import io.tagd.arch.scopable.Scopable
+import io.tagd.arch.scopable.WithinScopableInitializer
 import io.tagd.di.Scope
 import io.tagd.di.bind
 import io.tagd.di.key2
@@ -48,25 +51,19 @@ import io.tagd.kotlinx.coroutines.Computation
 import io.tagd.kotlinx.coroutines.ComputeIO
 import io.tagd.kotlinx.coroutines.DaoIO
 import io.tagd.kotlinx.coroutines.Dispatchers
-import io.tagd.langx.Callback
 import java.lang.ref.WeakReference
 
 open class TagdApplicationInjector<T : TagdApplication>(
     application: T
-) : ApplicationAware<T>(application), ApplicationInjector<T> {
-
-    override val scopable: Scopable?
-        get() = application
+) : AbstractWithinScopableInjector<T>(within = application), ApplicationInjector<T> {
 
     /**
      * Must be used for only synchronous injection, and must not be called this beyond application
      * setup flow
      */
     override fun setup() {
-        application?.let { application ->
-            with(application.thisScope) {
-                injectInfraLayer(application)
-            }
+        with(within.thisScope) {
+            injectInfraLayer(within)
         }
     }
 
@@ -135,10 +132,14 @@ open class TagdApplicationInjector<T : TagdApplication>(
         }
     }
 
-    /**
-     * The clients can change this behavior to rightly resolve when to trigger [callback]
-     */
-    override fun inject(callback: Callback<Unit>) {
-        application?.scopableManager?.inject(callback)
+    override fun load(initializers: ArrayList<WithinScopableInitializer<T, *>>) {
+        //no-op
+    }
+
+    override fun <WITHIN : Scopable> canRegisterLoadingSteps(
+        handler: LoadingStateHandler<WITHIN, *, *>
+    ): Boolean {
+
+        return handler.scopable === within
     }
 }

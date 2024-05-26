@@ -15,20 +15,19 @@ open class AppLoadingStepDispatcher<T : TagdApplication>(application: T) :
 
     override fun dispatchStepInitialize() {
         let(
-            one = application,
-            two = application?.scopableManager,
+            one = application?.injector,
             finally = { dispatchStepComplete(AppLoadingStateHandler.Steps.INITIALIZING) }
-        ) { app, manager, finally ->
-            manager.initialize(app, finally)
+        ) { injector, finally ->
+            injector.initialize(finally)
         }
     }
 
     override fun dispatchStepRegisterLoadingSteps() {
         let(
-            one = application?.scopableManager,
+            one = application?.injector,
             finally = { dispatchStepComplete(AppLoadingStateHandler.Steps.REGISTERING) }
-        ) { manager, finally ->
-            manager.registerLoadingSteps(looper as AppLoadingStateHandler, finally)
+        ) { injector, finally ->
+            injector.registerLoadingSteps(looper as AppLoadingStateHandler, finally)
         }
     }
 

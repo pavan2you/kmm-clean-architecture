@@ -26,6 +26,21 @@ open class Args(
     val context: Any? = null
 ) : State() {
 
+    override operator fun plus(pairs: Array<out Pair<String, Any?>>): Args {
+        super.plus(pairs)
+        return this
+    }
+
+    override operator fun plus(map: Map<String, Any?>): Args {
+        super.plus(map)
+        return this
+    }
+
+    override operator fun plus(other: State): Args {
+        super.plus(other)
+        return this
+    }
+
     companion object {
         const val OBSERVE = "observe"
         const val CONTEXT = "context"

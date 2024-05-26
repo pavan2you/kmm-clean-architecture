@@ -23,7 +23,23 @@ interface ConditionalInitializer<T> : Initializer<T> {
     }
 }
 
-class Dependencies : State()
+class Dependencies : State() {
+
+    override operator fun plus(pairs: Array<out Pair<String, Any?>>): Dependencies {
+        super.plus(pairs)
+        return this
+    }
+
+    override operator fun plus(map: Map<String, Any?>): Dependencies {
+        super.plus(map)
+        return this
+    }
+
+    override operator fun plus(other: State): Dependencies {
+        super.plus(other)
+        return this
+    }
+}
 
 fun dependencies(vararg pairs: Pair<String, Any?>): Dependencies {
     return Dependencies().apply {

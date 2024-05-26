@@ -18,17 +18,15 @@
 package io.tagd.arch.control
 
 import io.tagd.arch.infra.InfraService
-import io.tagd.arch.scopable.WithinScopableInjector
+import io.tagd.arch.scopable.WithinScopableInjectionChain
 import io.tagd.di.layer
 
-interface ApplicationInjector<A : IApplication> : AppService, WithinScopableInjector<A> {
-
-    fun setup()
+interface ApplicationInjector<A : IApplication> : AppService, WithinScopableInjectionChain<A> {
 
     companion object {
 
         fun <A : IApplication> setInjector(injector: ApplicationInjector<A>) {
-            with(injector.scopable!!.thisScope) {
+            with(injector.within.thisScope) {
                 layer<InfraService> {
                     bind<ApplicationInjector<A>>().toInstance(injector)
                 }

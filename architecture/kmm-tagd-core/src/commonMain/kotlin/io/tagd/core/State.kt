@@ -78,6 +78,21 @@ open class State : Releasable {
      */
     fun isEmpty() = map.isEmpty()
 
+    open operator fun plus(pairs: Array<out Pair<String, Any?>>): State {
+        map.putAll(pairs)
+        return this
+    }
+
+    open operator fun plus(map: Map<String, Any?>): State {
+        this.map.putAll(map)
+        return this
+    }
+
+    open operator fun plus(other: State): State {
+        this.map.putAll(other.map)
+        return this
+    }
+
     /**
      * find out clear
      */

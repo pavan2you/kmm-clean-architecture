@@ -20,13 +20,9 @@ package io.tagd.the101.android
 import io.tagd.android.app.TagdApplication
 import io.tagd.android.app.loadingstate.AppLoadingStateHandler
 import io.tagd.android.app.loadingstate.AppLoadingStepDispatcher
-import io.tagd.arch.scopable.ScopableManager
+import io.tagd.arch.scopable.AbstractWithinScopableInjector
 
 class SampleApplication : TagdApplication() {
-
-    override fun newScopableManager(): ScopableManager {
-        return SampleAppScopableManager()
-    }
 
     override fun newLoadingStateHandler(
         dispatcher: AppLoadingStepDispatcher<out TagdApplication>

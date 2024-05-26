@@ -39,7 +39,6 @@ import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.arch.domain.crosscutting.async.present
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.PresenterFactory
-import io.tagd.arch.scopable.ScopableManager
 import io.tagd.di.Global
 import io.tagd.di.Key
 import io.tagd.di.Scope
@@ -136,7 +135,8 @@ open class TagdApplication : Application(), IApplication {
 
     private var hasVersionChange: Boolean = false
 
-    var scopableManager: ScopableManager? = null
+    @Suppress("MemberVisibilityCanBePrivate")
+    var injector: ApplicationInjector<out TagdApplication>? = null
         private set
 
     protected open var activityLifecycleObserver: ActivityLifeCycleObserver? = null
@@ -199,11 +199,10 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun setupSelf() {
         setupActivityLifeCycleObserver()
-        setupScopableManager()
+        setupInjector()
         setupLoadingStateHandler()
         setupLauncherResolver()
         setupExceptionHandler()
-        setupInjector()
     }
 
     protected open fun setupActivityLifeCycleObserver() {
@@ -217,14 +216,6 @@ open class TagdApplication : Application(), IApplication {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             activityLifecycleObserver?.onActivityPreCreatedCompat(activity, savedInstanceState)
         }
-    }
-
-    protected open fun setupScopableManager() {
-        scopableManager = newScopableManager()
-    }
-
-    protected open fun newScopableManager(): ScopableManager {
-        return AppScopableManager()
     }
 
     protected open fun setupLoadingStateHandler() {
@@ -241,7 +232,7 @@ open class TagdApplication : Application(), IApplication {
     }
 
     protected open fun setupInjector() {
-        newInjector().also { injector ->
+        injector = newInjector().also { injector ->
             ApplicationInjector.setInjector(injector)
             injector.setup()
         }
@@ -436,8 +427,8 @@ open class TagdApplication : Application(), IApplication {
         cancelAsync(this)
         loadingStepDispatcher.release()
         loadingStateHandler.release()
-        scopableManager?.release()
         controller?.onDestroy()
         controller = null
+        Global.release()
     }
 }

@@ -3,16 +3,17 @@ package io.tagd.the101.android
 import io.tagd.arch.access.library
 import io.tagd.arch.control.LoadingStateHandler
 import io.tagd.arch.domain.crosscutting.async.compute
-import io.tagd.langx.Callback
 import io.tagd.arch.domain.usecase.Command
+import io.tagd.arch.scopable.AbstractWithinScopableInitializer
 import io.tagd.arch.scopable.Scopable
-import io.tagd.arch.scopable.ScopableInitializer
+import io.tagd.arch.scopable.bindLazy
 import io.tagd.arch.scopable.library.AbstractLibrary
 import io.tagd.arch.scopable.library.Library
 import io.tagd.core.Dependencies
 import io.tagd.core.dependencies
 import io.tagd.di.Scope
 import io.tagd.di.layer
+import io.tagd.langx.Callback
 
 class SampleInitializerBackedLibrary private constructor(
     name: String,
@@ -37,37 +38,26 @@ class SampleInitializerBackedLibrary private constructor(
     }
 }
 
-class SampleLibraryInitializer : ScopableInitializer<SampleInitializerBackedLibrary> {
+class SampleLibraryInitializer<S : Scopable>(within: S) :
+    AbstractWithinScopableInitializer<S, SampleInitializerBackedLibrary>(within) {
 
-    override var outer: Scopable? = null
-
-    override fun initialize(
-        outer: Scopable,
-        callback: Callback<Unit>
-    ) {
-
-        this.outer = outer
-
-        with(outer.thisScope) {
-            layer<Library> {
-                bind<SampleInitializerBackedLibrary>().toLazy {
-                    new(dependencies(
-                        "NAME" to "sample-initializer-backed-library",
-                        "OUTER_SCOPE" to this
-                    ).apply {
-                        it?.let {
-                            putAll(it)
-                        }
-                    })
+    override fun initialize(callback: Callback<Unit>) {
+        within.bindLazy<Library, SampleInitializerBackedLibrary> {
+            new(dependencies(
+                "NAME" to "sample-initializer-backed-library",
+                "OUTER_SCOPE" to this
+            ).apply {
+                it?.let {
+                    putAll(it)
                 }
-            }
+            })
         }
 
         callback.invoke(Unit)
     }
 
-    override fun <Outer : Scopable> registerLoadingSteps(
-        handler: LoadingStateHandler<Outer, *, *>,
+    override fun <WITHIN : Scopable> registerLoadingSteps(
+        handler: LoadingStateHandler<WITHIN, *, *>,
         callback: Callback<Unit>
     ) {
         handler.register("SAMPLE_LIB_GLOBAL_WORK") {
@@ -79,7 +69,9 @@ class SampleLibraryInitializer : ScopableInitializer<SampleInitializerBackedLibr
     }
 
     override fun inject(callback: Callback<Unit>) {
-        with(outer!!.library<SampleInitializerBackedLibrary>()?.thisScope!!) {
+        val thisScope = within.library<SampleInitializerBackedLibrary>()?.thisScope!!
+
+        with(thisScope) {
             layer<Command<*, *>> {
                 bind<LibraryUsecase>().toInstance(LibraryUsecase())
             }
@@ -90,12 +82,7 @@ class SampleLibraryInitializer : ScopableInitializer<SampleInitializerBackedLibr
     override fun new(dependencies: Dependencies): SampleInitializerBackedLibrary {
         return SampleInitializerBackedLibrary.Builder()
             .name("sample-initializer-backed-library")
-            .scope(outer!!.thisScope)
+            .scope(outerScope)
             .build()
-    }
-
-    override fun release() {
-        outer = null
-        super.release()
     }
 }
