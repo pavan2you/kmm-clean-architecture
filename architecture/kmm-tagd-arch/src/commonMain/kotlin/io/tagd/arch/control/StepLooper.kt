@@ -40,7 +40,10 @@ abstract class StepLooper<
         registry.register(
             stepId = steps.REGISTERING,
             stepLabel = "registering",
-            block = dispatcher::dispatchStepRegisterLoadingSteps
+            block = {
+                onRegisterStep()
+                dispatcher.dispatchStepRegisterLoadingSteps()
+            }
         )
     }
 
