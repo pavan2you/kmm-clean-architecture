@@ -54,6 +54,9 @@ abstract class AbstractWithinScopableInjector<S : Scopable>(within: S) :
 
     override fun release() {
         cancelAsync()
+        initializers.forEach {
+            it.release()
+        }
         initializers.clear()
         weakWithin?.clear()
         weakWithin = null
