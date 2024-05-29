@@ -108,10 +108,11 @@ open class TagdApplication : Application(), IApplication {
     /**
      * Note - if the client overrides [name], then they must override [thisScope] as well
      */
-    override val name: String = "application"
+    final override var name: String
+        protected set
 
-    @Suppress("LeakingThis")
-    override val thisScope: Scope = outerScope.addSubScopeIfAbsent(name)
+    final override var thisScope: Scope
+        protected set
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected var lifecycleState: State = State.INITIALIZING
@@ -148,6 +149,11 @@ open class TagdApplication : Application(), IApplication {
     @Suppress("MemberVisibilityCanBePrivate")
     val previousActivity
         get() = activityLifecycleObserver?.previousActivity()
+
+    init {
+        name = "application"
+        thisScope = outerScope.addSubScopeIfAbsent(name)
+    }
 
     /**
      * Unsafe if Activity is not a [PresentableView]

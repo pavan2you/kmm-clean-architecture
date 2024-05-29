@@ -25,8 +25,11 @@ import io.tagd.di.Scope.Companion.GLOBAL_SCOPE
 import io.tagd.langx.IllegalAccessException
 import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
-open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable,
+open class Scope(name: String = GLOBAL_SCOPE) : Nameable,
     Releasable {
+
+    final override var name: String = name
+        private set
 
     private var mutableLocator: Locator? = LayerLocator(this)
     private var scopes: ConcurrentHashMap<String, Scope>? = ConcurrentHashMap()
@@ -37,6 +40,10 @@ open class Scope(override val name: String = GLOBAL_SCOPE) : Nameable,
 
     val state: State
         get() = mutableState!!
+
+    fun updateName(name: String) {
+        this.name = name
+    }
 
     fun with(locator: Locator): Scope {
         release()
