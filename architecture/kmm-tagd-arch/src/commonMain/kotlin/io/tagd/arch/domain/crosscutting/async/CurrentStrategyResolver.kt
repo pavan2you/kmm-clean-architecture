@@ -18,4 +18,8 @@ object CurrentStrategyResolver {
         }
         return map[key]!!
     }
+
+    fun strategies(): MutableCollection<AsyncStrategy> {
+        return map.values
+    }
 }

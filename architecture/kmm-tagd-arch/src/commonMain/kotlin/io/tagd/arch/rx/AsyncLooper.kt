@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.tagd.arch.rx
 
 import io.tagd.arch.access.crosscutting
@@ -10,6 +12,8 @@ import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ExecutionContext
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.langx.Callback
+import io.tagd.langx.collection.concurrent.ConcurrentLinkedQueue
+import io.tagd.langx.ref.WeakReference
 import io.tagd.langx.ref.concurrent.atomic.AtomicInteger
 import io.tagd.langx.ref.weak
 import kotlin.jvm.JvmName
@@ -19,17 +23,24 @@ open class AsyncLooper<T>(
     private val executor: AsyncStrategy,
     private val iterable: Iterable<T>,
     private val callback: Callback<Unit>
-) {
+) : AsyncTraceable {
 
-    private var weakContext = callerContext.weak()
+    private var weakContext : WeakReference<AsyncContext>? = callerContext.weak()
 
     private val context
-        get() = weakContext.get()
+        get() = weakContext?.get()
+
+    override val invoked: ConcurrentLinkedQueue<T> = ConcurrentLinkedQueue()
+
+    init {
+        @Suppress("LeakingThis")
+        AsyncTrace.include(this)
+    }
 
     open fun forEach(item: (T, Callback<Unit>) -> Unit) {
-        val callerContext = weakContext.get()
+        val callerContext = context
         if (callerContext == null) {
-            callback.invoke(Unit)
+            finish()
         } else {
             executor.execute(callerContext) {
                 forEachAsync(it, item)
@@ -37,26 +48,52 @@ open class AsyncLooper<T>(
         }
     }
 
-    private fun forEachAsync(context: ExecutionContext, item: (T, Callback<Unit>) -> Unit) {
+    private fun forEachAsync(context: ExecutionContext, itemBlock: (T, Callback<Unit>) -> Unit) {
         val size = iterable.count()
         if (size > 0) {
             val counter = AtomicInteger(0)
 
-            iterable.forEach {
-                item.invoke(it) {
+            iterable.forEach { item ->
+                invoked.add(item)
+                itemBlock.invoke(item) {
+                    invoked.remove(item)
                     val completed = counter.incrementAndGet()
                     if (completed == size) {
                         context.notify {
-                            callback.invoke(Unit)
+                            finish()
                         }
                     }
                 }
             }
         } else {
             context.notify {
-                callback.invoke(Unit)
+                finish()
             }
         }
+    }
+
+    private fun finish() {
+        AsyncTrace.exclude(this)
+        callback.invoke(Unit)
+        release()
+    }
+
+    override fun release() {
+        weakContext?.clear()
+        weakContext = null
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as AsyncLooper<*>
+
+        return callback === other.callback
+    }
+
+    override fun hashCode(): Int {
+        return callback.hashCode()
     }
 }
 
