@@ -31,6 +31,7 @@ import io.tagd.arch.domain.crosscutting.async.ExecutionContext
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
 import io.tagd.kotlinx.coroutines.Dispatchers
+import io.tagd.langx.isNull
 import io.tagd.langx.ref.WeakReference
 import io.tagd.langx.ref.weak
 import kotlinx.coroutines.CoroutineName
@@ -69,13 +70,11 @@ open class CoroutineStrategy(
     ) {
 
         val caller = CurrentStrategyResolver.resolve()
-        if (caller.name === name) { //leverage ongoing job
-            if (delayMs == 0L) {
-                try {
-                    work.invoke(ExecutionContext(callerContext = context?.weak(), caller = caller))
-                } catch (e: Exception) {
-                    handleCoroutineException(e)
-                }
+        if (caller?.name === name && delayMs == 0L) { //leverage ongoing job
+            try {
+                work.invoke(ExecutionContext(callerContext = context?.weak(), caller = caller))
+            } catch (e: Exception) {
+                handleCoroutineException(e)
             }
         } else { //create a new job
             val job = scope.launch(CoroutineName("$name-${spannedJobs.size}")) {
@@ -83,7 +82,12 @@ open class CoroutineStrategy(
                     if (delayMs > 0) {
                         delay(delayMs)
                     }
-                    work.invoke(ExecutionContext(callerContext = context?.weak(), caller = caller))
+                    work.invoke(
+                        ExecutionContext(
+                            callerContext = context?.weak(),
+                            caller = caller ?: this@CoroutineStrategy
+                        )
+                    )
                 } catch (e: Exception) {
                     handleCoroutineException(e)
                 }

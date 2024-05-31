@@ -48,6 +48,9 @@ abstract class StepLooper<
     }
 
     override fun start() {
+        if (currentStep > steps.INVALID) {
+            throw IllegalAccessException("Step Registry Handler is already in progress")
+        }
         compute {
             startInternal()
         }
@@ -55,10 +58,6 @@ abstract class StepLooper<
 
     /*@WorkerThread*/
     private fun startInternal() {
-        if (currentStep > steps.INVALID) {
-            throw IllegalAccessException("Step Registry Handler is already in progress")
-        }
-
         dispatchHandleStep(nextStep())
     }
 

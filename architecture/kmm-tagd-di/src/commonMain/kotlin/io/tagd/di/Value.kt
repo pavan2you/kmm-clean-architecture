@@ -19,13 +19,14 @@ package io.tagd.di
 
 import io.tagd.core.Service
 import io.tagd.core.State
+import io.tagd.langx.synchronized
 
-abstract class Value<T : Service> {
+abstract class Value<out T : Service> {
 
     abstract fun get(args: State? = null): T
 }
 
-class GetValue<T : Service>(private var value: T): Value<T>() {
+class GetValue<out T : Service>(private var value: T) : Value<T>() {
 
     override fun get(args: State?): T {
         return value
@@ -36,7 +37,7 @@ class GetValue<T : Service>(private var value: T): Value<T>() {
     }
 }
 
-class CreateValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
+class CreateValue<out T : Service>(private val creator: (State?) -> T) : Value<T>() {
 
     override fun get(args: State?): T {
         return creator.invoke(args)
@@ -47,13 +48,19 @@ class CreateValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
     }
 }
 
-class LazyValue<T : Service>(private val creator: (State?) -> T): Value<T>() {
+class LazyValue<out T : Service>(private val creator: (State?) -> T) : Value<T>() {
+
+    private val lock = this
 
     private lateinit var value: T
 
     override fun get(args: State?): T {
         if (!this::value.isInitialized) {
-            value = creator.invoke(args)
+            synchronized(lock) {
+                if (!this::value.isInitialized) {
+                    value = creator.invoke(args)
+                }
+            }
         }
         return value
     }
