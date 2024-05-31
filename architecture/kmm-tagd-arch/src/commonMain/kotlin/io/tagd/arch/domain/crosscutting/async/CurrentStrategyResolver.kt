@@ -11,12 +11,12 @@ object CurrentStrategyResolver {
         return this
     }
 
-    fun resolve(): AsyncStrategy {
+    fun resolve(): AsyncStrategy? {
         val threadName = Thread.currentThread().getName()
-        val key = map.keys.first {
+        val key = map.keys.firstOrNull {
             threadName.contains(it)
         }
-        return map[key]!!
+        return map[key]
     }
 
     fun strategies(): MutableCollection<AsyncStrategy> {
