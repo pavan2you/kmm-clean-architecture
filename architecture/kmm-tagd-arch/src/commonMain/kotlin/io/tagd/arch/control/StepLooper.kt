@@ -40,10 +40,7 @@ abstract class StepLooper<
         registry.register(
             stepId = steps.REGISTERING,
             stepLabel = "registering",
-            block = {
-                onRegisterStep()
-                dispatcher.dispatchStepRegisterLoadingSteps()
-            }
+            block = this::onRegisterStep
         )
     }
 
@@ -62,7 +59,7 @@ abstract class StepLooper<
     }
 
     override fun onRegisterStep() {
-        //no-op
+        dispatcher?.dispatchStepRegisterLoadingSteps()
     }
 
     override fun register(stepLabel: String, block: (() -> Unit)?): Int {

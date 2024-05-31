@@ -5,5 +5,5 @@ import io.tagd.core.Service
 
 interface Navigator<out N : Navigatable> : Service, AsyncContext {
 
-    val navigatable: Navigatable?
+    val navigatable: N?
 }

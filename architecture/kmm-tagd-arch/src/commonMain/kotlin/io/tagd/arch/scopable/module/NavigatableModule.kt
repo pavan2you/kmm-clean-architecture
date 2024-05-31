@@ -6,7 +6,7 @@ import io.tagd.di.Scope
 
 interface NavigatableModule : Module, Navigatable {
 
-    val navigator: ModuleNavigator?
+    val navigator: ModuleNavigator<NavigatableModule>?
 
     override fun navigator(): Navigator<NavigatableModule>? {
         return navigator

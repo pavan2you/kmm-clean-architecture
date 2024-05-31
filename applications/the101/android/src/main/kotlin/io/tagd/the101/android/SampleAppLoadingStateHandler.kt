@@ -12,8 +12,8 @@ class SampleAppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher<out Tagd
     AppLoadingStateHandler(dispatcher) {
 
     override fun onRegisterStep() {
-        super.onRegisterStep()
         register(APP_SPECIFIC_LOADING_STATE_HEAVY_BG_WORK, this::doHeavyLongBackgroundWork)
+        super.onRegisterStep()
     }
 
     private fun doHeavyLongBackgroundWork() {
