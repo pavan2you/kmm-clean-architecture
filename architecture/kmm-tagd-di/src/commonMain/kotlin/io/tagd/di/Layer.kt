@@ -77,6 +77,7 @@ class Layer<T : Service>(var scope: Scope?, override val name: String) : Nameabl
             ?: throw IllegalAccessException("No creator available for $service")
     }
 
+    @Suppress("unused")
     fun all(): List<T> {
         val values = arrayListOf<T>()
         services?.values?.forEach {
@@ -105,6 +106,7 @@ class Layer<T : Service>(var scope: Scope?, override val name: String) : Nameabl
             layer.bind(key, creator)
         }
 
+        @Suppress("unused")
         fun toLazy(creator: (State?) -> S) {
             layer.bindLazy(key, creator)
         }

@@ -18,9 +18,9 @@ package io.tagd.di/*
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
+import create
 import io.tagd.core.Service
 import io.tagd.core.State
-import io.tagd.di.*
 import io.tagd.di.test.FakeService
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test

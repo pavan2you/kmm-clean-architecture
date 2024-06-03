@@ -17,7 +17,7 @@
 
 package io.tagd.arch.data.repo
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.core.Service
 
 interface Repository : Service, AsyncContext

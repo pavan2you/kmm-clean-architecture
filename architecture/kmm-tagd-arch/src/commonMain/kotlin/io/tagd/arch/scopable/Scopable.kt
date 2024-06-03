@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package io.tagd.arch.scopable
 
 import io.tagd.core.Nameable

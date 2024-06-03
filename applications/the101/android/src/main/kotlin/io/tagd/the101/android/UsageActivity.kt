@@ -19,7 +19,7 @@ package io.tagd.the101.android
 
 import android.os.Bundle
 import io.tagd.android.mvp.MvpActivity
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.cacheIO
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.crosscutting.async.computeIO

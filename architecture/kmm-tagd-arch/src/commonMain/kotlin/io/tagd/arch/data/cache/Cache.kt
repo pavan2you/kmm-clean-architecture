@@ -17,7 +17,7 @@
 
 package io.tagd.arch.data.cache
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.core.Service
 
 interface Cache<T> : Service, AsyncContext

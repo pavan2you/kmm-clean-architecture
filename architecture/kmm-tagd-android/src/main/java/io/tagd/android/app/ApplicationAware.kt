@@ -1,6 +1,6 @@
 package io.tagd.android.app
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import java.lang.ref.WeakReference
 

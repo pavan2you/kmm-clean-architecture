@@ -1,5 +1,6 @@
 package io.tagd.arch.domain.crosscutting.async
 
+import io.tagd.core.AsyncStrategy
 import io.tagd.langx.Thread
 
 object CurrentStrategyResolver {

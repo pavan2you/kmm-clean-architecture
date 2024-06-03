@@ -1,6 +1,6 @@
 package io.tagd.arch.domain.crosscutting.codec
 
-import io.tagd.arch.domain.crosscutting.CrossCutting
+import io.tagd.core.CrossCutting
 
 interface UrlCodec : CrossCutting {
 

@@ -1,6 +1,6 @@
 package io.tagd.arch.control
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.arch.infra.InfraService
 
 interface StepLooperSpec<S : StepLooperSpec.Steps, D : StepLooperSpec.Dispatcher> : InfraService,

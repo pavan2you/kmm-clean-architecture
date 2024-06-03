@@ -17,8 +17,8 @@
 
 package io.tagd.arch.datatype.bind
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
-import io.tagd.arch.domain.crosscutting.async.ObserveOn
+import io.tagd.core.AsyncContext
+import io.tagd.core.AsyncOn
 import io.tagd.arch.domain.crosscutting.async.cancelAsync
 import io.tagd.core.annotation.Visibility
 import io.tagd.core.annotation.VisibleForTesting
@@ -73,7 +73,7 @@ open class BindableSubject : BindableSubjectable {
         }
     }
 
-    protected fun ObserveOn?.notifyObservers(context: AsyncContext = this@BindableSubject) {
+    protected fun AsyncOn?.notifyObservers(context: AsyncContext = this@BindableSubject) {
         this?.invoke(context, 0) {
             notifyBindables()
         } ?: kotlin.run {

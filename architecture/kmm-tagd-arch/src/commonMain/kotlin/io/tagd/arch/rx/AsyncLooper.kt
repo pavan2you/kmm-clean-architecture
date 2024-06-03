@@ -3,13 +3,13 @@
 package io.tagd.arch.rx
 
 import io.tagd.arch.access.crosscutting
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
-import io.tagd.arch.domain.crosscutting.async.AsyncStrategy
+import io.tagd.core.AsyncContext
+import io.tagd.core.AsyncStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
-import io.tagd.arch.domain.crosscutting.async.ExecutionContext
+import io.tagd.core.ExecutionContext
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.langx.Callback
 import io.tagd.langx.collection.concurrent.ConcurrentLinkedQueue

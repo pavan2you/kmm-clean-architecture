@@ -17,7 +17,7 @@
 
 package io.tagd.arch.present.mvp
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 
 interface Presenter<V : PresentableView> : AsyncContext {
 

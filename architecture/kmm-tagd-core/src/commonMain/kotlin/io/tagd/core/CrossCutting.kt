@@ -15,8 +15,6 @@
  *
  */
 
-package io.tagd.arch.domain.crosscutting
-
-import io.tagd.core.Service
+package io.tagd.core
 
 interface CrossCutting : Service
