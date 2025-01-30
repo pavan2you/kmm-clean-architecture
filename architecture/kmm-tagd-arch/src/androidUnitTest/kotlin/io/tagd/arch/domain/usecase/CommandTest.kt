@@ -17,8 +17,8 @@
 
 package io.tagd.arch.domain.usecase
 
-import com.nhaarman.mockito_kotlin.reset
-import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.spy
 import io.tagd.langx.Callback
 import org.junit.After
 import org.junit.Test

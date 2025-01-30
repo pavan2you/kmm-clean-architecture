@@ -17,7 +17,7 @@
 
 package io.tagd.arch.data.cache
 
-import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockitokotlin2.spy
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

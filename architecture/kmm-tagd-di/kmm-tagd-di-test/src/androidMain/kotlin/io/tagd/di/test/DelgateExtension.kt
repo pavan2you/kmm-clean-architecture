@@ -17,7 +17,7 @@
 
 package io.tagd.di.test
 
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import io.tagd.core.Service
 import io.tagd.di.InjectDelegateProvider
 import io.tagd.di.Key

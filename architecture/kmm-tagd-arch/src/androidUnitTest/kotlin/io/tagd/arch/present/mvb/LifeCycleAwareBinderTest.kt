@@ -17,8 +17,8 @@
 
 package io.tagd.arch.present.mvb
 
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import io.tagd.arch.datatype.DataObject
 import io.tagd.arch.test.FakeLifeCycleAwareBinder
 import org.junit.Test

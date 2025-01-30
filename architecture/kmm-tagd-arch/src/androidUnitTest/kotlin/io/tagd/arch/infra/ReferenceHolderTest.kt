@@ -17,7 +17,7 @@
 
 package io.tagd.arch.infra
 
-import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockitokotlin2.spy
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith

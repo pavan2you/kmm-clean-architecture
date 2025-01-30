@@ -21,7 +21,7 @@ kotlin = "1.9.20"
 kotlinxCoroutines = "1.8.0"
 ksp = "1.8.0-1.0.9"
 mockito = "5.2.0"
-mockitoKotlin = "1.6.0"
+mockitoKotlin = "2.2.0"
 tagd = "0.0.0-alpha06-snapshot"
 
 [libraries]
@@ -47,7 +47,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
-mockito-kotlin = { group = "com.nhaarman", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+mockito-kotlin = { group = "com.nhaarman.mockitokotlin2", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 tagd-arch = { group = "io.github.pavan2you", name = "kmm-tagd-arch", version.ref = "tagd" }
 tagd-android = { group = "io.github.pavan2you", name = "kmm-tagd-android", version.ref = "tagd" }
 

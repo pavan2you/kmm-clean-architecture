@@ -17,7 +17,7 @@
 
 package io.tagd.arch.access
 
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import io.tagd.arch.data.cache.Cache
 import io.tagd.arch.data.dao.DataAccessObject
 import io.tagd.arch.data.gateway.Gateway

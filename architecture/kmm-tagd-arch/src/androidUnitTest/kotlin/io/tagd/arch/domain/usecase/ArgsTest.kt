@@ -17,7 +17,7 @@
 
 package io.tagd.arch.domain.usecase
 
-import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockitokotlin2.spy
 import io.tagd.core.stateOf
 import org.junit.Test
 import org.junit.runner.RunWith

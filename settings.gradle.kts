@@ -7,6 +7,12 @@ pluginManagement {
     }
 }
 
+startParameter.excludedTaskNames.addAll(
+    startParameter.taskNames.filter {
+        it.contains("testClasses")
+    }
+)
+
 dependencyResolutionManagement {
     repositories {
         google()

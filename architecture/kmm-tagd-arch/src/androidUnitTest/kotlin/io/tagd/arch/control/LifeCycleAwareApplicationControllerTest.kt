@@ -17,7 +17,7 @@
 
 package io.tagd.arch.control
 
-import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
