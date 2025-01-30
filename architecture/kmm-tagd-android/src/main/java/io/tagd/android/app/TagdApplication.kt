@@ -119,22 +119,20 @@ open class TagdApplication : Application(), IApplication {
         private set
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected lateinit var loadingStateHandler: AppLoadingStateHandler
+    protected var loadingStateHandler: AppLoadingStateHandler? = null
         private set
 
-    private lateinit var loadingStepDispatcher: AppLoadingStepDispatcher<out TagdApplication>
+    private var loadingStepDispatcher: AppLoadingStepDispatcher<out TagdApplication>? = null
 
-    private lateinit var launcherResolver: LauncherResolver
+    private var launcherResolver: LauncherResolver? = null
 
     @Suppress("MemberVisibilityCanBePrivate")
-    protected lateinit var launcher: Launcher<*>
+    protected var launcher: Launcher<*>? = null
         private set
 
     protected open var controller: ApplicationController<*>? = null
 
-    private lateinit var versionTracker: VersionTracker
-
-    private var hasVersionChange: Boolean = false
+    private var versionTracker: VersionTracker? = null
 
     @Suppress("MemberVisibilityCanBePrivate")
     var injector: ApplicationInjector<out TagdApplication>? = null
@@ -149,6 +147,9 @@ open class TagdApplication : Application(), IApplication {
     @Suppress("MemberVisibilityCanBePrivate")
     val previousActivity
         get() = activityLifecycleObserver?.previousActivity()
+
+    protected open var presenterFactory: PresenterFactory? =
+        PresenterFactory("presenter-factory")
 
     init {
         name = "application"
@@ -170,12 +171,10 @@ open class TagdApplication : Application(), IApplication {
     }
 
     override fun versionTracker(): VersionTracker {
-        return versionTracker
+        return versionTracker!!
     }
 
     override fun controller(): ApplicationController<*>? = controller
-
-    protected open var presenterFactory = PresenterFactory("presenter-factory")
 
     override fun presenterFactory(): PresenterFactory? {
         return presenterFactory
@@ -226,7 +225,7 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun setupLoadingStateHandler() {
         loadingStepDispatcher = newLoadingStepDispatcher()
-        loadingStateHandler = newLoadingStateHandler(loadingStepDispatcher)
+        loadingStateHandler = newLoadingStateHandler(loadingStepDispatcher!!)
     }
 
     protected open fun setupLauncherResolver() {
@@ -246,13 +245,12 @@ open class TagdApplication : Application(), IApplication {
 
     /* ----------------------------------  Setup Controller  ------------------------------------ */
 
-    private fun setupController() {
-        controller?.onCreate()
-    }
-
     protected open fun onCreateController(): ApplicationController<*> =
         LifeCycleAwareApplicationController(this)
 
+    private fun setupController() {
+        controller?.onCreate()
+    }
 
     /* -----------------------------  Life Cycle State Dispatcher  ------------------------------ */
 
@@ -270,15 +268,17 @@ open class TagdApplication : Application(), IApplication {
     private fun dispatchLaunch() {
         this.onLaunch()
         controller?.onLaunch()
-        loadingStepDispatcher.dispatchStepComplete(
+        loadingStepDispatcher!!.dispatchStepComplete(
             AppLoadingStateHandler.Steps.LAUNCHING
         )
     }
 
     @WorkerThread
     internal fun dispatchUpgrade() {
-        onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
-        controller?.onUpgrade(versionTracker.previousVersion, versionTracker.currentVersion)
+        versionTracker?.let {
+            onUpgrade(it.previousVersion, it.currentVersion)
+            controller?.onUpgrade(it.previousVersion, it.currentVersion)
+        }
     }
 
     @MainThread
@@ -294,21 +294,21 @@ open class TagdApplication : Application(), IApplication {
      */
     @MainThread
     protected open fun onLoading() {
-        loadingStateHandler.start()
+        loadingStateHandler!!.start()
     }
 
     fun resolveLauncher(activity: Activity, savedInstanceState: Bundle?) {
-        launcher = launcherResolver.resolve(activity, savedInstanceState)
+        launcher = launcherResolver!!.resolve(activity, savedInstanceState)
         dispatchLaunch()
     }
 
     fun resolveLauncher(service: Service, marshalledJob: String) {
-        launcher = launcherResolver.resolve(service, marshalledJob)
+        launcher = launcherResolver!!.resolve(service, marshalledJob)
         dispatchLaunch()
     }
 
     fun resolveLauncher(receiver: BroadcastReceiver, marshalledEvent: String) {
-        launcher = launcherResolver.resolve(receiver, marshalledEvent)
+        launcher = launcherResolver!!.resolve(receiver, marshalledEvent)
         dispatchLaunch()
     }
 
@@ -318,7 +318,7 @@ open class TagdApplication : Application(), IApplication {
 
     protected open fun onInject() {
         appService<ApplicationInjector<TagdApplication>>()?.inject {
-            loadingStepDispatcher.dispatchStepComplete(AppLoadingStateHandler.Steps.INJECTING)
+            loadingStepDispatcher!!.dispatchStepComplete(AppLoadingStateHandler.Steps.INJECTING)
         }
     }
 
@@ -333,7 +333,7 @@ open class TagdApplication : Application(), IApplication {
 
     open fun onUpgrade(oldVersion: Int, currentVersion: Int) {
         present(delay = 1L) {
-            loadingStepDispatcher.dispatchStepComplete(
+            loadingStepDispatcher!!.dispatchStepComplete(
                 AppLoadingStateHandler.Steps.UPGRADING
             )
         }
@@ -431,10 +431,38 @@ open class TagdApplication : Application(), IApplication {
     override fun release() {
         lifecycleState = State.RELEASED
         cancelAsync(this)
-        loadingStepDispatcher.release()
-        loadingStateHandler.release()
+
+        releaseState()
+        releaseController()
+
+        //Dependency Injection
+        releaseDependencies()
+    }
+
+    private fun releaseState() {
+        launcher = null
+
+        loadingStepDispatcher?.release()
+        loadingStepDispatcher = null
+
+        loadingStateHandler?.release()
+        loadingStateHandler = null
+
+        versionTracker?.release()
+        versionTracker = null
+
+        presenterFactory?.release()
+        presenterFactory = null
+    }
+
+    private fun releaseController() {
         controller?.onDestroy()
         controller = null
+    }
+
+    private fun releaseDependencies() {
+        activityLifecycleObserver = null
+        injector = null
         Global.release()
     }
 }
