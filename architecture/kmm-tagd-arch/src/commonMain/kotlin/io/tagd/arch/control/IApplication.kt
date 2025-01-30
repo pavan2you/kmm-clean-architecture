@@ -18,7 +18,7 @@
 package io.tagd.arch.control
 
 import io.tagd.arch.access.reference
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.scopable.module.Module
 import io.tagd.arch.present.mvp.PresentableView

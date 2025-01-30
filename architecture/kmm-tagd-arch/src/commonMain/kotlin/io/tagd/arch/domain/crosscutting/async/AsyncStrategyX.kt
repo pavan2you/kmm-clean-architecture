@@ -18,44 +18,9 @@
 package io.tagd.arch.domain.crosscutting.async
 
 import io.tagd.arch.access.crosscutting
-import io.tagd.arch.domain.crosscutting.CrossCutting
-import io.tagd.core.Cancellable
-import io.tagd.core.Nameable
-import io.tagd.core.Releasable
-import io.tagd.langx.ref.WeakReference
-import kotlin.jvm.JvmName
-
-interface AsyncExceptionHandler {
-
-    fun asyncException(throwable: Throwable)
-}
-
-/**
- * Any class which is performing async operations, must be an AsyncContext.
- */
-interface AsyncContext : Releasable
-
-data class ExecutionContext(
-    val callerContext: WeakReference<AsyncContext?>?,
-    val caller: AsyncStrategy
-) {
-
-    @JvmName("notifyCaller")
-    fun notify(work: (ExecutionContext) -> Unit) {
-        caller.execute(context = callerContext?.get(), work = work)
-    }
-
-    override fun toString(): String {
-        return "[callerContext=${callerContext?.get()}, caller=$caller]"
-    }
-}
-
-interface AsyncStrategy : CrossCutting, Cancellable, Nameable {
-
-    val exceptionHandler: AsyncExceptionHandler?
-
-    fun execute(context: AsyncContext? = null, delay: Long = 0, work: (ExecutionContext) -> Unit)
-}
+import io.tagd.core.AsyncContext
+import io.tagd.core.AsyncStrategy
+import io.tagd.core.ExecutionContext
 
 interface PresentationStrategy : AsyncStrategy
 
@@ -140,10 +105,6 @@ fun AsyncContext.cacheIO(
     val strategy = crosscutting<CacheIOStrategy>()
     strategy?.execute(context, delay, operation)
 }
-
-typealias ObserveOn = (AsyncContext, Long, (ExecutionContext) -> Unit) -> Unit
-
-typealias ExecuteOn = (AsyncContext, Long, (ExecutionContext) -> Unit) -> Unit
 
 fun AsyncContext.cancelAsync(context: AsyncContext = this) {
     cancelPresentations(context)

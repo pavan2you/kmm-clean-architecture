@@ -18,7 +18,7 @@
 package io.tagd.arch.present.mvb
 
 import io.tagd.arch.datatype.bind.Bindable
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 
 /**
  * Represents Binder in Model-View-Binder(ViewModel).

@@ -17,8 +17,8 @@
 
 package io.tagd.arch.test
 
-import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.crosscutting.async.*
+import io.tagd.core.CrossCutting
 import io.tagd.core.Releasable
 import io.tagd.di.Global
 import io.tagd.di.layer

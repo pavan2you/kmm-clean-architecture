@@ -17,8 +17,8 @@ import io.tagd.arch.data.cache.Cache
 import io.tagd.arch.data.dao.DataAccessObject
 import io.tagd.arch.data.gateway.Gateway
 import io.tagd.arch.data.repo.Repository
-import io.tagd.arch.domain.crosscutting.CrossCutting
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.CrossCutting
+import io.tagd.core.AsyncContext
 import io.tagd.arch.domain.crosscutting.async.compute
 import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command

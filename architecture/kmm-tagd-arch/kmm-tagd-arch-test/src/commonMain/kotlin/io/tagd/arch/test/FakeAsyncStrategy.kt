@@ -17,17 +17,17 @@
 
 package io.tagd.arch.test
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
-import io.tagd.arch.domain.crosscutting.async.AsyncExceptionHandler
-import io.tagd.arch.domain.crosscutting.async.AsyncStrategy
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DaoIOStrategy
 import io.tagd.arch.domain.crosscutting.async.DiskIOStrategy
-import io.tagd.arch.domain.crosscutting.async.ExecutionContext
 import io.tagd.arch.domain.crosscutting.async.NetworkIOStrategy
 import io.tagd.arch.domain.crosscutting.async.PresentationStrategy
+import io.tagd.core.AsyncContext
+import io.tagd.core.AsyncExceptionHandler
+import io.tagd.core.AsyncStrategy
+import io.tagd.core.ExecutionContext
 import io.tagd.langx.ref.weak
 
 open class FakeAsyncStrategy : AsyncStrategy, PresentationStrategy, ComputationStrategy,

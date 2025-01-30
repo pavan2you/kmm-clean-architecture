@@ -1,6 +1,6 @@
 package io.tagd.arch.present.mvnp
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
 import io.tagd.arch.present.mvp.Presenter
 import io.tagd.langx.ref.WeakReference

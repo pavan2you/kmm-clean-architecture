@@ -17,7 +17,7 @@
 
 package io.tagd.arch.data.gateway
 
-import io.tagd.arch.domain.crosscutting.async.AsyncContext
+import io.tagd.core.AsyncContext
 import io.tagd.core.Service
 
 interface Gateway : Service, AsyncContext

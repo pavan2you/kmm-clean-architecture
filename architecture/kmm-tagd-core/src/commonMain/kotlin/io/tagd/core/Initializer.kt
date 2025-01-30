@@ -14,15 +14,6 @@ interface Initializer<T> : Service {
     }
 }
 
-interface ConditionalInitializer<T> : Initializer<T> {
-
-    fun canInitialize(): Boolean
-
-    fun conditionalNew(dependencies: Dependencies): T? {
-        return if (canInitialize()) new(dependencies) else null
-    }
-}
-
 class Dependencies : State() {
 
     override operator fun plus(pairs: Array<out Pair<String, Any?>>): Dependencies {

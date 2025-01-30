@@ -29,7 +29,6 @@ import io.tagd.android.crosscutting.codec.UrlEncoderDecoder
 import io.tagd.arch.control.ApplicationInjector
 import io.tagd.arch.control.IApplication
 import io.tagd.arch.control.LoadingStateHandler
-import io.tagd.arch.domain.crosscutting.CrossCutting
 import io.tagd.arch.domain.crosscutting.async.CacheIOStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputationStrategy
 import io.tagd.arch.domain.crosscutting.async.ComputeIOStrategy
@@ -43,6 +42,8 @@ import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.arch.scopable.AbstractWithinScopableInjector
 import io.tagd.arch.scopable.Scopable
 import io.tagd.arch.scopable.WithinScopableInitializer
+import io.tagd.core.AsyncStrategy
+import io.tagd.core.CrossCutting
 import io.tagd.di.Scope
 import io.tagd.di.bind
 import io.tagd.di.key2
@@ -118,8 +119,12 @@ open class TagdApplicationInjector<T : TagdApplication>(
 
         layer<CrossCutting> {
             bind<PresentationStrategy>().toInstance(CoroutinePresentationStrategy())
-            bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy())
-            bind<ComputeIOStrategy>().toInstance(CoroutineComputeIOStrategy())
+            bind<ComputationStrategy>().toInstance(CoroutineComputationStrategy().also {
+                AsyncStrategy.serial = it
+            })
+            bind<ComputeIOStrategy>().toInstance(CoroutineComputeIOStrategy().also {
+                AsyncStrategy.concurrent = it
+            })
             bind<NetworkIOStrategy>().toInstance(CoroutineNetworkStrategy())
             bind<DiskIOStrategy>().toInstance(CoroutineDiskStrategy())
             bind<DaoIOStrategy>().toInstance(CoroutineDaoIOStrategy())
@@ -141,5 +146,10 @@ open class TagdApplicationInjector<T : TagdApplication>(
     ): Boolean {
 
         return handler.scopable === within
+    }
+
+    override fun release() {
+        AsyncStrategy.release();
+        super.release()
     }
 }

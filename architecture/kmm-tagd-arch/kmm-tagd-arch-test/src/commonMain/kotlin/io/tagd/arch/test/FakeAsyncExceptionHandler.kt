@@ -1,6 +1,6 @@
 package io.tagd.arch.test
 
-import io.tagd.arch.domain.crosscutting.async.AsyncExceptionHandler
+import io.tagd.core.AsyncExceptionHandler
 
 class FakeAsyncExceptionHandler : AsyncExceptionHandler {
 

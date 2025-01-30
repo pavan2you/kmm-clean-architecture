@@ -1,6 +1,6 @@
 package io.tagd.arch.domain.crosscutting.converter
 
-import io.tagd.arch.domain.crosscutting.CrossCutting
+import io.tagd.core.CrossCutting
 
 class ConvertException(message: String, cause: Throwable) : Exception(message, cause)
 
