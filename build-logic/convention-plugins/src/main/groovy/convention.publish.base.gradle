@@ -24,7 +24,7 @@ plugins {
 
 ext {
     enableRemotePublish = false
-    enableGithubPublish = false
+    enableGithubPublish = true
     enableNexusPublish = false
 
     artifactGroupId = "io.github.pavan2you"

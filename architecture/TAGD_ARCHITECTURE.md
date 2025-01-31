@@ -1,4 +1,4 @@
-# TagD Architecture
+# TagD Clean Architecture
 The objective is demonstrating how to develop a technology agnostic native mobile application
 by applying domain driven and clean architecture design practices.
     - It comes up with defining traits, basic building blocks at
