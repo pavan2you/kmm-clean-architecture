@@ -5,7 +5,7 @@ it is coupled to kotlin multiplatform's expect-actual mechanism. Solving that wo
 technology agnostic implementation.
 
 How it structured?
-- Separate platform apis and language apis from its application. 
+- ## Separate platform apis and language apis from its application. 
   - Language extensions goes in at language/kmm-langx.
   - Kotlin extensions goes in at language/kmm-kotlinx.
   - Android extensions goes in at language/kmm-androidx.
@@ -13,8 +13,11 @@ How it structured?
   - Tomorrow any other platform/language extension can be placed here
   - more https://github.com/pavan2you/kmm-clean-architecture/tree/master/language/TAGD_LANGUAGE.md.
 
-- Separate architecture from its application
+- ## Separate architecture from its application
   - It is very natural to have base/core layer/module, which is stuffed in application(s). Instead
-  of that, tagd clearly separates the reusable architecture concepts and implementations from
-  its usage.
-  - more https://github.com/pavan2you/kmm-clean-architecture/tree/master/architecture/TAGD_.md.
+    of that, tagd clearly separates the reusable architecture concepts and implementations from
+    its usage.
+  - more https://github.com/pavan2you/kmm-clean-architecture/tree/master/architecture/TAGD_ARCHITECTURE.md.
+
+- ## Applications
+  - Use architecture and language extensions to develop sample applications.
