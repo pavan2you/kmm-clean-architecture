@@ -63,6 +63,8 @@ interface AsyncStrategy : CrossCutting, Cancellable, Nameable {
     }
 }
 
+typealias AsyncOn = (AsyncContext, Long, (ExecutionContext) -> Unit) -> Unit
+
 fun async(
     context: AsyncContext? = null,
     delay: Long = 0,
