@@ -19,7 +19,7 @@ import io.tagd.arch.data.gateway.Gateway
 import io.tagd.arch.data.repo.Repository
 import io.tagd.core.CrossCutting
 import io.tagd.core.AsyncContext
-import io.tagd.arch.domain.crosscutting.async.compute
+import io.tagd.arch.crosscutting.async.compute
 import io.tagd.arch.domain.service.DomainService
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.infra.InfraService

@@ -1,8 +1,8 @@
 package io.tagd.the101.android
 
 import io.tagd.arch.access.library
-import io.tagd.arch.control.LoadingStateHandler
-import io.tagd.arch.domain.crosscutting.async.compute
+import io.tagd.arch.app.LoadingStateHandler
+import io.tagd.arch.crosscutting.async.compute
 import io.tagd.arch.domain.usecase.Command
 import io.tagd.arch.scopable.AbstractWithinScopableInitializer
 import io.tagd.arch.scopable.Scopable

@@ -1,10 +1,10 @@
 package io.tagd.android.app.loadingstate
 
 import io.tagd.android.app.TagdApplication
-import io.tagd.arch.control.AppLoadingStateHandlerSpec
-import io.tagd.arch.control.IApplication
-import io.tagd.arch.control.StepLooper
-import io.tagd.arch.control.StepLooperSpec
+import io.tagd.arch.app.AppLoadingStateHandlerSpec
+import io.tagd.arch.app.IApplication
+import io.tagd.arch.app.StepLooper
+import io.tagd.arch.app.StepLooperSpec
 
 private typealias AppSteps = AppLoadingStateHandler.Steps
 private typealias AppDispatcher = AppLoadingStateHandler.Dispatcher

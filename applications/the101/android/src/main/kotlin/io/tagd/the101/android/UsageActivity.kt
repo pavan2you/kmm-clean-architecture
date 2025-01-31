@@ -19,12 +19,12 @@ package io.tagd.the101.android
 
 import android.os.Bundle
 import io.tagd.android.mvp.MvpActivity
-import io.tagd.arch.domain.crosscutting.async.cacheIO
-import io.tagd.arch.domain.crosscutting.async.compute
-import io.tagd.arch.domain.crosscutting.async.computeIO
-import io.tagd.arch.domain.crosscutting.async.diskIO
-import io.tagd.arch.domain.crosscutting.async.networkIO
-import io.tagd.arch.domain.crosscutting.async.present
+import io.tagd.arch.crosscutting.async.cacheIO
+import io.tagd.arch.crosscutting.async.compute
+import io.tagd.arch.crosscutting.async.computeIO
+import io.tagd.arch.crosscutting.async.diskIO
+import io.tagd.arch.crosscutting.async.networkIO
+import io.tagd.arch.crosscutting.async.present
 import io.tagd.arch.present.mvp.LifeCycleAwarePresenter
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.core.AsyncContext

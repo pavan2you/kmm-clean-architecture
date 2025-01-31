@@ -20,7 +20,7 @@ package io.tagd.android.mvp
 import android.os.Bundle
 import io.tagd.android.app.Fragment
 import io.tagd.android.app.TagdApplication
-import io.tagd.arch.control.IApplication
+import io.tagd.arch.app.IApplication
 import io.tagd.arch.present.mvp.PresentableView
 import io.tagd.arch.present.mvp.Presenter
 

@@ -17,7 +17,7 @@
 
 package io.tagd.arch.control.mcc
 
-import io.tagd.arch.control.IApplication
+import io.tagd.arch.app.IApplication
 import io.tagd.core.Releasable
 
 interface Controllable : Releasable {

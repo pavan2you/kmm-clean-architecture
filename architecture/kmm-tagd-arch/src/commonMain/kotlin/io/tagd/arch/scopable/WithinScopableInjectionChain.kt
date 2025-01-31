@@ -1,7 +1,7 @@
 package io.tagd.arch.scopable
 
 import io.tagd.arch.access.Injector
-import io.tagd.arch.control.LoadingStateHandler
+import io.tagd.arch.app.LoadingStateHandler
 import io.tagd.langx.Callback
 
 interface WithinScopableInjectionChain<S> : Injector {

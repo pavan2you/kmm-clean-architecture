@@ -17,7 +17,7 @@
 
 package io.tagd.arch.present
 
-import io.tagd.arch.control.IApplication
+import io.tagd.arch.app.IApplication
 import io.tagd.core.AsyncContext
 
 interface View : AsyncContext {

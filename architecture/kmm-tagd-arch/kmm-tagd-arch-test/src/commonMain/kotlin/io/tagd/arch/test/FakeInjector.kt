@@ -17,7 +17,13 @@
 
 package io.tagd.arch.test
 
-import io.tagd.arch.domain.crosscutting.async.*
+import io.tagd.arch.crosscutting.async.CacheIOStrategy
+import io.tagd.arch.crosscutting.async.ComputationStrategy
+import io.tagd.arch.crosscutting.async.ComputeIOStrategy
+import io.tagd.arch.crosscutting.async.DaoIOStrategy
+import io.tagd.arch.crosscutting.async.DiskIOStrategy
+import io.tagd.arch.crosscutting.async.NetworkIOStrategy
+import io.tagd.arch.crosscutting.async.PresentationStrategy
 import io.tagd.core.CrossCutting
 import io.tagd.core.Releasable
 import io.tagd.di.Global

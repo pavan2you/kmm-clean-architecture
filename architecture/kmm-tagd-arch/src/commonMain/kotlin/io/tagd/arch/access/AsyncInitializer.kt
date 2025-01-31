@@ -1,8 +1,8 @@
 package io.tagd.arch.access
 
 import io.tagd.core.AsyncContext
-import io.tagd.arch.domain.crosscutting.async.cancelAsync
-import io.tagd.arch.domain.crosscutting.async.compute
+import io.tagd.arch.crosscutting.async.cancelAsync
+import io.tagd.arch.crosscutting.async.compute
 import io.tagd.core.Dependencies
 import io.tagd.core.Initializer
 import io.tagd.langx.Callback

@@ -1,6 +1,6 @@
 package io.tagd.arch.access
 
-import io.tagd.arch.control.application
+import io.tagd.arch.app.application
 import io.tagd.arch.infra.ReferenceHolder
 import io.tagd.core.Service
 import io.tagd.di.Scope

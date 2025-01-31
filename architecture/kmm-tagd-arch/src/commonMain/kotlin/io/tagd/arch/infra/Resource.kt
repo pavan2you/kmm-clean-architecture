@@ -1,6 +1,6 @@
 package io.tagd.arch.infra
 
-import io.tagd.arch.control.application
+import io.tagd.arch.app.application
 import io.tagd.langx.Context
 import io.tagd.langx.IllegalAccessException
 import io.tagd.langx.assert

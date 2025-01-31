@@ -1,7 +1,7 @@
 package io.tagd.arch.infra
 
 import io.tagd.arch.access.crosscutting
-import io.tagd.arch.domain.crosscutting.codec.JsonCodec
+import io.tagd.arch.crosscutting.codec.JsonCodec
 import io.tagd.di.typeOf
 import io.tagd.langx.IllegalValueException
 

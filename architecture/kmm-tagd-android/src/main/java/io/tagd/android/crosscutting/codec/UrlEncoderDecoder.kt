@@ -1,6 +1,6 @@
 package io.tagd.android.crosscutting.codec
 
-import io.tagd.arch.domain.crosscutting.codec.UrlCodec
+import io.tagd.arch.crosscutting.codec.UrlCodec
 import java.net.URLDecoder
 import java.net.URLEncoder
 

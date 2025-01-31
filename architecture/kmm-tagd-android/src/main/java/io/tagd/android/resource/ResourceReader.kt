@@ -2,17 +2,13 @@ package io.tagd.android.resource
 
 import android.annotation.SuppressLint
 import android.content.Context
-import io.tagd.arch.access.crosscutting
-import io.tagd.arch.domain.crosscutting.codec.JsonCodec
 import io.tagd.arch.infra.CompressedResource
 import io.tagd.arch.infra.ICompressedResource
 import io.tagd.arch.infra.INamedResource
 import io.tagd.arch.infra.NamedResourceReader
 import io.tagd.arch.infra.UnifiedResource
 import io.tagd.arch.infra.UnifiedResourceReader
-import io.tagd.arch.infra.readCompressedJson
 import io.tagd.arch.infra.toFileNameParts
-import io.tagd.di.typeOf
 import io.tagd.langx.json.JSONArray
 import io.tagd.langx.json.JSONObject
 import java.io.File

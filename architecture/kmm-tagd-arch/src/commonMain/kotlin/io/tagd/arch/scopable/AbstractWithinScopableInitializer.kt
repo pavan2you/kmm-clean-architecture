@@ -1,6 +1,6 @@
 package io.tagd.arch.scopable
 
-import io.tagd.arch.control.LoadingStateHandler
+import io.tagd.arch.app.LoadingStateHandler
 import io.tagd.core.Dependencies
 import io.tagd.core.dependencies
 import io.tagd.langx.Callback

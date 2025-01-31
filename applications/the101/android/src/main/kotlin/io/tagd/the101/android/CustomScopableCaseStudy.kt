@@ -1,6 +1,6 @@
 package io.tagd.the101.android
 
-import io.tagd.arch.control.LoadingStateHandler
+import io.tagd.arch.app.LoadingStateHandler
 import io.tagd.arch.scopable.AbstractWithinScopableInitializer
 import io.tagd.arch.scopable.AbstractWithinScopableInjector
 import io.tagd.arch.scopable.Scopable

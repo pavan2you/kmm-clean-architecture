@@ -3,7 +3,7 @@ package io.tagd.android.crosscutting.codec
 import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import io.tagd.arch.domain.crosscutting.codec.JsonCodec
+import io.tagd.arch.crosscutting.codec.JsonCodec
 import io.tagd.langx.reflection.Type
 import kotlin.reflect.KClass
 

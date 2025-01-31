@@ -5,7 +5,7 @@ import io.tagd.android.app.loadingstate.AppLoadingStateHandler
 import io.tagd.android.app.loadingstate.AppLoadingStepDispatcher
 import io.tagd.arch.access.library
 import io.tagd.arch.access.usecase
-import io.tagd.arch.domain.crosscutting.async.compute
+import io.tagd.arch.crosscutting.async.compute
 import io.tagd.arch.scopable.library.usecase
 
 class SampleAppLoadingStateHandler(dispatcher: AppLoadingStepDispatcher<out TagdApplication>) :

@@ -17,7 +17,7 @@
 
 package io.tagd.android.app
 
-import io.tagd.arch.control.AppService
+import io.tagd.arch.app.AppService
 import java.lang.ref.WeakReference
 import java.util.*
 

@@ -2,8 +2,8 @@ package io.tagd.android.app.loadingstate
 
 import io.tagd.android.app.ApplicationAware
 import io.tagd.android.app.TagdApplication
-import io.tagd.arch.control.StepLooperSpec
-import io.tagd.arch.domain.crosscutting.async.present
+import io.tagd.arch.app.StepLooperSpec
+import io.tagd.arch.crosscutting.async.present
 import io.tagd.kotlinx.let
 
 open class AppLoadingStepDispatcher<T : TagdApplication>(application: T) :

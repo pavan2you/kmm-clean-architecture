@@ -19,7 +19,7 @@ package io.tagd.android.mcc
 
 import android.app.Service
 import android.content.Intent
-import io.tagd.arch.control.IApplication
+import io.tagd.arch.app.IApplication
 import io.tagd.arch.control.mcc.Controllable
 import io.tagd.arch.control.mcc.Controller
 import io.tagd.android.app.TagdApplication
