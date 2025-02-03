@@ -7,8 +7,15 @@ import io.tagd.langx.Callback
 import io.tagd.langx.ref.WeakReference
 import io.tagd.langx.ref.weak
 
+/**
+ * A fully asynchronous powered
+ *  - lazy composition using [initialize],
+ *  - loading step registry, using [registerLoadingSteps] and
+ *  - injection, using [inject].
+ *  implementation.
+ */
 abstract class AbstractWithinScopableInjector<S : Scopable>(within: S) :
-    WithinScopableInjectionChain<S> {
+    WithinScopableInjectionSpec<S> {
 
     private var weakWithin: WeakReference<S?>? = within.weak()
 

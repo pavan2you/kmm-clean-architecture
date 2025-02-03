@@ -18,10 +18,10 @@
 package io.tagd.arch.app
 
 import io.tagd.arch.infra.InfraService
-import io.tagd.arch.scopable.WithinScopableInjectionChain
+import io.tagd.arch.scopable.WithinScopableInjectionSpec
 import io.tagd.di.layer
 
-interface ApplicationInjector<A : IApplication> : AppService, WithinScopableInjectionChain<A> {
+interface ApplicationInjector<A : IApplication> : AppService, WithinScopableInjectionSpec<A> {
 
     companion object {
 

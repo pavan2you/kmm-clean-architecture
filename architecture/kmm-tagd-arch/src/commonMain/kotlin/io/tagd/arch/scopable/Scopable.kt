@@ -17,6 +17,11 @@ import io.tagd.di.getWithScope
 import io.tagd.di.inject
 import io.tagd.di.layer
 
+/**
+ * A [Scopable] is something equal to a sandbox / virtual container. Typical examples of Scopable
+ * are - Process, Application, some application module, some library, some component like
+ * Activity/Service/BroadCastReceiver/ViewController etc.
+ */
 interface Scopable : Service, Nameable {
 
     val outerScope: Scope

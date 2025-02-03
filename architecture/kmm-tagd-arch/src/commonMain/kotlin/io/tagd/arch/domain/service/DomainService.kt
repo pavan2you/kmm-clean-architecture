@@ -17,6 +17,11 @@
 
 package io.tagd.arch.domain.service
 
+import io.tagd.arch.domain.usecase.UseCase
 import io.tagd.core.Service
 
+/**
+ * A [DomainService] is typically a behaviour helper component, which is leveraged by
+ * [UseCase].
+ */
 interface DomainService : Service

@@ -17,6 +17,11 @@
 
 package io.tagd.arch.present.service
 
+import io.tagd.arch.present.mvp.Presenter
 import io.tagd.core.Service
 
+/**
+ * A [PresentationService] is typically a behaviour helper component, which is leveraged by
+ * [Presenter].
+ */
 interface PresentationService : Service

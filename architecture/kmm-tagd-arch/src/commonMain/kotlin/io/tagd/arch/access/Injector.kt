@@ -4,6 +4,9 @@ import io.tagd.core.AsyncContext
 import io.tagd.core.Service
 import io.tagd.langx.Callback
 
+/**
+ * An Injector which injects the stuff and signals the caller using [Callback].
+ */
 interface Injector : Service, AsyncContext {
 
     /**

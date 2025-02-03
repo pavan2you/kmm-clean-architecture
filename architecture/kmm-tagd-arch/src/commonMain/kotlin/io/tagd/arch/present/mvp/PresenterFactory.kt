@@ -3,6 +3,10 @@ package io.tagd.arch.present.mvp
 import io.tagd.core.Factory
 import kotlin.reflect.KClass
 
+/**
+ * A [Presenter] factory, which on demand produces [Presenter] or reuses if one is available w.r.t
+ * given query.
+ */
 class PresenterFactory(override val name: String) : Factory {
 
     val presenters =

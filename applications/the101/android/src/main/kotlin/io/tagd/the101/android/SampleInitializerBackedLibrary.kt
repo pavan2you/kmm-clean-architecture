@@ -45,7 +45,7 @@ class SampleLibraryInitializer<S : Scopable>(within: S) :
         within.bindLazy<Library, SampleInitializerBackedLibrary> {
             new(dependencies(
                 "NAME" to "sample-initializer-backed-library",
-                "OUTER_SCOPE" to this
+                "OUTER_SCOPE" to outerScope
             ).apply {
                 it?.let {
                     putAll(it)

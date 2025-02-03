@@ -7,6 +7,12 @@ import io.tagd.langx.Callback
 import io.tagd.langx.ref.WeakReference
 import io.tagd.langx.ref.weak
 
+/**
+ * An abstract implementation of [WithinScopableInitializer]. If the produced [T] is having
+ * an associated [AbstractWithinScopableInjector], then the derived classes must delegate
+ * (but not necessary) [initialize], [registerLoadingSteps] and [inject] to
+ * [AbstractWithinScopableInjector].
+ */
 abstract class AbstractWithinScopableInitializer<S : Scopable, T>(within: S) :
     WithinScopableInitializer<S, T> {
 

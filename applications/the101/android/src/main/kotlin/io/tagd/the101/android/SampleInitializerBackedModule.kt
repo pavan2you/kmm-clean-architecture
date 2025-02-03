@@ -45,7 +45,7 @@ class SampleModuleInitializer<S : Scopable>(within: S) :
         within.bindLazy<Module, SampleInitializerBackedModule> {
             new(dependencies(
                 "NAME" to "sample-initializer-backed-module",
-                "OUTER_SCOPE" to this
+                "OUTER_SCOPE" to outerScope
             ).apply {
                 it?.let {
                     putAll(it)

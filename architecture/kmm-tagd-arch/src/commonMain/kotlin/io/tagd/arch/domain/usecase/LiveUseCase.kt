@@ -22,6 +22,9 @@ import io.tagd.core.annotation.VisibleForTesting
 import io.tagd.langx.Callback
 import io.tagd.langx.collection.concurrent.ConcurrentHashMap
 
+/**
+ * A Live [UseCase], which has the capability to signal back the future results.
+ */
 abstract class LiveUseCase<T> : UseCase<Unit, T>() {
 
     private val liveObservers = ConcurrentHashMap<Args, LiveData<T>>()
